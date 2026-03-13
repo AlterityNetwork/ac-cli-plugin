@@ -1,9 +1,10 @@
 {
   "name": "ac-cli",
+  "displayName": "AgencyCore CLI",
   "description": "AgencyCore CLI skills for managing CRM data — companies, people, deals, activities, communications, lists, and imports from the terminal",
   "version": "0.1.0",
   "author": {
-    "name": "AlterityNetwork",
+    "name": "AgencyCore",
     "email": "support@agencycore.dev"
   },
   "homepage": "https://github.com/AlterityNetwork/ac-cli-plugin",
