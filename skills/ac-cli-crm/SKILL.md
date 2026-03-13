@@ -54,27 +54,30 @@ ac whoami
 ```
 
 - **If authenticated**: You'll see user info and org details. Proceed to the command the user needs.
-- **If not authenticated** (error or "not logged in"): Follow the **Login** section below.
+- **If not authenticated** (error or "not logged in"): Ask the user for their email and password, then log them in (see below).
 
 ---
 
 ## Login
 
-The CLI defaults to the **staging** environment. The user only needs their **email**
-and **password** — Supabase URL, anon key, and API URL are pre-filled automatically.
+When the user is not authenticated, **always ask for their email and password
+directly, then run the login command for them**. Do NOT tell the user to run the
+command themselves or offer it as an alternative. The user experience should be:
 
-**Staging (default):**
+1. Ask: "What's your AgencyCore email and password?"
+2. Once they provide credentials, run:
+   ```bash
+   ac login --email "user@example.com" --password "their-password"
+   ```
+3. Verify with `ac whoami`
+
+The CLI defaults to the **staging** environment. All server URLs are built in —
+no need to pass them manually.
+
+**For local dev** (if the user explicitly asks for it):
 ```bash
-ac login
+ac login --dev --email "user@example.com" --password "their-password"
 ```
-
-**Local dev** (connects to localhost API + local Supabase):
-```bash
-ac login --dev
-```
-
-The CLI will prompt for email and password interactively. All server URLs are
-built into the CLI — no need to pass them manually.
 
 ### Verify login
 
