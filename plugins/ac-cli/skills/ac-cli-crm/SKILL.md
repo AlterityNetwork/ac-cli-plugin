@@ -28,12 +28,12 @@ automatically if missing. **Do NOT ask the user where the code is — the packag
 public on PyPI.**
 
 ```bash
-which ac || pip install agencycore-cli
+pip install --upgrade agencycore-cli
 ```
 
-If `pip` is not available, try `uv pip install agencycore-cli` or `pipx install agencycore-cli`.
+If `pip` is not available, try `uv pip install --upgrade agencycore-cli` or `pipx upgrade agencycore-cli`.
 
-After installing, verify it works:
+This always installs or upgrades to the latest version. Then verify it works:
 ```bash
 ac --help
 ```
@@ -93,7 +93,7 @@ When running on a cloud VM (e.g., Claude Code on the web), the CLI won't be
 pre-installed. **Just install it from PyPI** — don't ask the user for source code:
 
 ```bash
-pip install agencycore-cli
+pip install --upgrade agencycore-cli
 ```
 
 If install succeeds but `ac login` or API calls fail with connection errors, the
@@ -299,5 +299,5 @@ ac crm import commit --preview-id <id-from-preview>
 | "Not authenticated" error | Run `ac login` with staging credentials (see First-Time Setup) |
 | Connection refused | Check network access and that the API is reachable: `ac health check` |
 | 401 after long idle | The CLI auto-refreshes tokens, but if it fails, run `ac login` again |
-| Command not found: `ac` | Run `pip install agencycore-cli` — the package is public on PyPI. Do not ask the user for source code. |
+| Command not found: `ac` | Run `pip install --upgrade agencycore-cli` — the package is public on PyPI. Do not ask the user for source code. |
 | Cloud VM can't reach API | Enable **Full network access** in Claude Code on the web project settings |
