@@ -21,34 +21,27 @@ work with your data without opening the web app.
 
 ---
 
-## Step 0: Check CLI Installation (Always Do This First)
+## Step 0: Ensure CLI Is Installed (Always Do This First)
 
-Before running any CRM command, check if the `ac` CLI is available:
+Before running any CRM command, check if the `ac` CLI is available and install it
+automatically if missing. **Do NOT ask the user where the code is — the package is
+public on PyPI.**
 
+```bash
+which ac || pip install agencycore-cli
+```
+
+If `pip` is not available, try `uv pip install agencycore-cli` or `pipx install agencycore-cli`.
+
+After installing, verify it works:
 ```bash
 ac --help
 ```
 
-- **If the command works**: Skip to **Step 1** (authentication check).
-- **If `ac` is not found**: Install it first (see below).
-
-### Installing the CLI
-
-**Option A — Install from PyPI** (recommended for most users):
-```bash
-pip install agencycore-cli
-```
-
-Or with uv:
-```bash
-uv pip install agencycore-cli
-```
-
-**Option B — Install from source** (if working in the agencycore monorepo):
-```bash
-cd ac-cli && uv sync
-```
-When installed from source, prefix commands with `uv run` (e.g., `uv run ac whoami`).
+**Note**: If you are inside the `agencycore` monorepo and the `ac-cli/` directory
+exists, you may alternatively install from source with `cd ac-cli && uv sync` (then
+prefix commands with `uv run`, e.g., `uv run ac whoami`). But PyPI install is the
+default — never ask the user for the source code location.
 
 ---
 
@@ -93,18 +86,18 @@ You should see the user's email, org, and role.
 
 ### Claude Code on the Web (Cloud VM)
 
-When using Claude Code on the web (cloud VM environment), extra setup is needed:
+When running on a cloud VM (e.g., Claude Code on the web), the CLI won't be
+pre-installed. **Just install it from PyPI** — don't ask the user for source code:
 
-1. **Enable network access**: Go to the Claude Code on the web project settings and
-   enable **Full network access**. At minimum, allowlist these hosts:
-   - `api.agencycore.dev`
-   - `tjzxfwiqommgrzxaflar.supabase.co`
-2. **Install the CLI**:
-   ```bash
-   pip install agencycore-cli
-   ```
-3. **Log in**: Follow the login step above. The staging server is remote, so the
-   cloud VM just needs outbound HTTPS access to reach it.
+```bash
+pip install agencycore-cli
+```
+
+If install succeeds but `ac login` or API calls fail with connection errors, the
+cloud VM may need network access enabled. Tell the user to enable **Full network
+access** in their Claude Code on the web project settings, or at minimum allowlist:
+- `api.agencycore.dev`
+- `tjzxfwiqommgrzxaflar.supabase.co`
 
 ---
 
@@ -303,5 +296,5 @@ ac crm import commit --preview-id <id-from-preview>
 | "Not authenticated" error | Run `ac login` with staging credentials (see First-Time Setup) |
 | Connection refused | Check network access and that the API is reachable: `ac health check` |
 | 401 after long idle | The CLI auto-refreshes tokens, but if it fails, run `ac login` again |
-| Command not found: `ac` | Install with `pip install agencycore-cli`, or `cd ac-cli && uv sync` from source |
+| Command not found: `ac` | Run `pip install agencycore-cli` — the package is public on PyPI. Do not ask the user for source code. |
 | Cloud VM can't reach API | Enable **Full network access** in Claude Code on the web project settings |
