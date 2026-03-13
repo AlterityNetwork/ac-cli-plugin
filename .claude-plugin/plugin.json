@@ -1,0 +1,13 @@
+{
+  "name": "ac-cli",
+  "description": "AgencyCore CLI skills for managing CRM data — companies, people, deals, activities, communications, lists, and imports from the terminal",
+  "version": "1.0.0",
+  "author": {
+    "name": "AlterityNetwork",
+    "email": "support@agencycore.dev"
+  },
+  "homepage": "https://github.com/AlterityNetwork/ac-cli-plugin",
+  "repository": "https://github.com/AlterityNetwork/ac-cli-plugin",
+  "license": "MIT",
+  "keywords": ["crm", "cli", "agencycore", "sales", "pipeline"]
+}

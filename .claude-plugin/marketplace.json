@@ -1,0 +1,20 @@
+{
+  "name": "agencycore-plugins",
+  "owner": {
+    "name": "AlterityNetwork",
+    "email": "support@agencycore.dev"
+  },
+  "metadata": {
+    "description": "Official AgencyCore plugins for Claude Code and Cowork"
+  },
+  "plugins": [
+    {
+      "name": "ac-cli",
+      "source": "./",
+      "description": "AgencyCore CLI skills for managing CRM data — companies, people, deals, activities, communications, lists, and imports from the terminal",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["crm", "cli", "sales", "pipeline"]
+    }
+  ]
+}
