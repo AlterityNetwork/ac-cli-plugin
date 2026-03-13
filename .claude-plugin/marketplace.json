@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "ac-cli",
-      "source": "./",
+      "source": "./plugins/ac-cli",
       "description": "AgencyCore CLI skills for managing CRM data — companies, people, deals, activities, communications, lists, and imports from the terminal",
       "version": "0.1.0",
       "category": "productivity",
