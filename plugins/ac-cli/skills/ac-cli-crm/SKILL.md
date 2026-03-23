@@ -283,6 +283,39 @@ ac crm import preview --file contacts.json
 ac crm import commit --preview-id <id-from-preview>
 ```
 
+## Agent-Friendly Features
+
+The `ac` CLI supports features that make it easy to use from AI agents and scripts:
+
+### Structured JSON Errors
+When using `--json`, errors also return structured JSON instead of Rich-formatted text:
+```bash
+ac crm --json companies get nonexistent-id
+# {"error": true, "status_code": 404, "detail": "Company not found"}
+```
+
+### Non-Interactive Mode
+Set `AC_YES=1` to skip all confirmation prompts (useful for automation):
+```bash
+AC_YES=1 ac crm companies delete abc123    # No confirmation prompt
+```
+
+### Semantic Exit Codes
+Exit codes indicate the type of failure for programmatic handling:
+| Exit Code | Meaning | HTTP Status |
+|-----------|---------|-------------|
+| 0 | Success | 2xx |
+| 1 | General/unknown error | 500, connection errors |
+| 2 | Validation error | 422 |
+| 3 | Not found | 404 |
+| 4 | Auth/permission denied | 401, 403 |
+| 5 | Conflict | 409 |
+
+```bash
+ac crm companies get bad-id
+echo $?  # 3 (not found)
+```
+
 ## Auth Commands Reference
 
 | Command | What it does |
