@@ -23,8 +23,8 @@ authentication.
 | `--query` | str | None | Filter by name or email |
 | `--sort` | str | "created_at" | Sort field |
 | `--order` | str | "desc" | Sort order (asc/desc) |
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--json` | flag | off | Raw JSON output |
 
 ### `ac admin users get <user-id>`
@@ -101,8 +101,8 @@ Returns to the original super admin session.
 | `--query` | str | None | Filter by name or slug |
 | `--sort` | str | "created_at" | Sort field |
 | `--order` | str | "desc" | Sort order (asc/desc) |
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--json` | flag | off | Raw JSON output |
 
 ### `ac admin orgs get <org-id>`
@@ -135,8 +135,8 @@ Returns to the original super admin session.
 ### `ac admin orgs members <org-id>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--json` | flag | off | Raw JSON output |
 
 ### `ac admin orgs add-member <org-id>`
@@ -204,18 +204,17 @@ Returns performance metrics for all queues.
 
 Sends current queue errors to Sentry for monitoring.
 
-### `ac admin queues job-performance`
+### `ac admin queues job-performance <job-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-Returns job execution performance statistics.
+Returns performance metrics for a specific job.
 
-### `ac admin queues failed`
+### `ac admin queues failed <queue-name>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--limit` | int | 50 | Max failed jobs to return |
-| `--queue` | str | None | Filter by queue name |
 | `--json` | flag | off | Raw JSON output |
 
 ### `ac admin queues retry-all <queue-name>`
@@ -274,8 +273,8 @@ Permanently removes all failed jobs from the specified queue.
 ### `ac admin demo list-accounts`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--sort` | str | "created_at" | Sort field |
 | `--order` | str | "desc" | Sort order (asc/desc) |
 | `--json` | flag | off | Raw JSON output |
@@ -323,18 +322,31 @@ Returns aggregate statistics about demo accounts.
 | `--first-name` | str | yes | First name |
 | `--last-name` | str | yes | Last name |
 | `--org-name` | str | yes | Organization name |
-| `--website-url` | str | yes | Organization website URL |
+| `--website-url` | str | no | Organization website URL |
+| `--country` | str | no | Country code (e.g. US) |
+| `--timezone` | str | no | Timezone (e.g. America/New_York) |
+| `--locale` | str | no | Locale (e.g. en) |
+| `--currency` | str | no | Currency code (e.g. USD) |
+| `--job-title` | str | no | Job title |
+| `--bio` | str | no | Short biography |
+| `--user-website` | str | no | Personal website URL |
+| `--logo-url` | str | no | Organization logo URL |
+| `--linkedin` | str | no | LinkedIn profile URL |
+| `--contact-number` | str | no | Phone number |
+| `--contact-email` | str | no | Alternative contact email |
+| `--description` | str | no | Organization description |
+| `--products-services` | str | no | Products and services offered |
+| `--calendly-url` | str | no | Calendly scheduling URL |
+| `--show-calendly/--no-show-calendly` | flag | no | Show Calendly widget |
 | `--json` | flag | no | Raw JSON output |
-
-Additional optional flags may be available for extended onboarding configuration.
 
 ### `ac admin onboarding list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--status` | str | None | Filter by onboarding status |
+| `--status` | str | None | Filter by onboarding status (setup/pending/active) |
 | `--query` | str | None | Search by name or email |
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 25 | Results per page |
 | `--json` | flag | off | Raw JSON output |
 
 ### `ac admin onboarding get <org-id>`
@@ -368,20 +380,20 @@ Switches to the onboarding organization's context for testing.
 Returns to the original super admin session.
 
 ### `ac admin onboarding activate <org-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--send-password-reset/--no-send-password-reset` | flag | Send (or don't send) a password reset email on activation |
-| `--json` | flag | Raw JSON output |
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--send-password-reset/--no-send-password-reset` | flag | True | Send (or don't send) a password reset email on activation |
+| `--json` | flag | off | Raw JSON output |
 
 ### `ac admin onboarding deactivate <org-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-### `ac admin onboarding update-config`
+### `ac admin onboarding update-config <org-id>`
 | Flag | Type | Description |
 |------|------|-------------|
-| `--show-calendly` | flag | Show Calendly widget in onboarding |
+| `--show-calendly/--no-show-calendly` | flag | Show/hide Calendly widget in onboarding |
 | `--calendly-url` | str | Calendly scheduling URL |
 | `--json` | flag | Raw JSON output |
 
@@ -397,7 +409,7 @@ Returns current onboarding settings.
 |------|------|----------|-------------|
 | `--terms-html` | str | no | HTML content for terms and conditions |
 | `--calendly-url` | str | no | Calendly scheduling URL |
-| `--calendly-enabled` | flag | no | Enable/disable Calendly integration |
+| `--calendly-enabled/--no-calendly-enabled` | flag | no | Enable/disable Calendly integration |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -420,8 +432,8 @@ Returns current onboarding settings.
 | `--org-id` | str | None | Filter by organization |
 | `--sort` | str | None | Sort field (e.g. total_actions) |
 | `--order` | str | None | Sort order (asc/desc) |
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--search` | str | None | Search by user name or email |
 | `--json` | flag | off | Raw JSON output |
 
@@ -453,8 +465,8 @@ Returns current onboarding settings.
 | `--org-id` | str | None | Filter by organization |
 | `--sort` | str | None | Sort field (e.g. total_tokens, total_cost) |
 | `--order` | str | None | Sort order (asc/desc) |
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Offset for pagination |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
 | `--search` | str | None | Search by user name or email |
 | `--json` | flag | off | Raw JSON output |
 

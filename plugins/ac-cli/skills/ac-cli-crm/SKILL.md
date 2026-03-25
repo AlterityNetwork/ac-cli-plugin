@@ -124,7 +124,7 @@ options. Below is an overview of what's available.
 ### Companies
 
 ```bash
-ac crm companies list [--limit 20] [--offset 0]
+ac crm companies list [--limit 100] [--offset 0]
 ac crm companies get <company-id>
 ac crm companies create --name "Acme Corp" [--website https://acme.com] \
   [--industry Technology] [--lifecycle-stage lead] [--tags "hot,enterprise"]
@@ -135,9 +135,9 @@ ac crm companies delete <company-id> [--yes]
 ### People (Contacts)
 
 ```bash
-ac crm people list [--company-id <id>] [--limit 20]
+ac crm people list [--company-id <id>] [--limit 100]
 ac crm people get <person-id>
-ac crm people create --email jane@acme.com --full-name "Jane Smith" \
+ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
   [--current-title "VP Sales"] [--company-id <id>] [--tags "decision-maker"]
 ac crm people update <person-id> --current-title "CRO"
 ac crm people delete <person-id> [--yes]
@@ -178,10 +178,13 @@ ac crm comms thread <thread-id>
 ac crm comms unread
 ac crm comms mark-read <thread-id>
 ac crm comms draft-email --contact-id <id> --subject "Intro" --content "Hi..."
-ac crm comms generate-draft --mode cold_outreach --recipient-name "Jane" \
+ac crm comms generate-draft --mode compose --recipient-name "Jane" \
   [--company-name "Acme"] [--context "Met at conference"]
 ac crm comms contact-by-email jane@acme.com
+ac crm comms resolve-contact <email> [--name "Jane"] [--company-id <id>]
+ac crm comms unread-thread-ids
 ac crm comms archive --thread-id <id>
+ac crm comms unarchive --thread-id <id>
 ac crm comms delete <communication-id> [--yes]
 ```
 

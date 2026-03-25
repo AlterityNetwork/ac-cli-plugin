@@ -21,7 +21,7 @@ Complete flag reference for every CRM command. All commands require authenticati
 ### `ac crm companies list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 20 | Max results to return |
+| `--limit` | int | 100 | Max results to return |
 | `--offset` | int | 0 | Skip this many results |
 | `--json` | flag | off | Output raw JSON |
 
@@ -60,7 +60,7 @@ Same optional flags as `create`. Only provided fields are updated.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--company-id` | str | — | Filter by company |
-| `--limit` | int | 20 | Max results |
+| `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
@@ -102,7 +102,7 @@ Same optional flags as `create`. Only provided fields are updated.
 | `--stage` | str | — | Filter by pipeline stage |
 | `--company-id` | str | — | Filter by company |
 | `--owner-id` | str | — | Filter by deal owner |
-| `--limit` | int | 20 | Max results |
+| `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
@@ -157,10 +157,10 @@ Same optional flags as `create`. Only provided fields are updated.
 | `--deal-id` | str | — | Filter by deal |
 | `--company-id` | str | — | Filter by company |
 | `--contact-id` | str | — | Filter by contact |
-| `--type` | str | — | Filter by type (call, email, meeting, task) |
+| `--type` | str | — | Filter by type (call, meeting, email, task, note) |
 | `--status` | str | — | Filter by status (pending, completed) |
-| `--sort-by` | str | — | Sort field |
-| `--limit` | int | 20 | Max results |
+| `--sort-by` | str | — | Sort field (due_date, created_at) |
+| `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
@@ -172,7 +172,7 @@ Same optional flags as `create`. Only provided fields are updated.
 ### `ac crm activities create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--type` | str | yes | Activity type (call, email, meeting, task) |
+| `--type` | str | yes | Activity type (call, meeting, email, task, note) |
 | `--title` | str | yes | Activity title |
 | `--due-date` | str | no | ISO date |
 | `--priority` | str | no | Priority level (low, medium, high, urgent) |
@@ -257,7 +257,7 @@ Finds or creates a contact record for the given email.
 ### `ac crm comms generate-draft`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--mode` | str | yes | Draft mode (cold_outreach, follow_up, reply) |
+| `--mode` | str | yes | Draft mode (compose, reply) |
 | `--recipient-name` | str | yes | Recipient's name |
 | `--recipient-email` | str | no | Recipient's email |
 | `--company-name` | str | no | Recipient's company |
@@ -306,7 +306,7 @@ Same flags as `archive`.
 ### `ac crm lists list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 20 | Max results |
+| `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
@@ -336,7 +336,7 @@ Same flags as `archive`.
 ### `ac crm lists members <list-id>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 20 | Max results |
+| `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 

@@ -86,7 +86,7 @@ options. Below is an overview of what's available.
 ### Users
 
 ```bash
-ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
+ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
 ac admin users get <user-id>
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
 ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin]
@@ -102,12 +102,12 @@ ac admin users generate-link <user-id> [--send-email]
 ### Organizations
 
 ```bash
-ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
+ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
 ac admin orgs get <org-id>
 ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro]
 ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise]
 ac admin orgs delete <org-id> [--yes]
-ac admin orgs members <org-id> [--limit 50] [--offset 0]
+ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
@@ -122,8 +122,8 @@ ac admin queues stats
 ac admin queues queue-stats <queue-name>
 ac admin queues metrics
 ac admin queues send-to-sentry
-ac admin queues job-performance
-ac admin queues failed [--limit 50] [--queue <queue-name>]
+ac admin queues job-performance <job-id>
+ac admin queues failed <queue-name> [--limit 50]
 ac admin queues retry-all <queue-name> [--yes]
 ac admin queues retry-job <job-id>
 ac admin queues clear-failed <queue-name> [--yes]
@@ -136,7 +136,7 @@ ac admin demo scrape-website --url "https://example.com"
 ac admin demo generate-org [--industry "Technology"] [--size "medium"]
 ac admin demo generate-profile [--industry "Technology"]
 ac admin demo prepare-account --org-name "Demo Corp" [--template default]
-ac admin demo list-accounts [--limit 50] [--offset 0] [--sort created_at] [--order desc]
+ac admin demo list-accounts [--page 1] [--page-size 50] [--sort created_at] [--order desc]
 ac admin demo get-account <org-id>
 ac admin demo update-account <org-id> [--status active] [--notes "Updated demo"]
 ac admin demo delete-account <org-id> [--yes]
@@ -148,19 +148,22 @@ ac admin demo stats
 
 ```bash
 ac admin onboarding create --email user@example.com --first-name "Jane" \
-  --last-name "Smith" --org-name "Acme Corp" --website-url "https://acme.com"
-ac admin onboarding list [--status pending] [--query "acme"] [--limit 50] [--offset 0]
+  --last-name "Smith" --org-name "Acme Corp" [--website-url "https://acme.com"] \
+  [--country US] [--timezone "America/New_York"] [--locale en] [--currency USD] \
+  [--job-title "CEO"] [--bio "..."] [--linkedin "https://..."] \
+  [--contact-email "alt@example.com"] [--calendly-url "https://..."]
+ac admin onboarding list [--status pending] [--query "acme"] [--page 1] [--page-size 25]
 ac admin onboarding get <org-id>
 ac admin onboarding delete <org-id>
 ac admin onboarding send-link <org-id> [--send-email]
 ac admin onboarding impersonate <org-id>
 ac admin onboarding end-impersonation <org-id>
-ac admin onboarding activate <org-id> [--send-password-reset/--no-send-password-reset]
+ac admin onboarding activate <org-id> [--send-password-reset] (default: sends reset email)
 ac admin onboarding deactivate <org-id>
-ac admin onboarding update-config [--show-calendly] [--calendly-url "https://..."]
+ac admin onboarding update-config <org-id> [--show-calendly] [--calendly-url "https://..."]
 ac admin onboarding get-settings
 ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
-  [--calendly-url "https://..."] [--calendly-enabled]
+  [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled]
 ```
 
 ### App Usage
@@ -168,7 +171,7 @@ ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
 ```bash
 ac admin app-usage summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin app-usage users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
-  [--sort total_actions] [--order desc] [--limit 50] [--offset 0] [--search "jane"]
+  [--sort total_actions] [--order desc] [--page 1] [--page-size 50] [--search "jane"]
 ac admin app-usage user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
 
@@ -177,7 +180,7 @@ ac admin app-usage user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-
 ```bash
 ac admin ai-usage summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
-  [--sort total_tokens] [--order desc] [--limit 50] [--offset 0] [--search "jane"]
+  [--sort total_tokens] [--order desc] [--page 1] [--page-size 50] [--search "jane"]
 ac admin ai-usage user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage by-model [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage by-workflow [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
@@ -305,7 +308,7 @@ ac admin queues health --json
 ac admin queues stats --json
 
 # 3. Check for failed jobs
-ac admin queues failed --limit 20 --json
+ac admin queues failed <queue-name> --limit 20 --json
 
 # 4. Retry all failed jobs in a specific queue
 AC_YES=1 ac admin queues retry-all <queue-name>
