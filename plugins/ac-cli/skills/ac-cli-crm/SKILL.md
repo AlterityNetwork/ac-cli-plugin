@@ -1,13 +1,15 @@
 ---
 name: ac-cli-crm
 description: >
-  Guide for using the AgencyCore CLI (`ac`) to manage CRM data — companies, people,
-  deals, activities, communications, lists, and imports. Use this skill whenever
-  someone asks to look up, create, update, or delete CRM records via the command line,
-  manage contacts or deals, search CRM data, check their pipeline, draft emails,
-  import data, or do anything CRM-related outside the web UI. Also trigger when
-  users mention "ac crm", "ac cli", or ask how to interact with AgencyCore data
-  from a terminal.
+  Guide for using the AgencyCore CLI (`ac`) to manage CRM data -- companies, people,
+  deals, activities, communications, lists, imports, and engagement dashboard. Use
+  this skill whenever someone asks to look up, create, update, or delete CRM records
+  via the command line, manage contacts or deals, search CRM data, check their
+  pipeline, draft emails, import data, check email engagement metrics, open rates,
+  click rates, or do anything CRM-related outside the web UI. Also trigger when
+  users mention "ac crm", "ac cli", "engagement dashboard", "email engagement",
+  "open rate", "click rate", or ask how to interact with AgencyCore data from a
+  terminal.
 allowed-tools:
   - Bash
 argument-hint: "[command or question]"
@@ -214,6 +216,14 @@ ac crm search "acme"                    # Search across companies, contacts, dea
 ac crm dashboard [--period 30]          # Pipeline metrics for the last N days
 ```
 
+### Engagement Dashboard
+
+```bash
+ac crm engagement-dashboard [--period 30]    # Email engagement metrics
+```
+
+Shows: emails sent (current/previous/change), open rate, click rate, reply rate, bounce rate, email health score, and top clicked links.
+
 ## Important Patterns
 
 ### Tags
@@ -284,6 +294,19 @@ ac crm import preview --file contacts.json
 
 # If the preview looks good, commit it
 ac crm import commit --preview-id <id-from-preview>
+```
+
+### Check email engagement
+
+```bash
+# View engagement metrics for the last 30 days
+ac crm engagement-dashboard
+
+# View engagement for a custom period (60 days)
+ac crm engagement-dashboard --period 60
+
+# Get raw data for analysis
+ac crm engagement-dashboard --json | jq '{open_rate, click_rate, reply_rate}'
 ```
 
 ## Agent-Friendly Features

@@ -12,6 +12,9 @@ authentication (`ac login`) unless noted otherwise.
 5. [Environment](#environment)
 6. [Health](#health)
 7. [Hooks](#hooks)
+8. [Chat (AI Threads)](#chat-ai-threads)
+9. [Resources (Knowledge Base)](#resources-knowledge-base)
+10. [Profiles](#profiles)
 
 ---
 
@@ -261,3 +264,116 @@ Checks if the API is reachable and returns health status.
 | `--json` | flag | Raw JSON output |
 
 Lists available hooks for the specified capability.
+
+---
+
+## Chat (AI Threads)
+
+### `ac chat threads list`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Lists all chat threads with id, title, archived status, and creation date.
+
+### `ac chat threads create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--title` | str | yes | Thread title |
+| `--json` | flag | no | Raw JSON output |
+
+### `ac chat threads update <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--title` | str | New thread title |
+| `--archived/--no-archived` | flag | Archive or unarchive the thread |
+| `--json` | flag | Raw JSON output |
+
+At least one of `--title` or `--archived/--no-archived` is required.
+
+### `ac chat threads delete <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
+
+### `ac chat threads messages <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Lists messages in a thread with id, role, content (truncated), and creation date.
+
+### `ac chat threads generate-title <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Generates an AI-suggested title for the thread based on its conversation content.
+
+---
+
+## Resources (Knowledge Base)
+
+### `ac resources list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+### `ac resources upload <file-path>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Source name for the resource |
+| `--description` | str | no | Resource description |
+| `--tags` | str | no | Comma-separated tags |
+| `--json` | flag | no | Raw JSON output |
+
+Uploads a knowledge base resource file. Allowed formats: .pdf, .txt, .md, .docx. Max size: 10 MB.
+
+### `ac resources delete <resource-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
+
+### `ac resources status <resource-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns processing status including chunk count and any error messages.
+
+---
+
+## Profiles
+
+### `ac profiles me`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns the current user's profile details (name, email, job title, bio, superadmin status, organization).
+
+### `ac profiles update`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--first-name` | str | First name |
+| `--last-name` | str | Last name |
+| `--bio` | str | Bio |
+| `--job-title` | str | Job title |
+| `--avatar-url` | str | Avatar URL |
+| `--email` | str | Email address |
+| `--json` | flag | Raw JSON output |
+
+At least one field is required.
+
+### `ac profiles members`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+Lists all members of the current organization.

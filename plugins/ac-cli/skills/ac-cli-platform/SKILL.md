@@ -3,12 +3,16 @@ name: ac-cli-platform
 description: >
   Guide for using the AgencyCore CLI (`ac`) platform utilities -- file/image
   management, app installation, writing styles, Nylas email integration,
-  environment switching, health checks, and platform hooks. Use this skill when
-  someone asks about uploading images, installing apps, managing writing styles,
-  connecting email accounts, switching environments, checking API health, or
-  listing hooks. Also trigger when users mention "ac files", "ac apps",
-  "ac styles", "ac nylas", "ac env", "ac health", "image upload", "app install",
-  "writing style", "email integration", or "environment switching".
+  environment switching, health checks, platform hooks, AI chat threads,
+  knowledge base resources, and user profiles. Use this skill when someone asks
+  about uploading images, installing apps, managing writing styles, connecting
+  email accounts, switching environments, checking API health, listing hooks,
+  chat threads, AI conversations, resources, knowledge base, uploading documents,
+  user profile, or org members. Also trigger when users mention "ac files",
+  "ac apps", "ac styles", "ac nylas", "ac env", "ac health", "image upload",
+  "app install", "writing style", "email integration", "environment switching",
+  "ac chat", "ac resources", "ac profiles", "my profile", "upload document",
+  "knowledge base".
 allowed-tools:
   - Bash
 argument-hint: "[command or question]"
@@ -135,6 +139,37 @@ No authentication required. Checks if the API is reachable.
 ac hooks list <capability>     # List available hooks for a capability
 ```
 
+### Chat (AI Threads)
+
+```bash
+ac chat threads list
+ac chat threads create --title "Project Discussion"
+ac chat threads update <thread-id> [--title "New Title"] [--archived/--no-archived]
+ac chat threads delete <thread-id> [--yes]
+ac chat threads messages <thread-id>
+ac chat threads generate-title <thread-id>
+```
+
+### Resources (Knowledge Base)
+
+```bash
+ac resources list [--limit 50] [--offset 0]
+ac resources upload <file-path> --name "Source Name" [--description "..."] [--tags "tag1,tag2"]
+ac resources delete <resource-id> [--yes]
+ac resources status <resource-id>
+```
+
+Supported formats: .pdf, .txt, .md, .docx (max 10 MB)
+
+### Profiles
+
+```bash
+ac profiles me                                    # View your profile
+ac profiles update [--first-name "Jane"] [--last-name "Smith"] [--bio "..."] \
+  [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"]
+ac profiles members [--limit 50] [--offset 0]     # List org members
+```
+
 ---
 
 ## Common Workflows
@@ -206,6 +241,36 @@ ac env show
 ac login --email "user@example.com" --password "password"
 ```
 
+### Chat with AI
+
+```bash
+# 1. Create a new thread
+ac chat threads create --title "Q2 Planning" --json
+
+# 2. View messages in a thread
+ac chat threads messages <thread-id>
+
+# 3. Generate a title from conversation content
+ac chat threads generate-title <thread-id>
+
+# 4. Archive when done
+ac chat threads update <thread-id> --archived
+```
+
+### Upload a knowledge base resource
+
+```bash
+# 1. Upload a document
+ac resources upload ./product-guide.pdf --name "Product Guide" \
+  --description "Main product documentation" --tags "docs,product" --json
+
+# 2. Check processing status
+ac resources status <resource-id>
+
+# 3. List all resources
+ac resources list --json
+```
+
 ---
 
 ## Important Patterns
@@ -222,6 +287,11 @@ organization.
 
 ### Environment Names
 Valid environment names: `local`, `staging`, `production`
+
+### Resource Upload Constraints
+- Max file size: 10 MB
+- Allowed formats: .pdf, .txt, .md, .docx
+- `--name` is required and sets the source name
 
 ### JSON Output
 All commands support `--json` for structured output:

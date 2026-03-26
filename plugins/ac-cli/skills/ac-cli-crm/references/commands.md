@@ -13,6 +13,7 @@ Complete flag reference for every CRM command. All commands require authenticati
 6. [Lists](#lists)
 7. [Import](#import)
 8. [Search & Dashboard](#search--dashboard)
+9. [Engagement Dashboard](#engagement-dashboard)
 
 ---
 
@@ -398,3 +399,17 @@ from all three domains.
 
 Shows pipeline metrics: total deals, total value, leads created, messages
 sent, and activities completed for the given period.
+
+---
+
+## Engagement Dashboard
+
+### `ac crm engagement-dashboard`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--period` | int | 30 | Period in days (1-365) |
+| `--json` | flag | off | Output raw JSON |
+
+Shows email engagement metrics including emails sent (current and previous period
+with change), open rate, click rate, reply rate, bounce rate, email health score
+and status, and top clicked links.

@@ -12,6 +12,8 @@ authentication.
 5. [Onboarding](#onboarding)
 6. [App Usage](#app-usage)
 7. [AI Usage](#ai-usage)
+8. [Platform Activity](#platform-activity)
+9. [Legal Documents](#legal-documents)
 
 ---
 
@@ -506,3 +508,84 @@ Returns current onboarding settings.
 | `--user-id` | str | None | Filter by user ID |
 | `--workflow-run-id` | str | None | Filter by workflow run ID |
 | `--json` | flag | off | Raw JSON output |
+
+---
+
+## Platform Activity
+
+### `ac admin platform-activity summary`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | None | Start date (ISO format) |
+| `--end-date` | str | None | End date (ISO format) |
+| `--org-id` | str | None | Filter by organization |
+| `--json` | flag | off | Raw JSON output |
+
+### `ac admin platform-activity users`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | None | Start date (ISO format) |
+| `--end-date` | str | None | End date (ISO format) |
+| `--sort` | str | None | Sort field (e.g. total_events) |
+| `--order` | str | None | Sort order (asc/desc) |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 50 | Results per page |
+| `--query` | str | None | Search by user name or email |
+| `--org-id` | str | None | Filter by organization |
+| `--json` | flag | off | Raw JSON output |
+
+### `ac admin platform-activity user <user-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | None | Start date (ISO format) |
+| `--end-date` | str | None | End date (ISO format) |
+| `--org-id` | str | None | Filter by organization |
+| `--json` | flag | off | Raw JSON output |
+
+---
+
+## Legal Documents
+
+### `ac admin legal-docs list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--document-type` | str | None | Filter by document type (e.g. terms_of_service, privacy_policy) |
+| `--json` | flag | off | Raw JSON output |
+
+### `ac admin legal-docs get <document-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns all fields including content_html.
+
+### `ac admin legal-docs create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--document-type` | str | yes | Document type (e.g. terms_of_service, privacy_policy) |
+| `--version` | str | yes | Document version (e.g. "1.0") |
+| `--title` | str | yes | Document title |
+| `--content-html` | str | no | HTML content of the document |
+| `--json` | flag | no | Raw JSON output |
+
+### `ac admin legal-docs update <document-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--title` | str | Update document title |
+| `--content-html` | str | Update HTML content |
+| `--json` | flag | Raw JSON output |
+
+At least one of `--title` or `--content-html` is required.
+
+### `ac admin legal-docs delete <document-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
+
+### `ac admin legal-docs set-current <document-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Sets this document as the current version for its document type.

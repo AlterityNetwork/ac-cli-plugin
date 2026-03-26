@@ -2,11 +2,14 @@
 name: ac-cli-admin
 description: >
   Guide for using the AgencyCore CLI (`ac`) admin commands -- user management,
-  organization management, app usage analytics, AI usage monitoring, queue
-  management, demo accounts, and onboarding. Use this skill when someone asks
-  about admin operations, user analytics, AI costs, token usage, app usage
-  metrics, queue health, or super-admin tasks. Also trigger when users mention
-  "ac admin", "admin dashboard", "usage stats", or "AI costs".
+  organization management, app usage analytics, AI usage monitoring, platform
+  activity monitoring, legal document management, queue management, demo
+  accounts, and onboarding. Use this skill when someone asks about admin
+  operations, user analytics, AI costs, token usage, app usage metrics, queue
+  health, super-admin tasks, platform activity, user activity tracking, legal
+  documents, terms of service, or privacy policy management. Also trigger when
+  users mention "ac admin", "admin dashboard", "usage stats", "AI costs",
+  "platform activity", "legal documents", "user activity".
 allowed-tools:
   - Bash
 argument-hint: "[command or question]"
@@ -188,6 +191,27 @@ ac admin ai-usage details [--start-date 2026-01-01] [--end-date 2026-03-23] [--o
   [--limit 50] [--offset 0] [--model-id <id>] [--user-id <id>] [--workflow-run-id <id>]
 ```
 
+### Platform Activity
+
+```bash
+ac admin platform-activity summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
+ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
+  [--sort total_events] [--order desc] [--page 1] [--page-size 50] [--query "jane"]
+ac admin platform-activity user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
+```
+
+### Legal Documents
+
+```bash
+ac admin legal-docs list [--document-type terms_of_service]
+ac admin legal-docs get <document-id>
+ac admin legal-docs create --document-type terms_of_service --version "1.0" --title "Terms of Service" \
+  [--content-html "<p>...</p>"]
+ac admin legal-docs update <document-id> [--title "Updated Title"] [--content-html "<p>...</p>"]
+ac admin legal-docs delete <document-id> [--yes]
+ac admin legal-docs set-current <document-id>
+```
+
 ---
 
 ## App Usage Commands
@@ -280,6 +304,71 @@ ac admin ai-usage details --model-id <id> --workflow-run-id <id> --json
 
 ---
 
+## Platform Activity Commands
+
+Monitor how users interact with the platform.
+
+### Summary
+
+Get an overview of platform activity:
+
+```bash
+ac admin platform-activity summary --json
+```
+
+Filter by date range:
+
+```bash
+ac admin platform-activity summary --start-date 2026-03-01 --end-date 2026-03-23 --json
+```
+
+### Most Active Users
+
+```bash
+ac admin platform-activity users --sort total_events --order desc --page-size 10 --json
+```
+
+### Individual User Activity
+
+```bash
+ac admin platform-activity user <user-id> --start-date 2026-03-01 --json
+```
+
+---
+
+## Legal Document Commands
+
+Manage terms of service, privacy policies, and other legal documents.
+
+### List Documents
+
+```bash
+ac admin legal-docs list --json
+ac admin legal-docs list --document-type terms_of_service --json
+```
+
+### Create a New Version
+
+```bash
+ac admin legal-docs create --document-type terms_of_service \
+  --version "2.0" --title "Terms of Service v2" \
+  --content-html "<p>Updated terms...</p>" --json
+```
+
+### Set as Current
+
+```bash
+ac admin legal-docs set-current <document-id>
+```
+
+### Delete a Document
+
+```bash
+AC_YES=1 ac admin legal-docs delete <document-id>
+```
+
+---
+
 ## Common Workflows
 
 ### Check who's using the most AI tokens this month
@@ -365,6 +454,33 @@ ac admin app-usage user <user-id> --start-date 2026-03-01 --json
 
 # 3. Check their AI usage
 ac admin ai-usage user <user-id> --start-date 2026-03-01 --json
+```
+
+### Monitor platform activity
+
+```bash
+# 1. Get activity summary for this month
+ac admin platform-activity summary --start-date 2026-03-01 --json
+
+# 2. Get most active users
+ac admin platform-activity users --sort total_events --order desc --page-size 10 --json
+
+# 3. Drill into a specific user
+ac admin platform-activity user <user-id> --start-date 2026-03-01 --json
+```
+
+### Manage legal documents
+
+```bash
+# 1. List current documents
+ac admin legal-docs list --json
+
+# 2. Create a new version
+ac admin legal-docs create --document-type terms_of_service \
+  --version "2.0" --title "Terms of Service v2" --json
+
+# 3. Set it as the current version
+ac admin legal-docs set-current <document-id>
 ```
 
 ---
