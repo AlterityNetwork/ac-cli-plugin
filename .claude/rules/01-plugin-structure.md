@@ -6,8 +6,9 @@
 |------|---------|-------------|
 | `.claude-plugin/marketplace.json` | Marketplace namespace registry — lists all plugins, versions, tags | Adding a new plugin, changing metadata/tags |
 | `plugins/ac-cli/.claude-plugin/plugin.json` | Plugin manifest — name, version, author, license | Changing plugin metadata (version auto-bumped) |
-| `plugins/ac-cli/skills/ac-cli-crm/SKILL.md` | Skill definition — Claude's runtime guide | CLI commands change, new CRM features, UX improvements |
-| `plugins/ac-cli/skills/ac-cli-crm/references/commands.md` | Full command reference with flags | CLI adds/removes/changes flags or commands |
+| `plugins/ac-cli/skills/ac-cli/SKILL.md` | Unified skill definition — Claude's runtime guide | CLI commands change, new features, UX improvements |
+| `plugins/ac-cli/skills/ac-cli/references/commands.md` | Full command reference with flags | CLI adds/removes/changes flags or commands |
+| `plugins/ac-cli/skills/ac-cli/evals/evals.json` | Skill evaluation test cases | Adding new eval scenarios |
 | `scripts/bump-version.sh` | Pre-commit hook for auto version bump | Changing version bump logic |
 
 ## Marketplace Registration
@@ -30,7 +31,7 @@ Consumers reference plugins as `<plugin-name>@<namespace>`, e.g., `ac-cli@agency
 
 - Plugin directory names: kebab-case (`ac-cli`)
 - Plugin `name` field in `plugin.json`: kebab-case (`agencycore-cli`) — required for Cowork validation
-- Skill directory names: kebab-case (`ac-cli-crm`)
+- Skill directory names: kebab-case (`ac-cli`)
 - Namespace: kebab-case (`agencycore-plugins`)
 
 ## Version Management

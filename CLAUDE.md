@@ -4,7 +4,7 @@ Claude Code marketplace plugin providing AgencyCore management skills (CRM, admi
 
 ## Critical Rules (Always Apply)
 
-1. **No application code**: This repo is JSON config + Markdown docs only — 5 skills (CRM, admin, envoy, platform, workflows). No TypeScript, no build step.
+1. **No application code**: This repo is JSON config + Markdown docs only — one unified skill covering CRM, admin, envoy, platform, and workflows. No TypeScript, no build step.
 2. **Version sync**: `plugin.json` and `marketplace.json` must always have the same version. The pre-commit hook handles this automatically.
 3. **Kebab-case names**: Plugin names must use kebab-case (e.g., `agencycore-cli`) to pass Cowork validation.
 4. **SKILL.md is the product**: The skill file is what Claude reads at runtime — keep it accurate, complete, and tested against the latest CLI.
@@ -19,11 +19,10 @@ plugins/ac-cli/
   .claude-plugin/
     plugin.json          → Plugin manifest (name, version, metadata)
   skills/
-    ac-cli-crm/          → CRM operations skill
-    ac-cli-admin/        → Admin operations skill
-    ac-cli-envoy/        → Envoy outreach skill
-    ac-cli-platform/     → Platform operations skill
-    ac-cli-workflows/    → Workflow management skill
+    ac-cli/              → Unified skill (CRM, admin, envoy, platform, workflows)
+      SKILL.md           → Quick reference guide
+      references/        → Full flag-level command reference
+      evals/             → Skill evaluation test cases
 scripts/
   bump-version.sh        → Auto-bumps patch version on commit (pre-commit hook)
 ```
