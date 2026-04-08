@@ -51,6 +51,14 @@ For minor/major bumps, edit both files manually before committing (the hook will
 claude --plugin-dir ./ac-cli-plugin
 ```
 
+## Testing Changes
+
+```bash
+claude --plugin-dir ./ac-cli-plugin        # Load plugin locally
+```
+
+Then ask Claude a CRM/admin question (e.g., "list my deals") to trigger the skill. Verify it installs the CLI, authenticates, and runs the correct commands.
+
 ## Detailed Rules
 
 See `.claude/rules/` for focused guides:
