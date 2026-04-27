@@ -1,7 +1,7 @@
 {
   "name": "agencycore-cli",
   "description": "AgencyCore CLI skills for CRM, outreach automation (Envoy), workflow management, admin operations, and platform utilities -- companies, people, deals, sequences, drafts, inbox, schedules, user management, usage analytics, and more",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": {
     "name": "AgencyCore",
     "email": "support@agencycore.dev"

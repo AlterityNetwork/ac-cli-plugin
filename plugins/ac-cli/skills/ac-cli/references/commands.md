@@ -1628,6 +1628,77 @@ Returns current onboarding settings.
 
 ---
 
+### Searches (Sonar + Headhunter)
+
+Cross-org search analytics for super admins. **PII is stripped from every response**: people rows omit `full_name`, `email`, `linkedin_url`, `avatar_url`, `summary`, `experience_history`, and city-level location; only role, country, skills, and quality scores remain. `trigger_data` on runs is recursively sanitized to drop any keys matching name/email/phone/linkedin patterns. The raw `output_data` blob is never returned.
+
+#### `ac admin searches summary`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | 30d ago | Start date (ISO format) |
+| `--end-date` | str | today | End date (ISO format) |
+| `--source` | str | both | Filter by `sonar`, `headhunter`, or `both` |
+| `--org-id` | list[str] | None | Filter by org ID (repeatable for multi-value) |
+| `--user-id` | list[str] | None | Filter by user ID (repeatable for multi-value) |
+| `--json` | flag | off | Raw JSON output |
+
+Returns total runs, completed/failed counts, success rate, total companies/people discovered, average lead/relevance scores, daily breakdown, and per-source totals with previous-period change percentages.
+
+#### `ac admin searches runs`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | 30d ago | Start date (ISO format) |
+| `--end-date` | str | today | End date (ISO format) |
+| `--source` | str | both | `sonar`, `headhunter`, or `both` |
+| `--org-id` | list[str] | None | Org filter (repeatable) |
+| `--user-id` | list[str] | None | User filter (repeatable) |
+| `--status` | str | None | `pending`, `running`, `completed`, `failed` |
+| `-q`, `--query` | str | None | Substring match against sanitized trigger_data |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 25 | Results per page (max 100) |
+| `--all` | flag | off | Walk every page (page-size 100). Implies `--json`. Capped at 50,000 items. |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac admin searches run <run-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output (includes `snapshot_definition`) |
+
+Returns one workflow run with org/user/source context, sanitized trigger_data, status, duration, and discovered company/people counts. Raises `404` (exit 3) if the run does not exist or is not a Sonar/Headhunter run.
+
+#### `ac admin searches companies`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | 30d ago | Start date (ISO format) |
+| `--end-date` | str | today | End date (ISO format) |
+| `--source` | str | both | `sonar`, `headhunter`, or `both` |
+| `--org-id` | list[str] | None | Org filter (repeatable) |
+| `--user-id` | list[str] | None | User filter (repeatable) |
+| `-q`, `--query` | str | None | ILIKE match on `name` or `website` |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 25 | Results per page (max 100) |
+| `--all` | flag | off | Walk every page. Capped at 50,000 items. |
+| `--json` | flag | off | Raw JSON output |
+
+Returns firmographics, lead score, sales signals, country, and discovery timing. Omits `linkedin_url` and `crm_company_id` (cross-tenant linkage).
+
+#### `ac admin searches people`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | 30d ago | Start date (ISO format) |
+| `--end-date` | str | today | End date (ISO format) |
+| `--source` | str | headhunter | Sonar produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
+| `--org-id` | list[str] | None | Org filter (repeatable) |
+| `--user-id` | list[str] | None | User filter (repeatable) |
+| `--page` | int | 1 | Page number |
+| `--page-size` | int | 25 | Results per page (max 100) |
+| `--all` | flag | off | Walk every page. Capped at 50,000 items. |
+| `--json` | flag | off | Raw JSON output |
+
+De-identified rows: `current_title`, `current_company_text`, `country`, `skills`, `languages`, `relevance_score`, `email_score` (the integer 0–100, not the email address), `email_source` (provider name only). Use this endpoint for cohort and distribution analysis, not per-record review.
+
+---
+
 ### Legal Documents
 
 #### `ac admin legal-docs list`

@@ -5,7 +5,7 @@ description: >
   activities, communications, lists, imports), outreach/Envoy (sequences, steps,
   recipients, inbox, outbox, battlecards, playbooks), workflows (runs, schedules,
   presets, discovered companies/people, CSV parsing), admin (users, orgs, queues,
-  onboarding, analytics, demo), platform (files, apps, writing styles, Nylas email,
+  onboarding, analytics, demo, Sonar/Headhunter cross-org searches), platform (files, apps, writing styles, Nylas email,
   messaging, chat, resources, profiles, environment, health). Use when someone asks
   about any AgencyCore CLI operations, mentions "ac" commands, CRM management,
   outreach sequences, workflow automation, admin tasks, file uploads, email
@@ -513,6 +513,36 @@ ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-2
   [--sort total_events] [--order desc] [--page 1] [--page-size 50] [--query "jane"]
 ac admin platform-activity user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
+
+### Searches (Sonar + Headhunter)
+
+Cross-org analytics for Sonar (Company Search) and Headhunter activity. Responses are PII-scrubbed: people rows omit names, emails, LinkedIn URLs, avatars, and free-text summaries; only role, country, and quality scores remain. `trigger_data` on runs is sanitized in the same way.
+
+```bash
+ac admin searches summary [--source sonar|headhunter|both] \
+  [--start-date 2026-04-01] [--end-date 2026-04-27] \
+  [--org-id <id>...] [--user-id <id>...]
+
+ac admin searches runs [--source sonar|headhunter|both] \
+  [--org-id <id>...] [--user-id <id>...] [--status completed|failed|running|pending] \
+  [-q "VPs of Eng"] [--page 1] [--page-size 25] [--all]
+
+ac admin searches run <run-id>
+
+ac admin searches companies [--source sonar|headhunter|both] \
+  [--org-id <id>...] [--user-id <id>...] [-q "acme"] \
+  [--page 1] [--page-size 25] [--all]
+
+ac admin searches people [--source headhunter] \
+  [--org-id <id>...] [--user-id <id>...] [--page 1] [--page-size 25] [--all]
+```
+
+Notes:
+- `--org-id` and `--user-id` are repeatable for multi-value filters.
+- `--all` walks every page (page-size 100) and emits a single JSON array. Capped at 50,000 items — narrow filters if you hit the cap.
+- Use `--json | jq` to pipe into ad-hoc analysis. Examples:
+  - `ac admin searches summary --source headhunter --json | jq '.success_rate'`
+  - `ac admin searches runs --status failed --all | jq 'group_by(.organization_id) | map({org: .[0].organization_id, count: length})'`
 
 ### Legal Documents
 
