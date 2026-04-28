@@ -17,6 +17,7 @@ authentication (`ac login`) unless noted otherwise.
    - [Engagement Dashboard](#engagement-dashboard)
 2. [Envoy (Outreach)](#envoy-outreach)
    - [Sequences](#sequences)
+   - [Campaigns](#campaigns)
    - [Steps](#steps)
    - [Recipients](#recipients)
    - [Outbox](#outbox)
@@ -43,6 +44,9 @@ authentication (`ac login`) unless noted otherwise.
    - [Legal Documents](#legal-documents)
    - [Analytics Overview](#analytics-overview)
    - [Cache Stats](#cache-stats)
+   - [Chat Escalations](#chat-escalations)
+   - [Subscriptions](#subscriptions)
+   - [Subscription Plans](#subscription-plans)
 5. [Platform](#platform)
    - [Files (Images)](#files-images)
    - [Apps](#apps)
@@ -273,11 +277,6 @@ All flags from `create` are optional. Only provided fields are updated.
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
-#### `ac crm comms get <communication-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Output raw JSON |
-
 #### `ac crm comms thread <thread-id>`
 Shows all messages in a conversation thread.
 
@@ -360,6 +359,32 @@ Same flags as `archive`.
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation |
 | `--json` | flag | Output raw JSON |
+
+#### `ac crm comms pending-approvals`
+List communications in `awaiting_approval` status.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--sequence-id` | str | — | Filter by sequence |
+| `--step-id` | str | — | Filter by step |
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Output raw JSON |
+
+#### `ac crm comms approve <communication-id>`
+Approve a pending communication so it sends.
+
+#### `ac crm comms reject <communication-id>`
+Reject a pending communication.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--action` | str | yes | One of: `regenerate`, `remove_recipient`, `skip_send`, `manual_edit` |
+| `--reason` | str | no | Optional free-text reason |
+| `--json` | flag | no | Output raw JSON |
+
+#### `ac crm comms regenerate <communication-id>`
+Regenerate a pending communication's draft.
 
 ---
 
@@ -530,6 +555,81 @@ Pauses a running sequence. No new steps will execute until resumed.
 |------|------|----------|-------------|
 | `--workflow-id` | str | yes | Workflow to use for resumed execution |
 | `--json` | flag | no | Raw JSON output |
+
+#### `ac envoy sequences duplicate <sequence-id>`
+Duplicate a sequence (copies steps + recipients).
+
+#### `ac envoy sequences archive <sequence-id>` / `restore <sequence-id>`
+Soft-archive or restore. Archived sequences won't run.
+
+#### `ac envoy sequences impact-preview <sequence-id>`
+Preview affected recipients/drafts before deleting steps.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--step-id` | str (repeatable) | yes | Step IDs about to delete |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac envoy sequences bulk-remove-recipients <sequence-id>`
+Soft-delete a batch of recipients.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--recipient-id` | str (repeatable) | yes | Recipient IDs to remove |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac envoy sequences classify-step-subtype <instruction>`
+Classify a step subtype from instruction text. Returns `{subtype}`.
+
+#### `ac envoy sequences outputs <sequence-id>`
+List sequence outputs (generated drafts/results).
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac envoy sequences generate-drafts <sequence-id> <step-id>`
+Trigger draft generation for a step.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--workflow-id` | str | yes | Workflow under which drafts run |
+| `--json` | flag | no | Raw JSON output |
+
+---
+
+### Campaigns
+
+#### `ac envoy campaigns list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--archived` | flag | off | Show archived campaigns instead of active |
+| `--query` / `-q` | str | — | Search by name |
+| `--cursor` | str | — | Pagination cursor |
+| `--limit` | int | — | Max results |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac envoy campaigns get <campaign-id>` / `delete <campaign-id> [--yes]`
+Standard get/delete.
+
+#### `ac envoy campaigns create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Campaign name |
+| `--description` | str | no | Description |
+| `--goal` | str | no | Campaign goal |
+| `--source-app` | str | no | Source app slug |
+| `--started-at` | ISO date | no | Start date |
+| `--ended-at` | ISO date | no | End date |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac envoy campaigns update <campaign-id>`
+Same flags as `create` (all optional).
+
+#### `ac envoy campaigns archive <campaign-id>` / `unarchive <campaign-id>`
+Toggle archive state.
 
 ---
 
@@ -1772,6 +1872,83 @@ Shows application cache hit/miss statistics.
 
 ---
 
+### Chat Escalations
+
+#### `ac admin chat-escalations list`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--status` | str | Filter: `open`, `triaged`, `resolved` |
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin chat-escalations update <escalation-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--status` | str | yes | `open`, `triaged`, or `resolved` |
+| `--note` | str | no | Optional triage note (max 2000 chars) |
+| `--json` | flag | no | Raw JSON output |
+
+---
+
+### Subscriptions
+
+#### `ac admin subscriptions list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--org-id` | str | — | Filter by organization |
+| `--status` | str | — | Filter by status |
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac admin subscriptions get <subscription-id>` / `delete <subscription-id> [--yes]`
+Standard get/delete.
+
+#### `ac admin subscriptions create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--org-id` | str | yes | Organization ID |
+| `--plan-id` | str | yes | Plan ID |
+| `--billing-period` | str | yes | `monthly` or `annual` |
+| `--started-at` | ISO date | yes | Start date |
+| `--status` | str | no | Initial status |
+| `--ended-at` | ISO date | no | End date |
+| `--trial-ends-at` | ISO date | no | Trial end date |
+| `--stripe-customer-id` | str | no | Stripe customer ID |
+| `--stripe-subscription-id` | str | no | Stripe subscription ID |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin subscriptions update <subscription-id>`
+Same flags as `create` (all optional).
+
+---
+
+### Subscription Plans
+
+#### `ac admin subscription-plans list`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin subscription-plans get <plan-id>` / `delete <plan-id> [--yes]`
+Standard get/delete.
+
+#### `ac admin subscription-plans create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--slug` | str | yes | Plan slug |
+| `--name` | str | yes | Plan display name |
+| `--monthly-price-cents` | int | yes | Monthly price in cents |
+| `--annual-price-cents` | int | yes | Annual price in cents |
+| `--description` | str | no | Plan description |
+| `--features` | JSON object | no | Feature flags (e.g. `'{"seats":10}'`) |
+| `--active/--inactive` | flag | no | Active state |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin subscription-plans update <plan-id>`
+Same flags as `create` (all optional).
+
+---
+
 ## Platform
 
 ### Files (Images)
@@ -2045,6 +2222,32 @@ Lists messages in a thread with id, role, content (truncated), and creation date
 
 Generates an AI-suggested title for the thread based on its conversation content.
 
+#### `ac chat threads send <thread-id> <content>`
+Non-streaming send of a message to a chat thread.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--context` | str | no | Surrounding context for the model (max 20000 chars) |
+| `--document-id` | str (repeatable) | no | Restrict knowledge retrieval to these resource_hub IDs (max 10) |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac chat threads escalate <thread-id>`
+Escalate a thread to a human.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--note` | str | Optional escalation note (max 2000 chars) |
+| `--message-id` | str | Specific message to escalate |
+| `--json` | flag | Raw JSON output |
+
+#### `ac chat messages update-data <message-id>`
+Update structured data attached to a chat message.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--data` | JSON object | yes | JSON object to merge into the message's data field |
+| `--json` | flag | no | Raw JSON output |
+
 ---
 
 ### Resources (Knowledge Base)
@@ -2111,6 +2314,19 @@ At least one field is required.
 | `--json` | flag | off | Raw JSON output |
 
 Lists all members of the current organization.
+
+#### `ac profiles set-organization <organization-id>`
+Switch the current user's selected organization.
+
+#### `ac profiles set-password`
+Mark the current user's password as set (post Supabase magic-link signup). No flags.
+
+#### `ac profiles subscription`
+Show the current organization's subscription. Calls `GET /api/v1/subscriptions/me`.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
 
 ---
 

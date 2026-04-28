@@ -179,7 +179,6 @@ ac crm activities delete <activity-id> [--yes]
 
 ```bash
 ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email]
-ac crm comms get <communication-id>
 ac crm comms thread <thread-id>
 ac crm comms unread
 ac crm comms mark-read <thread-id>
@@ -194,6 +193,12 @@ ac crm comms unread-thread-ids
 ac crm comms archive --thread-id <id>
 ac crm comms unarchive --thread-id <id>
 ac crm comms delete <communication-id> [--yes]
+
+# Approval workflow (awaiting_approval status)
+ac crm comms pending-approvals [--sequence-id <id>] [--step-id <id>]
+ac crm comms approve <communication-id>
+ac crm comms reject <communication-id> --action skip_send [--reason "..."]
+ac crm comms regenerate <communication-id>
 ```
 
 ### Lists
@@ -246,6 +251,27 @@ ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
 ac envoy sequences resume <sequence-id> --workflow-id <id>
+ac envoy sequences duplicate <sequence-id>
+ac envoy sequences archive <sequence-id>
+ac envoy sequences restore <sequence-id>
+ac envoy sequences impact-preview <sequence-id> --step-id <id> [--step-id <id> ...]
+ac envoy sequences bulk-remove-recipients <sequence-id> --recipient-id <id> [--recipient-id <id> ...]
+ac envoy sequences classify-step-subtype "Send a manual follow-up email"
+ac envoy sequences outputs <sequence-id> [--limit 50] [--offset 0]
+ac envoy sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
+```
+
+### Campaigns
+
+```bash
+ac envoy campaigns list [--archived] [--query "..."] [--limit 50]
+ac envoy campaigns get <campaign-id>
+ac envoy campaigns create --name "Q2 Outreach" [--description "..."] \
+  [--goal "10 demos"] [--source-app envoy] [--started-at 2026-04-01] [--ended-at 2026-06-30]
+ac envoy campaigns update <campaign-id> --name "Q2 Renamed"
+ac envoy campaigns delete <campaign-id> [--yes]
+ac envoy campaigns archive <campaign-id>
+ac envoy campaigns unarchive <campaign-id>
 ```
 
 ### Steps
@@ -568,6 +594,37 @@ ac admin analytics-overview [--start-date 2026-01-01] [--end-date 2026-03-23] [-
 ac admin cache-stats
 ```
 
+### Chat Escalations
+
+```bash
+ac admin chat-escalations list [--status open|triaged|resolved]
+ac admin chat-escalations update <escalation-id> --status resolved [--note "..."]
+```
+
+### Subscriptions
+
+```bash
+ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--offset 0]
+ac admin subscriptions get <subscription-id>
+ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period monthly \
+  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] \
+  [--trial-ends-at 2026-04-15] [--stripe-customer-id cus_x] [--stripe-subscription-id sub_x]
+ac admin subscriptions update <subscription-id> [--plan-id <id>] [--status cancelled]
+ac admin subscriptions delete <subscription-id> [--yes]
+```
+
+### Subscription Plans
+
+```bash
+ac admin subscription-plans list
+ac admin subscription-plans get <plan-id>
+ac admin subscription-plans create --slug pro --name "Pro" \
+  --monthly-price-cents 4900 --annual-price-cents 49000 \
+  [--description "..."] [--features '{"seats":10}'] [--active/--inactive]
+ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"seats":25}']
+ac admin subscription-plans delete <plan-id> [--yes]
+```
+
 ---
 
 ## Quick Reference -- Platform
@@ -644,6 +701,10 @@ ac chat threads update <thread-id> [--title "New Title"] [--archived/--no-archiv
 ac chat threads delete <thread-id> [--yes]
 ac chat threads messages <thread-id>
 ac chat threads generate-title <thread-id>
+ac chat threads send <thread-id> "What's on my plate today?" [--context "..."] \
+  [--document-id <id>...]                       # Non-streaming send
+ac chat threads escalate <thread-id> [--note "..."] [--message-id <id>]
+ac chat messages update-data <message-id> --data '{"key":"value"}'
 ```
 
 ### Resources (Knowledge Base)
@@ -664,6 +725,9 @@ ac profiles me                                    # View your profile
 ac profiles update [--first-name "Jane"] [--last-name "Smith"] [--bio "..."] \
   [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"]
 ac profiles members [--limit 50] [--offset 0]     # List org members
+ac profiles set-organization <org-id>             # Switch active org
+ac profiles set-password                          # Mark password as set (post-magic-link)
+ac profiles subscription                          # View current org subscription
 ```
 
 ---
