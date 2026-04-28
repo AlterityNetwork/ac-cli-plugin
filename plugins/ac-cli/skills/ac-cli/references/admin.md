@@ -206,12 +206,21 @@ ac admin subscriptions delete <subscription-id> [--yes]
 
 > Subcommand is **`subscription-plans`** (full word), NOT `plans`. `ac admin plans` does not exist.
 
+> **Pricing in cents.** When user says "$9/mo" → `--monthly-price-cents 900`. "$99/yr" → `--annual-price-cents 9900`. "$49.99/mo" → `--monthly-price-cents 4999`. Always multiply dollars × 100. The `--slug` is lowercase kebab of the user's plan name (e.g. "Starter" → `--slug starter`).
+
 ```bash
 ac admin subscription-plans list
 ac admin subscription-plans get <plan-id>
+
+# Required flags: --slug, --name, --monthly-price-cents, --annual-price-cents
 ac admin subscription-plans create --slug pro --name "Pro" \
   --monthly-price-cents 4900 --annual-price-cents 49000 \
   [--description "..."] [--features '{"seats":10}'] [--active/--inactive]
+
+# Example: "Starter $9/mo $99/yr"
+ac admin subscription-plans create --slug starter --name "Starter" \
+  --monthly-price-cents 900 --annual-price-cents 9900
+
 ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"seats":25}']
 ac admin subscription-plans delete <plan-id> [--yes]
 ```

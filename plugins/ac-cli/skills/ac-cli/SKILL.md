@@ -152,6 +152,7 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac workflows schedules create` | `--cron` AND `--timezone` (omitting timezone makes the schedule fire in server-default tz, which is rarely what the user wants) |
 | `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output) |
 | `ac admin subscriptions create` | `--org-id` AND `--plan-id` AND `--billing-period` AND `--started-at` |
+| `ac admin subscription-plans create` | `--slug` AND `--name` AND `--monthly-price-cents` AND `--annual-price-cents` (dollars × 100; "$9/mo" → 900) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
 | `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
 | `ac envoy outbox reject` | `--action` (`regenerate_draft` or `remove_recipient`) |
