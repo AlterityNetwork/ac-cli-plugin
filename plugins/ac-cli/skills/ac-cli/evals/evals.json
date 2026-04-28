@@ -1,467 +1,761 @@
 {
   "skill_name": "ac-cli",
+  "assertion_types": "See evals/README.md for the assertion vocabulary. `command_matches` and `command_sequence` use regex over the bash commands Claude executed; `reads_file` checks the Read tool was invoked on a path; `auth_check_first` is a command-order check.",
   "evals": [
     {
       "id": 1,
       "prompt": "Look up the company Acme Corp in our CRM and create a deal for them worth $50k in the qualified stage.",
-      "expected_output": "Searches for 'Acme Corp' using `ac crm search`, gets the company ID from results, then creates a deal with `ac crm deals create` using --name, --stage qualified, --amount 50000, and --company-id.",
+      "expected_output": "Searches for 'Acme Corp', captures the company id, creates a deal with --stage qualified, --amount 50000, --company-id <id>.",
       "assertions": [
         {
-          "name": "searches_crm_first",
-          "text": "Runs `ac crm search` or `ac crm companies list` to find the company before creating the deal",
-          "type": "output_contains"
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before any CRM mutation"
         },
         {
-          "name": "creates_deal_with_correct_flags",
-          "text": "Uses `ac crm deals create` with --stage qualified, --amount 50000, and --company-id",
-          "type": "output_contains"
+          "name": "search_then_create",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac crm (search|companies list)` then `^ac crm deals create`"
         },
         {
-          "name": "checks_auth_first",
-          "text": "Runs `ac whoami` before executing CRM commands to verify authentication",
-          "type": "output_contains"
+          "name": "deal_flags_correct",
+          "type": "command_matches",
+          "text": "`ac crm deals create` includes `--stage qualified`, `--amount 50000`, and `--company-id`"
         }
       ]
     },
     {
       "id": 2,
       "prompt": "I have a JSON file at /tmp/contacts.json with a list of people to import. Bulk upsert them into our CRM.",
-      "expected_output": "Uses `ac crm people bulk-upsert --file /tmp/contacts.json` to import the people. May use --json flag for structured output.",
+      "expected_output": "Installs CLI if needed, then runs bulk-upsert against the file.",
       "assertions": [
         {
-          "name": "uses_bulk_upsert_command",
-          "text": "Runs `ac crm people bulk-upsert` with --file /tmp/contacts.json",
-          "type": "output_contains"
+          "name": "installs_cli_first",
+          "type": "command_sequence",
+          "text": "Sequence: `pip install --upgrade agencycore-cli` (or uv/pipx equivalent) before any `ac` command"
         },
         {
-          "name": "installs_cli_first",
-          "text": "Runs `pip install --upgrade agencycore-cli` before using the CLI",
-          "type": "output_contains"
+          "name": "bulk_upsert_used",
+          "type": "command_matches",
+          "text": "`ac crm people bulk-upsert --file /tmp/contacts.json`"
         }
       ]
     },
     {
       "id": 3,
       "prompt": "Draft a cold email to Jane Smith at Acme Corp. She's the VP of Sales. Make it a compose email, not a reply.",
-      "expected_output": "Uses `ac crm comms generate-draft` with --mode compose, --recipient-name 'Jane Smith', --company-name 'Acme Corp', and --recipient-title 'VP of Sales'.",
+      "expected_output": "Uses `ac crm comms generate-draft` with --mode compose and the named recipient/company/title flags.",
       "assertions": [
         {
-          "name": "uses_generate_draft",
-          "text": "Runs `ac crm comms generate-draft` with --mode compose",
-          "type": "output_contains"
+          "name": "compose_mode",
+          "type": "command_matches",
+          "text": "`ac crm comms generate-draft` with `--mode compose`"
         },
         {
-          "name": "includes_recipient_title",
-          "text": "Uses --recipient-title flag (not --context) for the VP of Sales detail",
-          "type": "output_contains"
-        },
-        {
-          "name": "includes_company_name",
-          "text": "Uses --company-name 'Acme Corp' or similar",
-          "type": "output_contains"
+          "name": "named_flags_not_freetext",
+          "type": "command_matches",
+          "text": "Includes `--recipient-name`, `--company-name`, and `--recipient-title` flags (NOT `--context`)"
         }
       ]
     },
     {
       "id": 4,
       "prompt": "Add 3 prospects (IDs: p1, p2, p3) to our Q2 Enterprise outreach sequence (ID: seq-123).",
-      "expected_output": "Uses `ac envoy recipients add seq-123 --prospect-ids p1,p2,p3` to add the prospects.",
+      "expected_output": "Uses `ac envoy recipients add seq-123 --prospect-ids p1,p2,p3`.",
       "assertions": [
         {
           "name": "uses_prospect_ids_flag",
-          "text": "Uses --prospect-ids (or -p) flag with comma-separated IDs, not --source with raw JSON",
-          "type": "output_contains"
-        },
-        {
-          "name": "targets_correct_sequence",
-          "text": "Uses sequence ID seq-123 in the command",
-          "type": "output_contains"
+          "type": "command_matches",
+          "text": "`ac envoy recipients add seq-123` with `--prospect-ids p1,p2,p3` (NOT raw `--source` JSON)"
         }
       ]
     },
     {
       "id": 5,
       "prompt": "Check my outreach inbox for open replies, read the messages in the first thread, and then reply saying we'd love to schedule a call.",
-      "expected_output": "Runs `ac envoy inbox list --status open` to see open threads, `ac envoy inbox messages <thread-id>` to read a thread, then `ac envoy inbox reply <thread-id> --body '...'` to reply.",
+      "expected_output": "list → messages → reply.",
       "assertions": [
         {
-          "name": "lists_open_inbox",
-          "text": "Runs `ac envoy inbox list` with --status open",
-          "type": "output_contains"
-        },
-        {
-          "name": "reads_thread_messages",
-          "text": "Runs `ac envoy inbox messages` with a thread ID",
-          "type": "output_contains"
-        },
-        {
-          "name": "replies_to_thread",
-          "text": "Runs `ac envoy inbox reply` with --body containing the reply",
-          "type": "output_contains"
+          "name": "inbox_three_step_sequence",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac envoy inbox list .*--status open`, `^ac envoy inbox messages`, `^ac envoy inbox reply .*--body`"
         }
       ]
     },
     {
       "id": 6,
       "prompt": "I uploaded a CSV for workflow wf-abc. Show me the companies it discovered and add the first batch to our CRM.",
-      "expected_output": "Runs `ac workflows run-companies list wf-abc` to see discovered companies, then uses `ac workflows run-companies add-to-crm wf-abc --company-ids <ids>` to add them.",
+      "expected_output": "List discovered companies (--json so ids can be parsed), then add-to-crm.",
       "assertions": [
         {
-          "name": "lists_discovered_companies",
-          "text": "Runs `ac workflows run-companies list wf-abc` to view discovered companies",
-          "type": "output_contains"
+          "name": "lists_with_json",
+          "type": "command_matches",
+          "text": "`ac workflows run-companies list wf-abc` includes `--json`"
         },
         {
           "name": "adds_to_crm",
-          "text": "Runs `ac workflows run-companies add-to-crm` with --company-ids",
-          "type": "output_contains"
-        },
-        {
-          "name": "uses_json_for_parsing",
-          "text": "Uses --json flag on the list command to extract company IDs for the add-to-crm step",
-          "type": "output_contains"
+          "type": "command_matches",
+          "text": "`ac workflows run-companies add-to-crm wf-abc --company-ids`"
         }
       ]
     },
     {
       "id": 7,
       "prompt": "Workflow wf-xyz found some people. Preview company matches for person IDs p1 and p2, then add them to CRM.",
-      "expected_output": "Runs `ac workflows run-people company-match-preview wf-xyz --person-ids p1,p2` to preview matches, then `ac workflows run-people add-to-crm wf-xyz --person-ids p1,p2`.",
+      "expected_output": "company-match-preview must run BEFORE add-to-crm (dry-run-first pattern).",
       "assertions": [
         {
-          "name": "previews_company_match",
-          "text": "Runs `ac workflows run-people company-match-preview` with --person-ids p1,p2",
-          "type": "output_contains"
-        },
-        {
-          "name": "adds_people_to_crm",
-          "text": "Runs `ac workflows run-people add-to-crm` with --person-ids",
-          "type": "output_contains"
+          "name": "preview_before_commit",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac workflows run-people company-match-preview wf-xyz --person-ids p1,p2` then `^ac workflows run-people add-to-crm wf-xyz --person-ids p1,p2`"
         }
       ]
     },
     {
       "id": 8,
       "prompt": "Give me an analytics overview for this month and then drill into AI usage by model.",
-      "expected_output": "Runs `ac admin analytics-overview --start-date 2026-04-01` for the overview, then `ac admin ai-usage by-model --start-date 2026-04-01` for model breakdown.",
+      "expected_output": "Two commands with matching --start-date covering the current month.",
       "assertions": [
         {
-          "name": "uses_analytics_overview",
-          "text": "Runs `ac admin analytics-overview` with appropriate date range",
-          "type": "output_contains"
-        },
-        {
-          "name": "drills_into_ai_by_model",
-          "text": "Runs `ac admin ai-usage by-model` to see per-model breakdown",
-          "type": "output_contains"
+          "name": "overview_then_drill",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac admin analytics-overview .*--start-date 2026-04`, `^ac admin ai-usage by-model .*--start-date 2026-04`"
         }
       ]
     },
     {
       "id": 9,
       "prompt": "Onboard a new customer: Jane Smith (jane@newcorp.com) at NewCorp Inc. Website is https://newcorp.com. Then send them the onboarding link.",
-      "expected_output": "Uses `ac admin onboarding create` with all details, then `ac admin onboarding send-link <org-id> --send-email`.",
+      "expected_output": "Create then send-link with --send-email.",
       "assertions": [
         {
-          "name": "creates_onboarding",
-          "text": "Runs `ac admin onboarding create` with --email, --first-name, --last-name, --org-name, and --website-url",
-          "type": "output_contains"
+          "name": "create_with_required_flags",
+          "type": "command_matches",
+          "text": "`ac admin onboarding create` with `--email`, `--first-name`, `--last-name`, `--org-name`, `--website-url`"
         },
         {
-          "name": "sends_link",
-          "text": "Runs `ac admin onboarding send-link` with --send-email flag",
-          "type": "output_contains"
+          "name": "send_link_with_email",
+          "type": "command_matches",
+          "text": "`ac admin onboarding send-link` includes `--send-email`"
         }
       ]
     },
     {
       "id": 10,
       "prompt": "List our messaging sessions and show me which environments I'm logged into.",
-      "expected_output": "Runs `ac messaging sessions` to list sessions and `ac env list` to show environments.",
+      "expected_output": "Two independent reads.",
       "assertions": [
         {
-          "name": "lists_messaging_sessions",
-          "text": "Runs `ac messaging sessions` to show active sessions",
-          "type": "output_contains"
+          "name": "messaging_sessions",
+          "type": "command_matches",
+          "text": "`ac messaging sessions`"
         },
         {
-          "name": "lists_environments",
-          "text": "Runs `ac env list` to show all environments and login status",
-          "type": "output_contains"
+          "name": "env_list",
+          "type": "command_matches",
+          "text": "`ac env list`"
         }
       ]
     },
     {
       "id": 11,
       "prompt": "Train a new writing style called 'Enterprise Formal' with a sample email I'll provide: 'Dear Mr. Johnson, I am writing to follow up on our recent conversation regarding the enterprise partnership...'",
-      "expected_output": "Creates a style with `ac styles create --name 'Enterprise Formal'`, then trains it with `ac styles train <style-id> --sample-text '...'`.",
+      "expected_output": "Create style → train with the sample.",
       "assertions": [
         {
-          "name": "creates_style",
-          "text": "Runs `ac styles create` with --name 'Enterprise Formal' or similar",
-          "type": "output_contains"
-        },
-        {
-          "name": "trains_with_sample",
-          "text": "Runs `ac styles train` with --sample-text containing the provided text",
-          "type": "output_contains"
+          "name": "style_create_then_train",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac styles create .*--name .*Enterprise Formal`, `^ac styles train .*--sample-text`"
         }
       ]
     },
     {
       "id": 12,
       "prompt": "Parse this CSV file at /tmp/leads.csv and show me what companies it found. Use JSON output so I can pipe it.",
-      "expected_output": "Runs `ac workflows csv-parse /tmp/leads.csv --json` to parse the CSV and output structured JSON.",
+      "expected_output": "csv-parse with --json.",
       "assertions": [
         {
-          "name": "uses_csv_parse",
-          "text": "Runs `ac workflows csv-parse /tmp/leads.csv`",
-          "type": "output_contains"
-        },
-        {
-          "name": "uses_json_flag",
-          "text": "Includes --json flag for piping output",
-          "type": "output_contains"
+          "name": "csv_parse_json",
+          "type": "command_matches",
+          "text": "`ac workflows csv-parse /tmp/leads.csv` includes `--json`"
         }
       ]
     },
     {
       "id": 13,
       "prompt": "Create a follow-up call task for the deal abc-123, due next Friday, high priority. Then mark it complete after I've done it.",
-      "expected_output": "Creates activity with `ac crm activities create --type call --title '...' --deal-id abc-123 --due-date <next-friday> --priority high`, then completes it with `ac crm activities complete <activity-id>`.",
+      "expected_output": "create activity → complete activity.",
       "assertions": [
         {
-          "name": "creates_activity_with_type",
-          "text": "Uses `ac crm activities create` with --type call",
-          "type": "output_contains"
+          "name": "create_activity_correct",
+          "type": "command_matches",
+          "text": "`ac crm activities create` with `--type call`, `--deal-id abc-123`, `--priority high`, `--due-date 2026-`"
         },
         {
-          "name": "links_to_deal",
-          "text": "Uses --deal-id abc-123 to link the activity to the deal",
-          "type": "output_contains"
-        },
-        {
-          "name": "sets_priority",
-          "text": "Uses --priority high",
-          "type": "output_contains"
-        },
-        {
-          "name": "completes_activity",
-          "text": "Uses `ac crm activities complete` with the activity ID",
-          "type": "output_contains"
+          "name": "complete_after_create",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac crm activities create`, `^ac crm activities complete`"
         }
       ]
     },
     {
       "id": 14,
       "prompt": "Create a static list called 'Q2 Targets' for people, then add person p-001 and person p-002 to it.",
-      "expected_output": "Creates list with `ac crm lists create --name 'Q2 Targets' --member-type person --type static`, then adds members with `ac crm lists add-member <list-id> --person-id p-001` and `ac crm lists add-member <list-id> --person-id p-002`.",
+      "expected_output": "lists create → 2x add-member.",
       "assertions": [
         {
           "name": "creates_list",
-          "text": "Uses `ac crm lists create` with --name, --member-type person, and --type static",
-          "type": "output_contains"
+          "type": "command_matches",
+          "text": "`ac crm lists create` with `--name .*Q2 Targets`, `--member-type person`, `--type static`"
         },
         {
-          "name": "adds_members",
-          "text": "Uses `ac crm lists add-member` with --person-id for each person",
-          "type": "output_contains"
+          "name": "two_add_members",
+          "type": "command_matches",
+          "text": "`ac crm lists add-member` runs at least twice with `--person-id p-00[12]`"
         }
       ]
     },
     {
       "id": 15,
       "prompt": "Show me our email engagement metrics for the last 60 days. I want to see open rates and click rates.",
-      "expected_output": "Runs `ac crm engagement-dashboard --period 60` to show engagement metrics.",
+      "expected_output": "engagement-dashboard with --period 60.",
       "assertions": [
         {
           "name": "uses_engagement_dashboard",
-          "text": "Runs `ac crm engagement-dashboard` (not just `ac crm dashboard`)",
-          "type": "output_contains"
-        },
-        {
-          "name": "sets_period",
-          "text": "Uses --period 60 to cover 60 days",
-          "type": "output_contains"
+          "type": "command_matches",
+          "text": "`ac crm engagement-dashboard` with `--period 60` (NOT `ac crm dashboard`)"
         }
       ]
     },
     {
       "id": 16,
       "prompt": "Set up a new outreach sequence called 'Enterprise Q3' with our formal writing style (ID: style-abc) and playbook (ID: pb-123). Add two message steps and a 3-day delay between them, then launch it with workflow wf-999.",
-      "expected_output": "Creates sequence, adds steps in order (message, delay, message), then launches with the workflow ID.",
+      "expected_output": "create → 3 steps in order → launch.",
       "assertions": [
         {
           "name": "creates_sequence",
-          "text": "Uses `ac envoy sequences create` with --name, --writing-style-id, and --playbook-id",
-          "type": "output_contains"
+          "type": "command_matches",
+          "text": "`ac envoy sequences create` with `--name .*Enterprise Q3`, `--writing-style-id style-abc`, `--playbook-id pb-123`"
         },
         {
-          "name": "creates_message_steps",
-          "text": "Uses `ac envoy steps create` with --type message at least twice",
-          "type": "output_contains"
+          "name": "three_steps_in_order",
+          "type": "command_sequence",
+          "text": "Sequence (3 step creates in order): `--type message .*--step-order 1`, `--type delay .*--delay-value 3 .*--delay-unit days .*--step-order 2`, `--type message .*--step-order 3`"
         },
         {
-          "name": "creates_delay_step",
-          "text": "Uses `ac envoy steps create` with --type delay, --delay-value 3, --delay-unit days",
-          "type": "output_contains"
-        },
-        {
-          "name": "launches_sequence",
-          "text": "Uses `ac envoy sequences launch` with --workflow-id wf-999",
-          "type": "output_contains"
+          "name": "launch_with_workflow",
+          "type": "command_matches",
+          "text": "`ac envoy sequences launch` with `--workflow-id wf-999`"
         }
       ]
     },
     {
       "id": 17,
       "prompt": "Check my outbox for pending drafts, then approve the first one and reject the second one asking for a regeneration because it's too formal.",
-      "expected_output": "Lists pending drafts, approves one with `ac envoy outbox approve`, rejects another with `ac envoy outbox reject --action regenerate_draft --reason '...'`.",
+      "expected_output": "pending → approve one, reject one with --action regenerate_draft.",
       "assertions": [
         {
-          "name": "lists_pending",
-          "text": "Runs `ac envoy outbox pending` to see pending drafts",
-          "type": "output_contains"
+          "name": "pending_first",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac envoy outbox pending`, `^ac envoy outbox (approve|reject)`"
         },
         {
-          "name": "approves_draft",
-          "text": "Runs `ac envoy outbox approve` with a draft ID",
-          "type": "output_contains"
-        },
-        {
-          "name": "rejects_with_regenerate",
-          "text": "Runs `ac envoy outbox reject` with --action regenerate_draft and --reason mentioning 'formal'",
-          "type": "output_contains"
+          "name": "reject_action_regenerate",
+          "type": "command_matches",
+          "text": "`ac envoy outbox reject` with `--action regenerate_draft` and `--reason` mentioning formal/tone"
         }
       ]
     },
     {
       "id": 18,
       "prompt": "Schedule workflow wf-daily to run every weekday at 9 AM Eastern time. Then preview the next 5 run times to make sure it looks right.",
-      "expected_output": "Creates schedule with cron expression for weekdays at 9 AM ET, then previews upcoming runs.",
+      "expected_output": "schedules create with weekday cron + ET tz, then preview --count 5.",
       "assertions": [
         {
-          "name": "creates_schedule",
-          "text": "Uses `ac workflows schedules create` with --cron for weekday mornings and --timezone America/New_York",
-          "type": "output_contains"
+          "name": "schedule_create_weekday_et",
+          "type": "command_matches",
+          "text": "`ac workflows schedules create wf-daily` with `--cron .0 9 \\* \\* 1-5.` and `--timezone America/New_York`"
         },
         {
-          "name": "previews_runs",
-          "text": "Uses `ac workflows schedules preview` with --count 5",
-          "type": "output_contains"
+          "name": "preview_count_5",
+          "type": "command_matches",
+          "text": "`ac workflows schedules preview wf-daily` with `--count 5`"
         }
       ]
     },
     {
       "id": 19,
       "prompt": "The queues look unhealthy. Check queue health, show me the failed jobs in the 'workflows' queue, and retry them all.",
-      "expected_output": "Checks health, lists failed jobs, retries all.",
+      "expected_output": "health → failed → retry-all.",
       "assertions": [
         {
-          "name": "checks_queue_health",
-          "text": "Runs `ac admin queues health`",
-          "type": "output_contains"
-        },
-        {
-          "name": "lists_failed_jobs",
-          "text": "Runs `ac admin queues failed workflows` to see failed jobs in the workflows queue",
-          "type": "output_contains"
-        },
-        {
-          "name": "retries_all",
-          "text": "Runs `ac admin queues retry-all workflows`",
-          "type": "output_contains"
+          "name": "three_step_queue_recovery",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac admin queues health`, `^ac admin queues failed workflows`, `^ac admin queues retry-all workflows`"
         }
       ]
     },
     {
       "id": 20,
       "prompt": "Find the user with email jane@acme.com, then impersonate them so I can debug their issue.",
-      "expected_output": "Searches for user by email, then impersonates them.",
+      "expected_output": "users search → impersonate.",
       "assertions": [
         {
-          "name": "searches_user",
-          "text": "Runs `ac admin users search --email jane@acme.com` or `ac admin users auth-search --email jane@acme.com`",
-          "type": "output_contains"
-        },
-        {
-          "name": "impersonates_user",
-          "text": "Runs `ac admin users impersonate <user-id>`",
-          "type": "output_contains"
+          "name": "search_then_impersonate",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac admin users (search|auth-search) --email jane@acme.com`, `^ac admin users impersonate`"
         }
       ]
     },
     {
       "id": 21,
       "prompt": "Upload our new company logo from ./logo.png to the organization logos category, then install the 'analytics-pro' app for our org.",
-      "expected_output": "Uploads image then installs app.",
+      "expected_output": "files images upload → apps install.",
       "assertions": [
         {
-          "name": "uploads_image",
-          "text": "Uses `ac files images upload ./logo.png --category organization_logos`",
-          "type": "output_contains"
+          "name": "image_upload_correct_category",
+          "type": "command_matches",
+          "text": "`ac files images upload ./logo.png` with `--category organization_logos`"
         },
         {
-          "name": "installs_app",
-          "text": "Uses `ac apps install analytics-pro`",
-          "type": "output_contains"
+          "name": "app_install",
+          "type": "command_matches",
+          "text": "`ac apps install analytics-pro`"
         }
       ]
     },
     {
       "id": 22,
       "prompt": "Upload a PDF called product-guide.pdf to our knowledge base with the name 'Product Guide' and tags 'docs,product'. Then check its processing status.",
-      "expected_output": "Uploads resource then checks status.",
+      "expected_output": "resources upload → resources status.",
       "assertions": [
         {
-          "name": "uploads_resource",
-          "text": "Uses `ac resources upload product-guide.pdf --name \"Product Guide\" --tags \"docs,product\"`",
-          "type": "output_contains"
+          "name": "resource_upload_named",
+          "type": "command_matches",
+          "text": "`ac resources upload product-guide.pdf` with `--name .*Product Guide` and `--tags .*docs,product`"
         },
         {
-          "name": "checks_status",
-          "text": "Uses `ac resources status <resource-id>` to check processing",
-          "type": "output_contains"
+          "name": "status_check",
+          "type": "command_matches",
+          "text": "`ac resources status` with a resource id"
         }
       ]
     },
     {
       "id": 23,
       "prompt": "Delete the 3 people with IDs p-100, p-101, p-102 from the CRM in one go. Skip confirmations since I'm scripting this.",
-      "expected_output": "Uses bulk-delete with AC_YES or --yes flag.",
+      "expected_output": "bulk-delete with --yes or AC_YES=1.",
       "assertions": [
         {
-          "name": "uses_bulk_delete",
-          "text": "Uses `ac crm people bulk-delete --ids p-100,p-101,p-102`",
-          "type": "output_contains"
-        },
-        {
-          "name": "skips_confirmation",
-          "text": "Uses --yes flag or AC_YES=1 to skip confirmation prompts",
-          "type": "output_contains"
+          "name": "bulk_delete_no_prompt",
+          "type": "command_matches",
+          "text": "`(AC_YES=1 )?ac crm people bulk-delete --ids p-100,p-101,p-102( --yes)?` -- one of `--yes` or `AC_YES=1` MUST be present"
         }
       ]
     },
     {
       "id": 24,
       "prompt": "I need to switch to the production environment, check if the API is healthy, and then look up my profile.",
-      "expected_output": "Switches env, checks health, views profile.",
+      "expected_output": "env use → health check → profiles me. Note: should re-auth on prod before profiles me.",
       "assertions": [
         {
-          "name": "switches_environment",
-          "text": "Uses `ac env use production` to switch environments",
-          "type": "output_contains"
+          "name": "env_then_health_then_profile",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac env use production`, `^ac health check`, `^ac profiles me`"
         },
         {
-          "name": "checks_health",
-          "text": "Uses `ac health check` to verify the API",
-          "type": "output_contains"
-        },
-        {
-          "name": "views_profile",
-          "text": "Uses `ac profiles me` to view the user's profile",
-          "type": "output_contains"
+          "name": "relogin_after_env_switch",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac env use production`, `^ac login` BEFORE `^ac profiles me` (env switch invalidates auth)"
         }
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "Switch from staging to local env and confirm I'm authenticated there.",
+      "expected_output": "env use local → ac login (because env switch invalidates session) → ac whoami.",
+      "assertions": [
+        {
+          "name": "env_switch_requires_relogin",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac env use local`, `^ac login`, `^ac whoami`"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "Add a Monday-9am cron schedule to workflow wf-77, but be careful -- I want to confirm the next run times before I save the schedule.",
+      "expected_output": "preview MUST come before create (dry-run pattern).",
+      "assertions": [
+        {
+          "name": "preview_then_create",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac workflows schedules preview wf-77`, `^ac workflows schedules create wf-77`"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "I'm getting `not authenticated` when I run `ac crm deals list`. Walk me through fixing it.",
+      "expected_output": "Skill diagnoses 401/auth-expiry, asks for credentials, runs `ac login`, verifies with `ac whoami`, then re-runs the failing command.",
+      "assertions": [
+        {
+          "name": "recovery_pattern",
+          "type": "command_sequence",
+          "text": "Sequence: `^ac login`, `^ac whoami`, `^ac crm deals list`"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "Run `ac admin onboarding update-settings` -- I forget the exact flags.",
+      "expected_output": "Skill consults references/admin.md (or commands.md) before composing the command rather than guessing flags.",
+      "assertions": [
+        {
+          "name": "consults_reference_file",
+          "type": "reads_file",
+          "text": "Reads one of `references/admin.md` or `references/commands.md` before invoking `ac admin onboarding update-settings`"
+        },
+        {
+          "name": "uses_documented_flags",
+          "type": "command_matches",
+          "text": "`ac admin onboarding update-settings` uses `--terms-html`, `--calendly-url`, or `--calendly-enabled/--no-calendly-enabled` (not invented flags)"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Write a small bash snippet that fetches company `bad-id`, and if it returns 404 (not found), prints 'company missing' and exits 0.",
+      "expected_output": "Snippet uses `ac crm companies get bad-id`, branches on `$? -eq 3` (semantic 'not found' code), not generic non-zero.",
+      "assertions": [
+        {
+          "name": "branches_on_exit_3",
+          "type": "command_matches",
+          "text": "Bash branch checks `\\$\\? -eq 3` (or equivalent), referencing the documented 'not found' exit code"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "I'm done for the day, log me out.",
+      "expected_output": "Runs `ac logout`.",
+      "assertions": [
+        {"name": "logs_out", "type": "command_matches", "text": "`ac logout`"}
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "Show me the current ac environment configuration.",
+      "expected_output": "Runs `ac env show`.",
+      "assertions": [
+        {"name": "env_show", "type": "command_matches", "text": "`ac env show`"}
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "Send an email to client@acme.com via Nylas with subject 'Demo recap' and body 'Thanks for the call today.'",
+      "expected_output": "Uses `ac nylas send` with --to, --subject, --body.",
+      "assertions": [
+        {"name": "nylas_send", "type": "command_matches", "text": "`ac nylas send --to client@acme.com --subject .Demo recap. --body`"}
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "Connect my Gmail to Nylas so AgencyCore can read my inbox.",
+      "expected_output": "Runs `ac nylas oauth-start --provider google` to begin OAuth.",
+      "assertions": [
+        {"name": "oauth_start_google", "type": "command_matches", "text": "`ac nylas oauth-start --provider google`"}
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "Install the 'analytics-pro' app for my org, then list its config.",
+      "expected_output": "install → configs in order.",
+      "assertions": [
+        {"name": "install_then_configs", "type": "command_sequence", "text": "Sequence: `^ac apps install analytics-pro`, `^ac apps configs analytics-pro`"}
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "Uninstall the 'sample-app' from our current org.",
+      "expected_output": "Runs `ac apps uninstall sample-app`.",
+      "assertions": [
+        {"name": "app_uninstall", "type": "command_matches", "text": "`ac apps uninstall sample-app`"}
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "Create a new organization called 'Acme Corp' on the platform with the pro plan.",
+      "expected_output": "Uses `ac admin orgs create` with --name and --plan.",
+      "assertions": [
+        {"name": "org_create", "type": "command_matches", "text": "`ac admin orgs create` with `--name .*Acme Corp` and `--plan pro`"}
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "Add user u-99 as an admin member of org o-42.",
+      "expected_output": "Runs `ac admin orgs add-member o-42 --user-id u-99 --role admin`.",
+      "assertions": [
+        {"name": "add_member_admin", "type": "command_matches", "text": "`ac admin orgs add-member o-42` with `--user-id u-99` and `--role admin`"}
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "Transfer ownership of org o-42 to user u-99.",
+      "expected_output": "Runs `ac admin orgs transfer-ownership o-42 --new-owner-id u-99`.",
+      "assertions": [
+        {"name": "transfer_ownership", "type": "command_matches", "text": "`ac admin orgs transfer-ownership o-42` with `--new-owner-id u-99`"}
+      ]
+    },
+    {
+      "id": 39,
+      "prompt": "Generate a demo organization in the technology space and prepare a demo account on it called 'TechDemo'.",
+      "expected_output": "generate-org → prepare-account in order.",
+      "assertions": [
+        {"name": "demo_pipeline", "type": "command_sequence", "text": "Sequence: `^ac admin demo generate-org .*--industry .*Technology`, `^ac admin demo prepare-account .*--org-name .*TechDemo`"}
+      ]
+    },
+    {
+      "id": 40,
+      "prompt": "Delete every demo account older than 60 days. Skip prompts.",
+      "expected_output": "Runs `ac admin demo cleanup --max-age-days 60 --yes` or via AC_YES.",
+      "assertions": [
+        {"name": "demo_cleanup_no_prompt", "type": "command_matches", "text": "`(AC_YES=1 )?ac admin demo cleanup --max-age-days 60( --yes)?`"}
+      ]
+    },
+    {
+      "id": 41,
+      "prompt": "Publish a new Terms of Service document version 2.0 and make it the current one.",
+      "expected_output": "legal-docs create → set-current.",
+      "assertions": [
+        {"name": "tos_publish", "type": "command_sequence", "text": "Sequence: `^ac admin legal-docs create --document-type terms_of_service --version .2\\.0.`, `^ac admin legal-docs set-current`"}
+      ]
+    },
+    {
+      "id": 42,
+      "prompt": "Create a monthly Pro subscription for org o-42 starting today (2026-04-28) using plan plan-pro.",
+      "expected_output": "Uses `ac admin subscriptions create` with org/plan/billing/started-at.",
+      "assertions": [
+        {"name": "subscription_create", "type": "command_matches", "text": "`ac admin subscriptions create` with `--org-id o-42`, `--plan-id plan-pro`, `--billing-period monthly`, `--started-at 2026-04-28`"}
+      ]
+    },
+    {
+      "id": 43,
+      "prompt": "List all open chat escalations and resolve escalation esc-7 with note 'duplicate ticket'.",
+      "expected_output": "list --status open → update --status resolved.",
+      "assertions": [
+        {"name": "escalation_resolve", "type": "command_sequence", "text": "Sequence: `^ac admin chat-escalations list --status open`, `^ac admin chat-escalations update esc-7 --status resolved --note .duplicate ticket.`"}
+      ]
+    },
+    {
+      "id": 44,
+      "prompt": "How many failed Sonar searches did each org have in the last 7 days? Pipe through jq for grouping.",
+      "expected_output": "Uses `ac admin searches runs --source sonar --status failed --start-date <7d-ago> --all` and pipes via jq for group_by org.",
+      "assertions": [
+        {"name": "searches_runs_filtered", "type": "command_matches", "text": "`ac admin searches runs` with `--source sonar`, `--status failed`, `--all`"},
+        {"name": "jq_group_by", "type": "command_matches", "text": "Pipes to `jq` with `group_by` to aggregate per org"}
+      ]
+    },
+    {
+      "id": 45,
+      "prompt": "Create a Q3 outreach campaign called 'Renewal push' running 2026-07-01 to 2026-09-30.",
+      "expected_output": "Uses `ac envoy campaigns create` with name + dates.",
+      "assertions": [
+        {"name": "campaign_create", "type": "command_matches", "text": "`ac envoy campaigns create --name .Renewal push.` with `--started-at 2026-07-01` and `--ended-at 2026-09-30`"}
+      ]
+    },
+    {
+      "id": 46,
+      "prompt": "Look up battlecards mentioning 'Salesforce'.",
+      "expected_output": "Runs `ac envoy battlecards list --query Salesforce`.",
+      "assertions": [
+        {"name": "battlecards_query", "type": "command_matches", "text": "`ac envoy battlecards list` with `--query .*Salesforce`"}
+      ]
+    },
+    {
+      "id": 47,
+      "prompt": "Create a new playbook 'Enterprise Outreach' and duplicate it so I can build a variant.",
+      "expected_output": "create → duplicate.",
+      "assertions": [
+        {"name": "playbook_create_then_duplicate", "type": "command_sequence", "text": "Sequence: `^ac envoy playbooks create --name .Enterprise Outreach.`, `^ac envoy playbooks duplicate`"}
+      ]
+    },
+    {
+      "id": 48,
+      "prompt": "Show me sales signals for recipient r-123.",
+      "expected_output": "Runs `ac envoy signals r-123`.",
+      "assertions": [
+        {"name": "signals_for_recipient", "type": "command_matches", "text": "`ac envoy signals r-123`"}
+      ]
+    },
+    {
+      "id": 49,
+      "prompt": "Pause sequence seq-77, then resume it later with workflow wf-99.",
+      "expected_output": "pause → resume --workflow-id.",
+      "assertions": [
+        {"name": "pause_then_resume", "type": "command_sequence", "text": "Sequence: `^ac envoy sequences pause seq-77`, `^ac envoy sequences resume seq-77 --workflow-id wf-99`"}
+      ]
+    },
+    {
+      "id": 50,
+      "prompt": "Before launching sequence seq-50, simulate the impact of removing step st-3.",
+      "expected_output": "Uses `ac envoy sequences impact-preview seq-50 --step-id st-3` before any launch.",
+      "assertions": [
+        {"name": "impact_preview_before_launch", "type": "command_matches", "text": "`ac envoy sequences impact-preview seq-50 --step-id st-3`"}
+      ]
+    },
+    {
+      "id": 51,
+      "prompt": "Open a new AI chat thread titled 'Q3 strategy', send 'What's my top priority?', and check the response.",
+      "expected_output": "create → send.",
+      "assertions": [
+        {"name": "chat_create_then_send", "type": "command_sequence", "text": "Sequence: `^ac chat threads create --title .Q3 strategy.`, `^ac chat threads send`"}
+      ]
+    },
+    {
+      "id": 52,
+      "prompt": "Escalate AI chat thread t-9 to a human with note 'needs eng help'.",
+      "expected_output": "Runs `ac chat threads escalate t-9 --note 'needs eng help'`.",
+      "assertions": [
+        {"name": "chat_escalate", "type": "command_matches", "text": "`ac chat threads escalate t-9 --note .needs eng help.`"}
+      ]
+    },
+    {
+      "id": 53,
+      "prompt": "Update my profile: my new title is 'Director of Engineering'.",
+      "expected_output": "Runs `ac profiles update --job-title 'Director of Engineering'`.",
+      "assertions": [
+        {"name": "profile_update_title", "type": "command_matches", "text": "`ac profiles update --job-title .Director of Engineering.`"}
+      ]
+    },
+    {
+      "id": 54,
+      "prompt": "Switch my active organization to org o-99.",
+      "expected_output": "Runs `ac profiles set-organization o-99`.",
+      "assertions": [
+        {"name": "switch_active_org", "type": "command_matches", "text": "`ac profiles set-organization o-99`"}
+      ]
+    },
+    {
+      "id": 55,
+      "prompt": "What hooks are available for the 'recipient' capability?",
+      "expected_output": "Runs `ac hooks list recipient`.",
+      "assertions": [
+        {"name": "hooks_list", "type": "command_matches", "text": "`ac hooks list recipient`"}
+      ]
+    },
+    {
+      "id": 56,
+      "prompt": "Show me the CRM pipeline overview for the last 14 days.",
+      "expected_output": "Runs `ac crm dashboard --period 14`.",
+      "assertions": [
+        {"name": "dashboard_period", "type": "command_matches", "text": "`ac crm dashboard` with `--period 14`"}
+      ]
+    },
+    {
+      "id": 57,
+      "prompt": "Search the CRM for 'Acme'.",
+      "expected_output": "Runs `ac crm search Acme`.",
+      "assertions": [
+        {"name": "crm_search", "type": "command_matches", "text": "`ac crm search .Acme`"}
+      ]
+    },
+    {
+      "id": 58,
+      "prompt": "Move all qualified deals into a custom order: d-1, d-2, d-3.",
+      "expected_output": "Runs `ac crm deals order --stage qualified --deal-ids d-1,d-2,d-3`.",
+      "assertions": [
+        {"name": "deals_order", "type": "command_matches", "text": "`ac crm deals order --stage qualified --deal-ids d-1,d-2,d-3`"}
+      ]
+    },
+    {
+      "id": 59,
+      "prompt": "Show pending email approvals for sequence seq-77 step st-1, approve message m-42 with override subject 'Updated subject'.",
+      "expected_output": "comms pending-approvals filtered → comms approve.",
+      "assertions": [
+        {"name": "filtered_pending_approvals", "type": "command_matches", "text": "`ac crm comms pending-approvals` with `--sequence-id seq-77` and `--step-id st-1`"},
+        {"name": "approve_with_override", "type": "command_matches", "text": "`ac crm comms approve m-42`"}
+      ]
+    },
+    {
+      "id": 60,
+      "prompt": "I'm getting 401s from the API. Refresh my access token without changing environments.",
+      "expected_output": "Runs `ac login` with current credentials (token refresh) — does NOT call `ac env use`.",
+      "assertions": [
+        {"name": "relogin_no_env_change", "type": "command_matches", "text": "`ac login` (without preceding `ac env use`)"}
+      ]
+    },
+    {
+      "id": 61,
+      "prompt": "Get the per-model AI usage breakdown for org o-7 in March 2026 as JSON, then jq for token counts above 1M.",
+      "expected_output": "Uses `ac admin ai-usage by-model --start-date 2026-03-01 --end-date 2026-03-31 --org-id o-7 --json` piped to jq.",
+      "assertions": [
+        {"name": "by_model_filtered", "type": "command_matches", "text": "`ac admin ai-usage by-model` with `--start-date 2026-03-01`, `--end-date 2026-03-31`, `--org-id o-7`, `--json`"},
+        {"name": "jq_token_filter", "type": "command_matches", "text": "Pipes to `jq` filtering on token counts > 1000000 or 1e6"}
+      ]
+    },
+    {
+      "id": 62,
+      "prompt": "Get app-usage summary across the platform for Q1 2026.",
+      "expected_output": "Runs `ac admin app-usage summary --start-date 2026-01-01 --end-date 2026-03-31`.",
+      "assertions": [
+        {"name": "app_usage_q1", "type": "command_matches", "text": "`ac admin app-usage summary` with `--start-date 2026-01-01` and `--end-date 2026-03-31`"}
+      ]
+    },
+    {
+      "id": 63,
+      "prompt": "Show cache hit rate stats for the platform.",
+      "expected_output": "Runs `ac admin cache-stats`.",
+      "assertions": [
+        {"name": "cache_stats", "type": "command_matches", "text": "`ac admin cache-stats`"}
+      ]
+    },
+    {
+      "id": 64,
+      "prompt": "Top 10 most-active users in the platform last 30 days, sorted by event count.",
+      "expected_output": "Uses `ac admin platform-activity users --sort total_events --order desc --page-size 10`.",
+      "assertions": [
+        {"name": "platform_activity_top10", "type": "command_matches", "text": "`ac admin platform-activity users` with `--sort total_events`, `--order desc`, `--page-size 10`"}
+      ]
+    },
+    {
+      "id": 65,
+      "prompt": "Create a new subscription plan called 'Starter' with $9/mo and $99/yr pricing.",
+      "expected_output": "Uses `ac admin subscription-plans create --slug starter --name Starter --monthly-price-cents 900 --annual-price-cents 9900`.",
+      "assertions": [
+        {"name": "plan_create_pricing", "type": "command_matches", "text": "`ac admin subscription-plans create --slug starter` with `--monthly-price-cents 900` and `--annual-price-cents 9900`"}
+      ]
+    },
+    {
+      "id": 66,
+      "prompt": "Update the API key config of the analytics-pro app to a new value.",
+      "expected_output": "Runs `ac apps update-config analytics-pro api_key --value <new>`.",
+      "assertions": [
+        {"name": "app_update_config", "type": "command_matches", "text": "`ac apps update-config analytics-pro api_key --value`"}
+      ]
+    },
+    {
+      "id": 67,
+      "prompt": "Disconnect my Nylas account.",
+      "expected_output": "Runs `ac nylas disconnect` (with --yes if scripted).",
+      "assertions": [
+        {"name": "nylas_disconnect", "type": "command_matches", "text": "`ac nylas disconnect`"}
+      ]
+    },
+    {
+      "id": 68,
+      "prompt": "Tell me how many threads are in my outreach inbox right now.",
+      "expected_output": "Runs `ac envoy inbox-count`.",
+      "assertions": [
+        {"name": "inbox_count", "type": "command_matches", "text": "`ac envoy inbox-count`"}
+      ]
+    },
+    {
+      "id": 69,
+      "prompt": "Show the Envoy dashboard with overall outreach stats.",
+      "expected_output": "Runs `ac envoy dashboard`.",
+      "assertions": [
+        {"name": "envoy_dashboard", "type": "command_matches", "text": "`ac envoy dashboard`"}
       ]
     }
   ]

@@ -3,6 +3,9 @@
 Complete flag reference for all `ac` CLI commands. All commands require
 authentication (`ac login`) unless noted otherwise.
 
+For domain-scoped quick references (just the common commands per domain), see:
+- [`crm.md`](./crm.md) · [`envoy.md`](./envoy.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
+
 ## Table of Contents
 
 1. [CRM](#crm)
