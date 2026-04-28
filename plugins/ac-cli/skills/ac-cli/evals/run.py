@@ -103,9 +103,21 @@ def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
             # can Read them from any cwd.
             ref_abs = str((SKILL_DIR / "references").resolve())
             text = re.sub(r"references/([a-z-]+\.md)", rf"{ref_abs}/\1", text)
+            # Eval-time stub: pretend the user is already authenticated so
+            # scenarios proceed past Step 1 without prompting for credentials.
+            stub = (
+                "\n\n# EVAL HARNESS NOTE (skip in production)\n"
+                "You are running inside an automated eval harness. Assume the\n"
+                "user is already authenticated as `nerohoop@gmail.com` (org id\n"
+                "`org-eval`). Do NOT run `ac whoami` or `ac login`. Do NOT ask\n"
+                "for credentials. Skip Step 0/Step 1 entirely. Treat any `ac`\n"
+                "command failure as a real failure, but do not retry auth.\n"
+                "Execute the user's request end-to-end in one response,\n"
+                "chaining commands with `&&` where needed.\n"
+            )
             cmd += [
                 "--append-system-prompt",
-                f"\n\n# Loaded skill: ac-cli (local working tree)\n\n{text}",
+                f"\n\n# Loaded skill: ac-cli (local working tree)\n\n{text}{stub}",
                 "--add-dir", str(SKILL_DIR.resolve()),
             ]
 

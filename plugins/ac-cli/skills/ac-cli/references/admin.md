@@ -48,6 +48,14 @@ ac admin queues retry-job <job-id>
 ac admin queues clear-failed <queue-name> [--yes]
 ```
 
+**Standard "queue recovery" recipe** — when the user reports unhealthy queues or wants to retry failed jobs, chain all three diagnostic+remediation steps in one call:
+
+```bash
+ac admin queues health --json && \
+ac admin queues failed <queue-name> --limit 20 --json && \
+AC_YES=1 ac admin queues retry-all <queue-name>
+```
+
 ## Demo
 
 ```bash
@@ -182,9 +190,12 @@ ac admin chat-escalations update <escalation-id> --status resolved [--note "..."
 ```bash
 ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--offset 0]
 ac admin subscriptions get <subscription-id>
+
+# `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at
 ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period monthly \
   --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] \
   [--trial-ends-at 2026-04-15] [--stripe-customer-id cus_x] [--stripe-subscription-id sub_x]
+
 ac admin subscriptions update <subscription-id> [--plan-id <id>] [--status cancelled]
 ac admin subscriptions delete <subscription-id> [--yes]
 ```

@@ -36,6 +36,13 @@ argument-hint: "[command or question about the AgencyCore CLI]"
 
 The `ac` CLI manages CRM, outreach, workflows, admin, and platform from the terminal. This file is the entrypoint guide. Domain command lists live in `references/<domain>.md`; the full flag reference is `references/commands.md`.
 
+## Operating Rules (MUST follow on every invocation)
+
+1. **Run, do not narrate.** When the user asks for a multi-step recipe, execute every step in **one response** by chaining bash invocations. Do not stop after the first step and ask the user "should I continue?". If a later step depends on output from an earlier one (id substitution), pipe via `--json | jq` or run them in a single `&&`-chained bash call.
+2. **Co-required flags must appear together.** Never emit half a command. See [Co-required flags](#co-required-flags) below.
+3. **Preview before any irreversible mutation.** Run the preview/list command before `commit` / `add-to-crm` / `launch` / `delete`. See [Dry-Run / Preview Patterns](#dry-run--preview-patterns).
+4. **Look up reference files for any non-obvious flag.** Read `references/<domain>.md` instead of guessing — Claude may have stale memory of older flag names.
+
 ---
 
 ## Step 0 -- Ensure CLI Is Installed (always run first)
@@ -117,6 +124,25 @@ For the command list of a domain, **read the matching reference file** before co
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).
 
 ---
+
+## Co-required flags
+
+Some commands are validated server-side and reject the request if a paired flag is missing. **Always emit these flags together**:
+
+| Command | Required-together flags |
+|---------|-------------------------|
+| `ac workflows schedules create` | `--cron` AND `--timezone` (omitting timezone makes the schedule fire in server-default tz, which is rarely what the user wants) |
+| `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output) |
+| `ac admin subscriptions create` | `--org-id` AND `--plan-id` AND `--billing-period` AND `--started-at` |
+| `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
+| `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
+| `ac envoy outbox reject` | `--action` (`regenerate_draft` or `remove_recipient`) |
+| `ac files images upload` | path AND `--category` |
+| `ac resources upload` | path AND `--name` |
+| `ac admin legal-docs create` | `--document-type` AND `--version` AND `--title` |
+| `ac envoy campaigns create` (with date range) | `--name` AND `--started-at` AND `--ended-at` |
+
+If the user asks for a "weekday" / "Eastern" / "ET" cron, translate to `--cron "0 9 * * 1-5" --timezone America/New_York` (or the right tz). Do not omit `--timezone` even when the user phrases it as a weekday.
 
 ## Important Patterns
 

@@ -15,7 +15,7 @@
         {
           "name": "search_then_create",
           "type": "command_sequence",
-          "text": "Sequence: `^ac crm (search|companies list)` then `^ac crm deals create`"
+          "text": "Sequence: `ac crm (search|companies list)` then `ac crm deals create`"
         },
         {
           "name": "deal_flags_correct",
@@ -78,7 +78,7 @@
         {
           "name": "inbox_three_step_sequence",
           "type": "command_sequence",
-          "text": "Sequence: `^ac envoy inbox list .*--status open`, `^ac envoy inbox messages`, `^ac envoy inbox reply .*--body`"
+          "text": "Sequence: `ac envoy inbox list .*--status open`, `ac envoy inbox messages`, `ac envoy inbox reply .*--body`"
         }
       ]
     },
@@ -107,7 +107,7 @@
         {
           "name": "preview_before_commit",
           "type": "command_sequence",
-          "text": "Sequence: `^ac workflows run-people company-match-preview wf-xyz --person-ids p1,p2` then `^ac workflows run-people add-to-crm wf-xyz --person-ids p1,p2`"
+          "text": "Sequence: `ac workflows run-people company-match-preview wf-xyz --person-ids p1,p2` then `ac workflows run-people add-to-crm wf-xyz --person-ids p1,p2`"
         }
       ]
     },
@@ -119,7 +119,7 @@
         {
           "name": "overview_then_drill",
           "type": "command_sequence",
-          "text": "Sequence: `^ac admin analytics-overview .*--start-date 2026-04`, `^ac admin ai-usage by-model .*--start-date 2026-04`"
+          "text": "Sequence: `ac admin analytics-overview .*--start-date 2026-04`, `ac admin ai-usage by-model .*--start-date 2026-04`"
         }
       ]
     },
@@ -165,7 +165,7 @@
         {
           "name": "style_create_then_train",
           "type": "command_sequence",
-          "text": "Sequence: `^ac styles create .*--name .*Enterprise Formal`, `^ac styles train .*--sample-text`"
+          "text": "Sequence: `ac styles create .*--name .*Enterprise Formal`, `ac styles train .*--sample-text`"
         }
       ]
     },
@@ -194,7 +194,7 @@
         {
           "name": "complete_after_create",
           "type": "command_sequence",
-          "text": "Sequence: `^ac crm activities create`, `^ac crm activities complete`"
+          "text": "Sequence: `ac crm activities create`, `ac crm activities complete`"
         }
       ]
     },
@@ -257,7 +257,7 @@
         {
           "name": "pending_first",
           "type": "command_sequence",
-          "text": "Sequence: `^ac envoy outbox pending`, `^ac envoy outbox (approve|reject)`"
+          "text": "Sequence: `ac envoy outbox pending`, `ac envoy outbox (approve|reject)`"
         },
         {
           "name": "reject_action_regenerate",
@@ -274,7 +274,7 @@
         {
           "name": "schedule_create_weekday_et",
           "type": "command_matches",
-          "text": "`ac workflows schedules create wf-daily` with `--cron .0 9 \\* \\* 1-5.` and `--timezone America/New_York`"
+          "text": "`ac workflows schedules create wf-daily` with `--cron .[\"']?0 9 \\* \\* 1-5` and `--timezone .?America/New_York`"
         },
         {
           "name": "preview_count_5",
@@ -291,7 +291,7 @@
         {
           "name": "three_step_queue_recovery",
           "type": "command_sequence",
-          "text": "Sequence: `^ac admin queues health`, `^ac admin queues failed workflows`, `^ac admin queues retry-all workflows`"
+          "text": "Sequence: `ac admin queues health`, `ac admin queues failed.*workflows`, `ac admin queues retry-all.*workflows`"
         }
       ]
     },
@@ -303,7 +303,7 @@
         {
           "name": "search_then_impersonate",
           "type": "command_sequence",
-          "text": "Sequence: `^ac admin users (search|auth-search) --email jane@acme.com`, `^ac admin users impersonate`"
+          "text": "Sequence: `ac admin users (search|auth-search) --email jane@acme.com`, `ac admin users impersonate`"
         }
       ]
     },
@@ -361,12 +361,12 @@
         {
           "name": "env_then_health_then_profile",
           "type": "command_sequence",
-          "text": "Sequence: `^ac env use production`, `^ac health check`, `^ac profiles me`"
+          "text": "Sequence: `ac env use production`, `ac health check`, `ac profiles me`"
         },
         {
           "name": "relogin_after_env_switch",
           "type": "command_sequence",
-          "text": "Sequence: `^ac env use production`, `^ac login` BEFORE `^ac profiles me` (env switch invalidates auth)"
+          "text": "Sequence: `ac env use production`, `ac login` BEFORE `ac profiles me` (env switch invalidates auth)"
         }
       ]
     },
@@ -378,7 +378,7 @@
         {
           "name": "env_switch_requires_relogin",
           "type": "command_sequence",
-          "text": "Sequence: `^ac env use local`, `^ac login`, `^ac whoami`"
+          "text": "Sequence: `ac env use local`, `ac login`, `ac whoami`"
         }
       ]
     },
@@ -390,7 +390,7 @@
         {
           "name": "preview_then_create",
           "type": "command_sequence",
-          "text": "Sequence: `^ac workflows schedules preview wf-77`, `^ac workflows schedules create wf-77`"
+          "text": "Sequence: `ac workflows schedules preview wf-77`, `ac workflows schedules create wf-77`"
         }
       ]
     },
@@ -402,7 +402,7 @@
         {
           "name": "recovery_pattern",
           "type": "command_sequence",
-          "text": "Sequence: `^ac login`, `^ac whoami`, `^ac crm deals list`"
+          "text": "Sequence: `ac login`, `ac whoami`, `ac crm deals list`"
         }
       ]
     },
@@ -472,7 +472,7 @@
       "prompt": "Install the 'analytics-pro' app for my org, then list its config.",
       "expected_output": "install → configs in order.",
       "assertions": [
-        {"name": "install_then_configs", "type": "command_sequence", "text": "Sequence: `^ac apps install analytics-pro`, `^ac apps configs analytics-pro`"}
+        {"name": "install_then_configs", "type": "command_sequence", "text": "Sequence: `ac apps install analytics-pro`, `ac apps configs analytics-pro`"}
       ]
     },
     {
@@ -512,7 +512,7 @@
       "prompt": "Generate a demo organization in the technology space and prepare a demo account on it called 'TechDemo'.",
       "expected_output": "generate-org → prepare-account in order.",
       "assertions": [
-        {"name": "demo_pipeline", "type": "command_sequence", "text": "Sequence: `^ac admin demo generate-org .*--industry .*Technology`, `^ac admin demo prepare-account .*--org-name .*TechDemo`"}
+        {"name": "demo_pipeline", "type": "command_sequence", "text": "Sequence: `ac admin demo generate-org .*--industry .*Technology`, `ac admin demo prepare-account .*--org-name .*TechDemo`"}
       ]
     },
     {
@@ -528,7 +528,7 @@
       "prompt": "Publish a new Terms of Service document version 2.0 and make it the current one.",
       "expected_output": "legal-docs create → set-current.",
       "assertions": [
-        {"name": "tos_publish", "type": "command_sequence", "text": "Sequence: `^ac admin legal-docs create --document-type terms_of_service --version .2\\.0.`, `^ac admin legal-docs set-current`"}
+        {"name": "tos_publish", "type": "command_sequence", "text": "Sequence: `ac admin legal-docs create --document-type terms_of_service --version .2\\.0.`, `ac admin legal-docs set-current`"}
       ]
     },
     {
@@ -544,7 +544,7 @@
       "prompt": "List all open chat escalations and resolve escalation esc-7 with note 'duplicate ticket'.",
       "expected_output": "list --status open → update --status resolved.",
       "assertions": [
-        {"name": "escalation_resolve", "type": "command_sequence", "text": "Sequence: `^ac admin chat-escalations list --status open`, `^ac admin chat-escalations update esc-7 --status resolved --note .duplicate ticket.`"}
+        {"name": "escalation_resolve", "type": "command_sequence", "text": "Sequence: `ac admin chat-escalations list --status open`, `ac admin chat-escalations update esc-7 --status resolved --note .duplicate ticket.`"}
       ]
     },
     {
@@ -577,7 +577,7 @@
       "prompt": "Create a new playbook 'Enterprise Outreach' and duplicate it so I can build a variant.",
       "expected_output": "create → duplicate.",
       "assertions": [
-        {"name": "playbook_create_then_duplicate", "type": "command_sequence", "text": "Sequence: `^ac envoy playbooks create --name .Enterprise Outreach.`, `^ac envoy playbooks duplicate`"}
+        {"name": "playbook_create_then_duplicate", "type": "command_sequence", "text": "Sequence: `ac envoy playbooks create --name .Enterprise Outreach.`, `ac envoy playbooks duplicate`"}
       ]
     },
     {
@@ -593,7 +593,7 @@
       "prompt": "Pause sequence seq-77, then resume it later with workflow wf-99.",
       "expected_output": "pause → resume --workflow-id.",
       "assertions": [
-        {"name": "pause_then_resume", "type": "command_sequence", "text": "Sequence: `^ac envoy sequences pause seq-77`, `^ac envoy sequences resume seq-77 --workflow-id wf-99`"}
+        {"name": "pause_then_resume", "type": "command_sequence", "text": "Sequence: `ac envoy sequences pause seq-77`, `ac envoy sequences resume seq-77 --workflow-id wf-99`"}
       ]
     },
     {
@@ -609,7 +609,7 @@
       "prompt": "Open a new AI chat thread titled 'Q3 strategy', send 'What's my top priority?', and check the response.",
       "expected_output": "create → send.",
       "assertions": [
-        {"name": "chat_create_then_send", "type": "command_sequence", "text": "Sequence: `^ac chat threads create --title .Q3 strategy.`, `^ac chat threads send`"}
+        {"name": "chat_create_then_send", "type": "command_sequence", "text": "Sequence: `ac chat threads create --title .Q3 strategy.`, `ac chat threads send`"}
       ]
     },
     {

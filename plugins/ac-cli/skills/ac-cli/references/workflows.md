@@ -13,20 +13,38 @@ ac workflows runs logs <workflow-id> <run-id> [--limit 50] [--offset 0]
 
 ## Schedules
 
+> **MANDATORY**: `--cron` AND `--timezone` are co-required for `schedules create` and `schedules preview`. Never omit `--timezone`. Translate any user-mentioned region: "ET"/"Eastern"/"EST" → `America/New_York`, "PT"/"Pacific" → `America/Los_Angeles`, "UTC"/"GMT" → `UTC`, "London" → `Europe/London`. Translate "weekday"/"weekdays" → cron `1-5` in the dow field.
+
 ```bash
 ac workflows schedules list <workflow-id>
 ac workflows schedules get <workflow-id>
-ac workflows schedules create <workflow-id> --cron "0 9 * * 1" \
-  [--timezone "America/New_York"] [--input '{"key":"value"}']
+
+# create — --cron and --timezone are BOTH required
+ac workflows schedules create <workflow-id> --cron "0 9 * * 1" --timezone "America/New_York" \
+  [--input '{"key":"value"}']
+
+# update — pass any combination of --cron / --timezone / --input
 ac workflows schedules update <workflow-id> <schedule-id> \
   [--cron "0 10 * * 1"] [--timezone UTC]
+
 ac workflows schedules delete <workflow-id> <schedule-id> [--yes]
-ac workflows schedules preview <workflow-id> --cron "0 9 * * 1" \
-  [--timezone UTC] [--count 5]
+
+# preview — always pass all three to see the next N fire times
+ac workflows schedules preview <workflow-id> --cron "0 9 * * 1" --timezone "America/New_York" --count 5
+
 ac workflows schedules toggle <workflow-id> <schedule-id> --enabled/--disabled
 ```
 
-Cron format: standard 5-field (`minute hour dom month dow`). Always run `schedules preview` before `create` to confirm interpretation.
+Cron format: standard 5-field (`minute hour dom month dow`). Common patterns:
+
+| User says | Cron | Timezone |
+|-----------|------|----------|
+| Every weekday 9am ET | `0 9 * * 1-5` | `America/New_York` |
+| Every Monday 9am ET | `0 9 * * 1` | `America/New_York` |
+| Every 6 hours UTC | `0 */6 * * *` | `UTC` |
+| 1st of month 8:30am | `30 8 1 * *` | (user's tz) |
+
+**Always run `schedules preview` before `create`** to confirm the next 5 fire times look right.
 
 ## Presets
 

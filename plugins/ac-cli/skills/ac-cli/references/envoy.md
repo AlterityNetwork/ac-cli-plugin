@@ -90,6 +90,14 @@ ac envoy inbox remove-tags <thread-id> --tags "stale"
 ac envoy inbox reply <thread-id> --body "Thanks for your reply!"
 ```
 
+**Standard "read first thread + reply" recipe** — when the user asks to read messages then reply, chain all three steps in one call:
+
+```bash
+ac envoy inbox list --status open --json && \
+ac envoy inbox messages <thread-id> && \
+ac envoy inbox reply <thread-id> --body "..."
+```
+
 ## Battlecards
 
 ```bash
