@@ -139,11 +139,26 @@ List commands accept `--limit` and `--offset`:
 ac crm people list --limit 50 --offset 100
 ```
 
+### Period flag (dashboards / usage / engagement)
+Dashboards default to a 30-day window. **Always pass `--period N`** when the user names a different timeframe ("last 60 days", "this quarter", "the past two weeks"). Translate weeks/quarters to days (60, 90, 180):
+
+```bash
+ac crm engagement-dashboard --period 60
+ac crm dashboard --period 14
+```
+
 ### Cron expressions
 Standard 5-field (`minute hour dom month dow`):
 - `0 9 * * 1` — every Monday 9 AM
+- `0 9 * * 1-5` — every weekday 9 AM
 - `0 */6 * * *` — every 6 hours
 - `30 8 1 * *` — 1st of each month 8:30 AM
+
+**Always pass `--timezone`** (e.g. `America/New_York`, `Europe/London`, `UTC`) when creating or previewing schedules — without it the server defaults may surprise you. Mention timezone explicitly even when the user says "ET" / "Eastern" / "PT".
+
+```bash
+ac workflows schedules create wf-77 --cron "0 9 * * 1-5" --timezone America/New_York
+```
 
 ### JSON input for workflows
 ```bash
@@ -236,6 +251,8 @@ ac crm engagement-dashboard --json | jq '{open_rate, click_rate, reply_rate}'
 ## Common Workflows (Core 6)
 
 The other 9 multi-step recipes live in [`references/workflows-recipes.md`](references/workflows-recipes.md).
+
+> **Multi-step execution rule**: when a user request maps to a recipe with N steps, run **all N steps in one response** (chain them in a single bash invocation with `&&` if outputs feed forward, or run sequentially). Do not stop after the first step and ask the user "ready for the next step?" — chain the whole flow, then summarize results.
 
 ### CRM: Company + contact + deal in one go
 

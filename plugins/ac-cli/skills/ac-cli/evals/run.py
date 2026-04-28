@@ -47,20 +47,31 @@ class Capture:
 
     @property
     def commands(self) -> list[str]:
-        """Bash invocations + commands extracted from chat text fenced blocks
-        and inline backticks. claude -p frequently writes commands to chat
-        instead of executing them; assertions should grade intent."""
-        from_text = []
+        """Bash invocations + commands extracted from chat text. Splits
+        compound bash chains (`&&`, `;`, newlines) and continuations (`\\\n`)
+        so each `ac …` invocation counts as its own command — sequence
+        assertions need this granularity. Includes commands Claude wrote
+        in fenced bash blocks or inline backticks but didn't execute."""
+        out: list[str] = []
+        for src in self.bash:
+            # collapse line continuations
+            src = re.sub(r"\\\n\s*", " ", src)
+            # split on &&, ||, ;, and newlines
+            for piece in re.split(r"(?:&&|\|\||;|\n)", src):
+                piece = piece.strip()
+                if piece:
+                    out.append(piece)
         # Fenced bash blocks
         for m in re.finditer(r"```(?:bash|sh|shell)?\n(.*?)\n```", self.full_text, re.DOTALL):
-            for line in m.group(1).splitlines():
-                line = line.strip().lstrip("$ ").strip()
-                if line and not line.startswith("#"):
-                    from_text.append(line)
+            block = re.sub(r"\\\n\s*", " ", m.group(1))
+            for piece in re.split(r"(?:&&|\|\||;|\n)", block):
+                piece = piece.strip().lstrip("$ ").strip()
+                if piece and not piece.startswith("#"):
+                    out.append(piece)
         # Inline backticked `ac ...` / `pip ...` / `AC_YES=1 ac ...`
         for m in re.finditer(r"`((?:AC_YES=\S+\s+)?(?:ac|pip|uv|pipx|jq)\s[^`]+)`", self.full_text):
-            from_text.append(m.group(1).strip())
-        return self.bash + from_text
+            out.append(m.group(1).strip())
+        return out
 
 
 def run_claude(prompt: str, plugin_dir: str | None, model: str | None,

@@ -177,7 +177,7 @@
         {
           "name": "csv_parse_json",
           "type": "command_matches",
-          "text": "`ac workflows csv-parse /tmp/leads.csv` includes `--json`"
+          "text": "`ac workflows csv-parse` with `leads.csv` and `--json`"
         }
       ]
     },
@@ -315,7 +315,7 @@
         {
           "name": "image_upload_correct_category",
           "type": "command_matches",
-          "text": "`ac files images upload ./logo.png` with `--category organization_logos`"
+          "text": "`ac files images upload` with `logo.png` and `--category organization_logos`"
         },
         {
           "name": "app_install",
