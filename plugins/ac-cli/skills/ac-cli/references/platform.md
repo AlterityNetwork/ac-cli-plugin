@@ -100,7 +100,9 @@ ac profiles me                                    # View your profile
 ac profiles update [--first-name "Jane"] [--last-name "Smith"] [--bio "..."] \
   [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"]
 ac profiles members [--limit 50] [--offset 0]     # List org members
-ac profiles set-organization <org-id>             # Switch active org
+ac profiles set-organization <org-id>             # Switch active org (per-user)
 ac profiles set-password                          # Mark password as set (post-magic-link)
 ac profiles subscription                          # View current org subscription
 ```
+
+> **"Switch active organization" → `ac profiles set-organization <org-id>`**, NOT `ac env use` (env is local/staging/production) and NOT `ac admin orgs` (which manages org records, not user's active org).

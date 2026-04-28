@@ -117,6 +117,8 @@ ac admin ai-usage details [--start-date 2026-01-01] [--end-date 2026-03-23] [--o
 
 ## Platform Activity
 
+> Sort key for `users` is **`total_events`** (NOT `event_count` / `events` / `activity`). Use the exact string `total_events`.
+
 ```bash
 ac admin platform-activity summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
@@ -201,6 +203,8 @@ ac admin subscriptions delete <subscription-id> [--yes]
 ```
 
 ## Subscription Plans
+
+> Subcommand is **`subscription-plans`** (full word), NOT `plans`. `ac admin plans` does not exist.
 
 ```bash
 ac admin subscription-plans list

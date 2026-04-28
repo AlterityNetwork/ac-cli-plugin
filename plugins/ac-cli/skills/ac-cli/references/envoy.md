@@ -124,6 +124,10 @@ ac envoy playbooks duplicate <playbook-id>
 
 ```bash
 ac envoy dashboard                          # Outreach stats overview
-ac envoy signals <recipient-id>             # Sales signals for a recipient
+ac envoy signals <recipient-id>             # Sales signals for a recipient (positional, NOT --recipient-id)
 ac envoy inbox-count                        # Total inbox thread count
 ```
+
+> "Signals for recipient X" → `ac envoy signals X` (positional). Do not use `ac envoy signals list --recipient-id` or `ac envoy signals for X` — those subcommands do not exist.
+
+> "How many threads in my inbox" → `ac envoy inbox-count` (single dedicated command). Do not pipe `inbox list --json | jq length` when a count command exists.

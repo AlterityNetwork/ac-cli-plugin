@@ -220,6 +220,21 @@ def grade_command_matches(cap: Capture, text: str) -> tuple[bool, str]:
     return True, "ok"
 
 
+def grade_command_any(cap: Capture, text: str) -> tuple[bool, str]:
+    """At least ONE backticked fragment must match. Use for assertions of
+    the form 'Either X or Y' where any path is acceptable."""
+    fragments = _extract_regexes(text) or [text.strip()]
+    haystack = "\n".join(cap.commands) + "\n" + "\n".join(cap.reads)
+    for frag in fragments:
+        try:
+            if re.search(frag, haystack, re.IGNORECASE):
+                return True, f"matched: {frag[:60]}"
+        except re.error:
+            if frag in haystack:
+                return True, f"matched: {frag[:60]}"
+    return False, "none of: " + " | ".join(f[:50] for f in fragments)
+
+
 def grade_command_sequence(cap: Capture, text: str) -> tuple[bool, str]:
     """Backticked regexes must match Bash commands in the listed order."""
     fragments = _extract_regexes(text)
@@ -271,6 +286,7 @@ def grade_auth_check_first(cap: Capture, _text: str) -> tuple[bool, str]:
 
 GRADERS = {
     "command_matches": grade_command_matches,
+    "command_any": grade_command_any,
     "command_sequence": grade_command_sequence,
     "reads_file": grade_reads_file,
     "auth_check_first": grade_auth_check_first,
@@ -289,7 +305,8 @@ def grade_eval(ev: dict, cap: Capture) -> dict:
     return {"id": ev["id"], "prompt": ev["prompt"][:80],
             "pass": overall, "assertions": results,
             "bash_count": len(cap.bash),
-            "cmd_count": len(cap.commands)}
+            "cmd_count": len(cap.commands),
+            "commands": cap.commands[:30]}
 
 
 # ---------- CLI ----------

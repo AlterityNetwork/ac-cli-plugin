@@ -26,6 +26,8 @@ ac crm people bulk-upsert --file people.json
 ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 ```
 
+> **Bulk vs single rule**: when the user names **more than one** id for delete or upsert, ALWAYS use `bulk-delete --ids id1,id2,id3` or `bulk-upsert --file <path>`. Do not loop single `delete` calls — slower and breaks atomicity.
+
 ## Deals
 
 ```bash

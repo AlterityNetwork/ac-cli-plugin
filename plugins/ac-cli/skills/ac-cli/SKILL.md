@@ -125,6 +125,24 @@ For exhaustive flag tables see [`references/commands.md`](references/commands.md
 
 ---
 
+## Common Pitfalls / Prompt → Command Map
+
+These misroutes happen often. **Read this table FIRST** before composing any `ac` command — it is faster than `--help` exploration. Memorize. Do not search the source. Do not loop single commands when a bulk command exists.
+
+| User says | Correct command | Wrong guesses to avoid |
+|-----------|----------------|------------------------|
+| "switch / change active organization to X" | `ac profiles set-organization X` | `ac env use` (envs are local/staging/production) · `ac admin orgs` (manages records) · `ac apps … --org-id` (per-app) |
+| "delete the 3 people IDs p-100, p-101, p-102" / any list of 2+ ids | `ac crm people bulk-delete --ids p-100,p-101,p-102` (single call, comma-separated) | NEVER loop `ac crm people delete <id>` per-id — even with `AC_YES=1`, this is wrong because (a) bulk-delete exists, (b) the loop is non-atomic |
+| "JSON file of people, bulk upsert / import" | `ac crm people bulk-upsert --file <path>` | `ac crm import preview --file <path>` is for the CSV-style CRM import flow; for a JSON file of people use `bulk-upsert` |
+| "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
+| "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
+| "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
+| "AI chat thread" (user-facing) | `ac chat threads …` | `ac admin chat-threads …` — admin path is for chat-escalations only |
+| "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
+| "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
+| "cache stats" / "cache hit rate" / "cache hit ratio" | `ac admin cache-stats` (top-level admin command) | `ac admin ai-usage summary` (token cache) is not the same — `cache-stats` covers platform cache, ai-usage covers Anthropic prompt cache |
+| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts | both exist for different surfaces — match the user's context |
+
 ## Co-required flags
 
 Some commands are validated server-side and reject the request if a paired flag is missing. **Always emit these flags together**:
