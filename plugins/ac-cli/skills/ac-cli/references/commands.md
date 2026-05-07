@@ -430,6 +430,16 @@ Regenerate a pending communication's draft.
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
 
+#### `ac crm lists lists-for-member`
+List the CRM lists that contain a given person or company.
+| Flag | Type | Description |
+|------|------|-------------|
+| `--person-id` | str | Person ID (one of person/company required) |
+| `--company-id` | str | Company ID (one of person/company required) |
+| `--json` | flag | Output raw JSON |
+
+API: `GET /api/v1/crm/members/{member_type}/{member_id}/lists`. Response is a bare list (not paginated envelope).
+
 #### `ac crm lists add-member <list-id>`
 | Flag | Type | Description |
 |------|------|-------------|

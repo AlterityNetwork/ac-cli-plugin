@@ -89,6 +89,8 @@ ac crm lists create --name "Q2 Targets" [--member-type person] [--type static]
 ac crm lists add-member <list-id> --person-id <id>
 ac crm lists remove-member <list-id> --person-id <id>
 ac crm lists members <list-id>
+ac crm lists lists-for-member --person-id <id>
+ac crm lists lists-for-member --company-id <id>
 ac crm lists delete <list-id> [--yes]
 ```
 
