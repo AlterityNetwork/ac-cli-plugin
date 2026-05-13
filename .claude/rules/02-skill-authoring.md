@@ -59,7 +59,6 @@ The body is Claude's runtime guide. Target structure:
 - **Ask the user for creds, then run `ac login` for them**: do not tell the user to run login themselves
 - **Keep commands tested** against the current `ac` version
 - **Push detail to references**: the skill body is for orientation, patterns, and the 6 most common cross-domain recipes; flag tables and per-domain command lists live in `references/`
-- **Scope `allowed-tools`**: only the binaries actually used (`ac`, `pip`, `uv`, `pipx`, `jq`). Adding new tool families requires a justification
 
 ## references/
 
