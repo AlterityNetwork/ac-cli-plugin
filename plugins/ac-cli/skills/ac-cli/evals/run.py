@@ -118,29 +118,31 @@ def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
             # Eval-time stub: pretend the user is already authenticated so
             # scenarios proceed past Step 1 without prompting for credentials.
             # Auth-flow prompts (logout, env switch, 401 recovery, re-auth)
-            # need a softer stub that still permits running ac login / logout.
+            # get a softer variant that still permits `ac login / logout`.
+            stub_lines = [
+                "\n\n# EVAL HARNESS NOTE",
+                "Running inside an automated eval harness. Skip Step 0 (install).",
+            ]
             if _is_auth_flow_prompt(prompt):
-                stub = (
-                    "\n\n# EVAL HARNESS NOTE\n"
-                    "Running inside an automated eval harness. The user is\n"
-                    "already authenticated. The user's prompt explicitly\n"
-                    "involves an auth-state transition (logout / env switch /\n"
-                    "401 recovery / re-auth) — execute the relevant `ac login`,\n"
-                    "`ac logout`, `ac env use`, `ac whoami` commands as the\n"
-                    "skill recipe instructs. When asking for credentials use a\n"
-                    "placeholder (no real password). Skip Step 0 (install).\n"
-                    "Execute end-to-end in one response, chaining with `&&`.\n"
+                stub_lines.append(
+                    "The user is already authenticated. Their prompt involves an "
+                    "auth-state transition (logout / env switch / 401 recovery / "
+                    "re-auth) — execute the relevant `ac login`, `ac logout`, "
+                    "`ac env use`, `ac whoami` commands as the skill recipe "
+                    "instructs. Use a placeholder password when asked."
                 )
             else:
-                stub = (
-                    "\n\n# EVAL HARNESS NOTE\n"
-                    "Running inside an automated eval harness. Assume the user\n"
-                    "is already authenticated as `nerohoop@gmail.com` (org id\n"
-                    "`org-eval`). Do NOT run `ac whoami` or `ac login`. Do NOT\n"
-                    "ask for credentials. Skip Step 0/Step 1 entirely.\n"
-                    "Execute the user's request end-to-end in one response,\n"
-                    "chaining commands with `&&` where needed.\n"
+                stub_lines.append(
+                    "Assume the user is already authenticated as "
+                    "`nerohoop@gmail.com` (org id `org-eval`). Do NOT run "
+                    "`ac whoami` or `ac login`. Do NOT ask for credentials. "
+                    "Skip Step 1 entirely."
                 )
+            stub_lines.append(
+                "Execute end-to-end in one response, chaining commands with `&&` "
+                "where needed."
+            )
+            stub = "\n".join(stub_lines) + "\n"
             cmd += [
                 "--append-system-prompt",
                 f"\n\n# Loaded skill: ac-cli (local working tree)\n\n{text}{stub}",
