@@ -11,6 +11,7 @@ Claude Code marketplace plugin providing AgencyCore management skills (CRM, admi
 5. **`SKILL.md` ≤ 500 lines**: per-domain detail belongs in `plugins/ac-cli/skills/ac-cli/references/<domain>.md`; exhaustive flag tables in `references/commands.md`. References stay one level deep from SKILL.md.
 6. **Scoped `allowed-tools`**: only the binaries actually used (`Bash(ac *)`, `Bash(pip *)`, `Bash(uv *)`, `Bash(pipx *)`, `Bash(jq *)`). No open `Bash`.
 7. **Push directly to `main`**: This repo is not Heroku-deployed. Use `ALLOW_MAIN_PUSH=1 git push` to bypass the inherited pre-push hook.
+8. **API↔CLI parity**: when `ac-python-api` adds, removes, renames, or changes the method/path/body of a route AND `ac-cli` exposes a new/changed `ac …` command for it, mirror that change here. Update `SKILL.md` if it appears in a workflow recipe, update the matching `references/<domain>.md` flag/quick-reference, update `references/commands.md` if flag tables shift, and add an eval in `evals/evals.json` if it's a new user-facing command. The source of truth is `ac-cli/src/ac_cli/commands/` — when in doubt, re-derive flag tables from the Typer definitions.
 
 ## Project Layout
 
