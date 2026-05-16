@@ -22,6 +22,7 @@ ac envoy sequences bulk-remove-recipients <sequence-id> --recipient-id <id> [--r
 ac envoy sequences classify-step-subtype "Send a manual follow-up email"
 ac envoy sequences outputs <sequence-id> [--limit 50] [--offset 0]
 ac envoy sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
+ac envoy sequences for-prospect <prospect-id>          # Sequences containing a given person
 ```
 
 ## Campaigns

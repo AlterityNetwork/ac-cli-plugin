@@ -93,6 +93,20 @@ ac resources status <resource-id>
 
 Formats: .pdf, .txt, .md, .docx (max 10 MB). `--name` is required.
 
+## Notifications
+
+```bash
+ac notifications list [--unread-only] [--limit 50] [--offset 0]
+ac notifications unread-count
+ac notifications read <notification-id>
+ac notifications read-all
+ac notifications preferences                       # List type/channel preferences
+ac notifications set-preference --type mention --channel email --enabled
+ac notifications set-preference --type mention --channel in_app --disabled
+```
+
+Channel enum: `in_app`, `email`.
+
 ## Profiles
 
 ```bash

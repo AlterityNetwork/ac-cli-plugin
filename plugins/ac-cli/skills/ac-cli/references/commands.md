@@ -105,6 +105,15 @@ Same optional flags as `create`. Only provided fields are updated.
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Output raw JSON |
 
+#### `ac crm companies bulk-delete`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--ids` | str (req) | Comma-separated company IDs |
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Output raw JSON |
+
+Single atomic call. Always prefer over looping `delete`.
+
 ---
 
 ### People
@@ -452,6 +461,16 @@ One of `--person-id` or `--company-id` is required.
 #### `ac crm lists remove-member <list-id>`
 Same flags as `add-member`.
 
+#### `ac crm lists bulk-remove-members <list-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--member-type` | enum (`person`\|`company`) | yes | Type of members to remove |
+| `--ids` | str | yes | Comma-separated member IDs |
+| `--yes` | flag | no | Skip confirmation |
+| `--json` | flag | no | Output raw JSON |
+
+Single atomic call. Always prefer over looping `remove-member`.
+
 #### `ac crm lists delete <list-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -477,6 +496,53 @@ before committing.
 | `--preview-id` | str | yes | ID from the preview step |
 | `--auto-accept` | flag | no | Skip confirmation |
 | `--json` | flag | no | Output raw JSON |
+
+---
+
+### Signals (buying signals)
+
+CRUD on standalone buying-signal records attached to companies/people. Distinct from `ac envoy signals <recipient-id>` which returns recipient-scoped sales signals from an active sequence.
+
+#### `ac crm signals list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--signal-type` | enum | — | hiring, tech_stack, funding, content, leadership, growth, competitor, compliance, event, news, product, expansion, partnership |
+| `--company-id` | str | — | Filter by company |
+| `--company-ids` | str | — | Comma-separated company IDs |
+| `--person-id` | str | — | Filter by person |
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Offset |
+| `--json` | flag | — | Output raw JSON |
+
+#### `ac crm signals get <signal-id>`
+| `--json` | flag | Output raw JSON |
+
+#### `ac crm signals create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--signal-type` | enum | yes | See enum above |
+| `--description` | str | yes | Signal description |
+| `--company-id` | str | one of | Attach to company (exactly one of `--company-id`/`--person-id`) |
+| `--person-id` | str | one of | Attach to person |
+| `--signal-date` | date | no | YYYY-MM-DD |
+| `--source-url` | str | no | Source URL |
+| `--snippet` | str | no | Source snippet |
+| `--workflow-run-id` | str | no | Originating workflow run |
+| `--source-agent` | str | no | `sonar` / `envoy` / `manual` (default `manual`) |
+| `--attach-score` | int | no | Relevance score 0-100 |
+| `--json` | flag | no | Output raw JSON |
+
+#### `ac crm signals attach <signal-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--company-id` | str | one of | Attach to additional company |
+| `--person-id` | str | one of | Attach to additional person |
+| `--score` | int | no | Relevance score 0-100 |
+| `--json` | flag | no | Output raw JSON |
+
+#### `ac crm signals delete <signal-id>`
+| `--yes` | flag | Skip confirmation |
+| `--json` | flag | Output raw JSON |
 
 ---
 
@@ -610,6 +676,13 @@ Trigger draft generation for a step.
 |------|------|----------|-------------|
 | `--workflow-id` | str | yes | Workflow under which drafts run |
 | `--json` | flag | no | Raw JSON output |
+
+#### `ac envoy sequences for-prospect <prospect-id>`
+Lists sequences that include the given prospect (person ID).
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
 
 ---
 
@@ -1288,6 +1361,40 @@ Returns to the original super admin session.
 | Flag | Type | Description |
 |------|------|-------------|
 | `--send-email` | flag | Send the link via email to the user |
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin users impersonation-status`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--session-id` | str | yes | Impersonation session ID |
+| `--json` | flag | no | Raw JSON output |
+
+Inspect state of a specific impersonation session (active, target user, expires-at).
+
+#### `ac admin users impersonation-end`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--session-id` | str | yes | Impersonation session ID |
+| `--json` | flag | no | Raw JSON output |
+
+End an active impersonation session by ID. Companion to `exit-impersonation` (which ends the current process's session).
+
+---
+
+### Admin CRM (destructive)
+
+Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit instruction.
+
+#### `ac admin crm hard-delete-company <company-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation |
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin crm hard-delete-person <person-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation |
 | `--json` | flag | Raw JSON output |
 
 ---
@@ -2340,6 +2447,54 @@ Show the current organization's subscription. Calls `GET /api/v1/subscriptions/m
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
+
+---
+
+### Notifications
+
+In-app notifications and per-type/per-channel preferences.
+
+#### `ac notifications list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Offset |
+| `--unread-only` | flag | off | Only return unread |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac notifications unread-count`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac notifications read <notification-id>`
+Mark a notification read.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac notifications read-all`
+Mark all notifications read.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac notifications preferences`
+List type/channel preferences.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac notifications set-preference`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--type` | str | yes | Notification type (e.g. `mention`) |
+| `--channel` | enum (`in_app`\|`email`) | yes | Channel |
+| `--enabled` / `--disabled` | flag | yes | Enable or disable the channel |
+| `--json` | flag | no | Raw JSON output |
 
 ---
 

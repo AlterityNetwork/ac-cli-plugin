@@ -114,11 +114,11 @@ For the command list of a domain, **read the matching reference file** before co
 
 | Domain | Covers | Reference |
 |--------|--------|-----------|
-| CRM | companies, people, deals, activities, communications, lists, import, search, dashboards | [`references/crm.md`](references/crm.md) |
-| Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, signals | [`references/envoy.md`](references/envoy.md) |
+| CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
+| Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
-| Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
-| Platform | files/images, apps, writing styles, Nylas email, hooks, messaging, chat threads, resources, profiles | [`references/platform.md`](references/platform.md) |
+| Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
+| Platform | files/images, apps, writing styles, Nylas email, hooks, messaging, chat threads, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).
@@ -137,6 +137,12 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
 | "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
 | "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
+| "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac envoy signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
+| "delete 3 companies c1,c2,c3" | `ac crm companies bulk-delete --ids c1,c2,c3` | looping `ac crm companies delete` per-id — non-atomic and slower |
+| "remove 5 people from list L" | `ac crm lists bulk-remove-members L --member-type person --ids p1,p2,p3,p4,p5` | looping `ac crm lists remove-member` per-id |
+| "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
+| "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
+| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / `ac envoy inbox …` — different surfaces |
 | "AI chat thread" (user-facing) | `ac chat threads …` | `ac admin chat-threads …` — admin path is for chat-escalations only |
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |

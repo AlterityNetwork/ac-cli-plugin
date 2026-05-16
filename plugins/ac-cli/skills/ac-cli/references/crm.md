@@ -11,6 +11,7 @@ ac crm companies create --name "Acme Corp" [--website https://acme.com] \
   [--industry Technology] [--lifecycle-stage lead] [--tags "hot,enterprise"]
 ac crm companies update <company-id> --industry "SaaS"
 ac crm companies delete <company-id> [--yes]
+ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
 ```
 
 ## People (Contacts)
@@ -91,6 +92,8 @@ ac crm lists remove-member <list-id> --person-id <id>
 ac crm lists members <list-id>
 ac crm lists lists-for-member --person-id <id>
 ac crm lists lists-for-member --company-id <id>
+ac crm lists bulk-remove-members <list-id> --member-type person --ids id1,id2,id3 [--yes]
+ac crm lists bulk-remove-members <list-id> --member-type company --ids id1,id2,id3 [--yes]
 ac crm lists delete <list-id> [--yes]
 ```
 
@@ -117,3 +120,22 @@ ac crm engagement-dashboard [--period 30]    # Email engagement metrics
 ```
 
 Returns: emails sent (current/previous/change), open rate, click rate, reply rate, bounce rate, email health score, top clicked links.
+
+## Signals (buying signals)
+
+```bash
+ac crm signals list [--signal-type funding] [--company-id <id>] [--person-id <id>] \
+  [--company-ids id1,id2] [--limit 50] [--offset 0]
+ac crm signals get <signal-id>
+ac crm signals create --signal-type funding --description "Series B raised" \
+  --company-id <id> [--signal-date 2026-05-01] [--source-url <url>] [--snippet "..."] \
+  [--workflow-run-id <id>] [--source-agent manual] [--attach-score 80]
+ac crm signals create --signal-type hiring --description "..." --person-id <id>
+ac crm signals attach <signal-id> --company-id <id> [--score 80]
+ac crm signals attach <signal-id> --person-id <id> [--score 80]
+ac crm signals delete <signal-id> [--yes]
+```
+
+`signal_type` enum: `hiring`, `tech_stack`, `funding`, `content`, `leadership`, `growth`, `competitor`, `compliance`, `event`, `news`, `product`, `expansion`, `partnership`.
+
+> **`crm signals` vs `envoy signals`**: `ac crm signals` is the CRM signals store (CRUD on standalone signal records attached to companies/people). `ac envoy signals <recipient-id>` returns sales signals for a sequence recipient. Different APIs — do not conflate.

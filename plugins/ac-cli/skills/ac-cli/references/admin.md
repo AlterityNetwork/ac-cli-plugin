@@ -15,7 +15,18 @@ ac admin users search --email jane@example.com
 ac admin users reset-password <user-id> [--yes]
 ac admin users impersonate <user-id>
 ac admin users exit-impersonation
+ac admin users impersonation-status --session-id <session-id>     # Check active session
+ac admin users impersonation-end    --session-id <session-id>     # End session by ID
 ac admin users generate-link <user-id> [--send-email]
+```
+
+## CRM Hard-Delete (super admin, destructive)
+
+Bypasses soft-delete. Unrecoverable. Pair with `--yes` to skip the confirm; refuse without explicit instruction.
+
+```bash
+ac admin crm hard-delete-company <company-id> [--yes]
+ac admin crm hard-delete-person  <person-id>  [--yes]
 ```
 
 ## Organizations
