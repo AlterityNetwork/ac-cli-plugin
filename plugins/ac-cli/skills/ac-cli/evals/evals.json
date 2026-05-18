@@ -929,6 +929,42 @@
           "text": "`ac envoy dashboard`"
         }
       ]
+    },
+    {
+      "id": 70,
+      "prompt": "List my Envoy campaigns.",
+      "expected_output": "Runs `ac envoy campaigns list`.",
+      "assertions": [
+        {
+          "name": "campaigns_list",
+          "type": "command_matches",
+          "text": "`ac envoy campaigns list`"
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "prompt": "Generate the drafts for step st-2 of sequence seq-1 using workflow wf-9.",
+      "expected_output": "Runs `ac envoy sequences generate-drafts seq-1 st-2 --workflow-id wf-9`.",
+      "assertions": [
+        {
+          "name": "sequences_generate_drafts",
+          "type": "command_matches",
+          "text": "`ac envoy sequences generate-drafts seq-1 st-2` with `--workflow-id wf-9`"
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "prompt": "Archive the Q1 outreach sequence seq-99.",
+      "expected_output": "Runs `ac envoy sequences archive seq-99`.",
+      "assertions": [
+        {
+          "name": "sequences_archive",
+          "type": "command_matches",
+          "text": "`ac envoy sequences archive seq-99`"
+        }
+      ]
     }
   ]
 }
