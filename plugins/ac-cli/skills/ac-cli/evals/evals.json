@@ -965,6 +965,23 @@
           "text": "`ac envoy sequences archive seq-99`"
         }
       ]
+    },
+    {
+      "id": 73,
+      "prompt": "Sonar found a bunch of companies and they auto-landed in our CRM. Mark companies c1, c2, and c3 as human-approved, then show me the companies still waiting for approval.",
+      "expected_output": "Bulk-approve via `ac crm companies approve --ids c1,c2,c3`, then list unapproved with `ac crm companies list --unapproved`.",
+      "assertions": [
+        {
+          "name": "bulk_approve_companies",
+          "type": "command_matches",
+          "text": "`ac crm companies approve --ids c1,c2,c3` (single bulk call, not looped single approves)"
+        },
+        {
+          "name": "lists_unapproved",
+          "type": "command_matches",
+          "text": "`ac crm companies list` with `--unapproved`"
+        }
+      ]
     }
   ]
 }

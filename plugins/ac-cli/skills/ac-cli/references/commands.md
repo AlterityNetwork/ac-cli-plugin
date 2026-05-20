@@ -76,6 +76,9 @@ For domain-scoped quick references (just the common commands per domain), see:
 |------|------|---------|-------------|
 | `--limit` | int | 100 | Max results to return |
 | `--offset` | int | 0 | Skip this many results |
+| `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
+| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm companies get <company-id>`
@@ -114,6 +117,14 @@ Same optional flags as `create`. Only provided fields are updated.
 
 Single atomic call. Always prefer over looping `delete`.
 
+#### `ac crm companies approve` / `ac crm companies unapprove`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated company IDs |
+| `--json` | flag | no | Output raw JSON |
+
+`approve` stamps the acting user as `approved_by` (human-vetted); `unapprove` clears it. Bulk-friendly — pass all ids in one call. Used to vet agent-discovered companies (ENG-819).
+
 ---
 
 ### People
@@ -124,6 +135,9 @@ Single atomic call. Always prefer over looping `delete`.
 | `--company-id` | str | -- | Filter by company |
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
+| `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
+| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm people get <person-id>`
@@ -167,6 +181,14 @@ Bulk upserts people from a JSON file. The file must contain a JSON array of pers
 |------|------|----------|-------------|
 | `--ids` | str | yes | Comma-separated people IDs to delete |
 | `--yes` | flag | no | Skip confirmation prompt |
+
+#### `ac crm people approve` / `ac crm people unapprove`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated people IDs |
+| `--json` | flag | no | Output raw JSON |
+
+`approve` stamps the acting user as `approved_by` (human-vetted); `unapprove` clears it. Bulk-friendly. Used to vet agent-discovered people (ENG-819).
 
 ---
 

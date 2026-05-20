@@ -5,11 +5,14 @@ For full flag tables see `commands.md` (CRM section).
 ## Companies
 
 ```bash
-ac crm companies list [--limit 100] [--offset 0]
+ac crm companies list [--limit 100] [--offset 0] \
+  [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>]
 ac crm companies get <company-id>
 ac crm companies create --name "Acme Corp" [--website https://acme.com] \
   [--industry Technology] [--lifecycle-stage lead] [--tags "hot,enterprise"]
 ac crm companies update <company-id> --industry "SaaS"
+ac crm companies approve --ids id1,id2,id3        # mark human-approved (ENG-819)
+ac crm companies unapprove --ids id1,id2,id3      # clear approval
 ac crm companies delete <company-id> [--yes]
 ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
 ```
@@ -17,17 +20,22 @@ ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
 ## People (Contacts)
 
 ```bash
-ac crm people list [--company-id <id>] [--limit 100]
+ac crm people list [--company-id <id>] [--limit 100] \
+  [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>]
 ac crm people get <person-id>
 ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
   [--current-title "VP Sales"] [--company-id <id>] [--tags "decision-maker"]
 ac crm people update <person-id> --current-title "CRO"
+ac crm people approve --ids id1,id2,id3           # mark human-approved (ENG-819)
+ac crm people unapprove --ids id1,id2,id3         # clear approval
 ac crm people delete <person-id> [--yes]
 ac crm people bulk-upsert --file people.json
 ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 ```
 
 > **Bulk vs single rule**: when the user names **more than one** id for delete or upsert, ALWAYS use `bulk-delete --ids id1,id2,id3` or `bulk-upsert --file <path>`. Do not loop single `delete` calls — slower and breaks atomicity.
+
+> **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
 
 ## Deals
 
