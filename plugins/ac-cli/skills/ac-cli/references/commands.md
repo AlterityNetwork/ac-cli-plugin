@@ -79,6 +79,8 @@ For domain-scoped quick references (just the common commands per domain), see:
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
 | `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
+| `--view` | `full`\|`options` | `full` | Projection: `full` returns the wide CRM-table shape; `options` returns the slim selector / hover-card payload (id, name, logo, industry, location, lifecycle_stage). ENG-933. |
+| `--lean` | flag | off | Shortcut for `--view options`. |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm companies get <company-id>`
