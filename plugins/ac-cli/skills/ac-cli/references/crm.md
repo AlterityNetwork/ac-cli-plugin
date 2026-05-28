@@ -14,6 +14,7 @@ ac crm companies create --name "Acme Corp" [--website https://acme.com] \
 ac crm companies update <company-id> --industry "SaaS"
 ac crm companies approve --ids id1,id2,id3        # mark human-approved (ENG-819)
 ac crm companies unapprove --ids id1,id2,id3      # clear approval
+ac crm companies mark-actioned --ids id1,id2,id3 [--note "..."]   # ENG-912 Actioned (note → crm_activities)
 ac crm companies delete <company-id> [--yes]
 ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
 ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnostic autofill (ENG-1060)
@@ -40,6 +41,8 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 > **Bulk vs single rule**: when the user names **more than one** id for delete or upsert, ALWAYS use `bulk-delete --ids id1,id2,id3` or `bulk-upsert --file <path>`. Do not loop single `delete` calls — slower and breaks atomicity.
 
 > **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
+
+> **Actioned (ENG-912)**: `approved_by` / `approved_at` doubles as the Actioned stamp. Any of {note added, manual outbound comm logged, list-add, sequence-enrol} stamps it forward. `ac crm companies mark-actioned --ids ... [--note "..."]` is the explicit bulk action behind the Sonar / HH Actioned button — with `--note` it also writes a `crm_activities` row (`type=note`, `source_app=manual`) per company, otherwise just stamps. People equivalents land alongside the UI mirror.
 
 ## Deals
 

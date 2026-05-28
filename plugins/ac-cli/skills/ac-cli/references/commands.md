@@ -127,6 +127,15 @@ Single atomic call. Always prefer over looping `delete`.
 
 `approve` stamps the acting user as `approved_by` (human-vetted); `unapprove` clears it. Bulk-friendly — pass all ids in one call. Used to vet agent-discovered companies (ENG-819).
 
+#### `ac crm companies mark-actioned`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated company IDs |
+| `--note` | str | no | Optional free-text note. Saved as a `crm_activities` row (`type=note`, `source_app=manual`) per company. |
+| `--json` | flag | no | Output raw JSON |
+
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per company. Backs the Sonar / HH Actioned button (ENG-912). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+
 #### `ac crm companies enrich <url>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
