@@ -861,12 +861,12 @@
     {
       "id": 64,
       "prompt": "Top 10 most-active users in the platform last 30 days, sorted by event count.",
-      "expected_output": "Uses `ac admin platform-activity users --sort total_events --order desc --page-size 10`.",
+      "expected_output": "Uses `ac admin platform-activity users --sort total_events --order desc --limit 10`.",
       "assertions": [
         {
           "name": "platform_activity_top10",
           "type": "command_matches",
-          "text": "`ac admin platform-activity users` with `--sort (total_events|event_count)`, `--order desc`, `--page-size 10`"
+          "text": "`ac admin platform-activity users` with `--sort (total_events|event_count)`, `--order desc`, `--limit 10`"
         }
       ]
     },

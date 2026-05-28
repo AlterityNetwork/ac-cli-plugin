@@ -725,7 +725,8 @@ Lists sequences that include the given prospect (person ID).
 |------|------|---------|-------------|
 | `--archived` | flag | off | Show archived campaigns instead of active |
 | `--query` / `-q` | str | — | Search by name |
-| `--cursor` | str | — | Pagination cursor |
+| `--limit` | int | — | Max results |
+| `--offset` | int | 0 | Row offset |
 | `--limit` | int | — | Max results |
 | `--json` | flag | off | Raw JSON output |
 
@@ -1327,8 +1328,8 @@ All admin commands require super admin authentication.
 | `--query` | str | None | Filter by name or email |
 | `--sort` | str | "created_at" | Sort field |
 | `--order` | str | "desc" | Sort order (asc/desc) |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 50 | Results per page |
+| `--limit` | int | 50 | Results per page |
+| `--offset` | int | 0 | Row offset |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin users get <user-id>`
@@ -1439,8 +1440,8 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--query` | str | None | Filter by name or slug |
 | `--sort` | str | "created_at" | Sort field |
 | `--order` | str | "desc" | Sort order (asc/desc) |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 50 | Results per page |
+| `--limit` | int | 50 | Results per page |
+| `--offset` | int | 0 | Row offset |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin orgs get <org-id>`
@@ -1770,8 +1771,8 @@ Returns current onboarding settings.
 | `--org-id` | str | None | Filter by organization |
 | `--sort` | str | None | Sort field (e.g. total_actions) |
 | `--order` | str | None | Sort order (asc/desc) |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 50 | Results per page |
+| `--limit` | int | 50 | Results per page |
+| `--offset` | int | 0 | Row offset |
 | `--search` | str | None | Search by user name or email |
 | `--json` | flag | off | Raw JSON output |
 
@@ -1864,8 +1865,8 @@ Returns current onboarding settings.
 | `--end-date` | str | None | End date (ISO format) |
 | `--sort` | str | None | Sort field (e.g. total_events) |
 | `--order` | str | None | Sort order (asc/desc) |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 50 | Results per page |
+| `--limit` | int | 50 | Results per page |
+| `--offset` | int | 0 | Row offset |
 | `--query` | str | None | Search by user name or email |
 | `--org-id` | str | None | Filter by organization |
 | `--json` | flag | off | Raw JSON output |
@@ -1906,9 +1907,9 @@ Returns total runs, completed/failed counts, success rate, total companies/peopl
 | `--user-id` | list[str] | None | User filter (repeatable) |
 | `--status` | str | None | `pending`, `running`, `completed`, `failed` |
 | `-q`, `--query` | str | None | Substring match against sanitized trigger_data |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 25 | Results per page (max 100) |
-| `--all` | flag | off | Walk every page (page-size 100). Implies `--json`. Capped at 50,000 items. |
+| `--limit` | int | 25 | Results per page (max 100) |
+| `--offset` | int | 0 | Row offset |
+| `--all` | flag | off | Walk every page (limit 100). Implies `--json`. Capped at 50,000 items. |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin searches run <run-id>`
@@ -1927,8 +1928,8 @@ Returns one workflow run with org/user/source context, sanitized trigger_data, s
 | `--org-id` | list[str] | None | Org filter (repeatable) |
 | `--user-id` | list[str] | None | User filter (repeatable) |
 | `-q`, `--query` | str | None | ILIKE match on `name` or `website` |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 25 | Results per page (max 100) |
+| `--limit` | int | 25 | Results per page (max 100) |
+| `--offset` | int | 0 | Row offset |
 | `--all` | flag | off | Walk every page. Capped at 50,000 items. |
 | `--json` | flag | off | Raw JSON output |
 
@@ -1942,8 +1943,8 @@ Returns firmographics, lead score, sales signals, country, and discovery timing.
 | `--source` | str | headhunter | Sonar produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
 | `--org-id` | list[str] | None | Org filter (repeatable) |
 | `--user-id` | list[str] | None | User filter (repeatable) |
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 25 | Results per page (max 100) |
+| `--limit` | int | 25 | Results per page (max 100) |
+| `--offset` | int | 0 | Row offset |
 | `--all` | flag | off | Walk every page. Capped at 50,000 items. |
 | `--json` | flag | off | Raw JSON output |
 
