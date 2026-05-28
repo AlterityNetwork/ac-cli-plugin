@@ -16,7 +16,10 @@ ac crm companies approve --ids id1,id2,id3        # mark human-approved (ENG-819
 ac crm companies unapprove --ids id1,id2,id3      # clear approval
 ac crm companies delete <company-id> [--yes]
 ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
+ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnostic autofill (ENG-1060)
 ```
+
+> **Company autofill (ENG-1060)**: `ac crm companies enrich <url>` runs the configured structured provider (Explorium by default, override with `--provider hunter`) and falls through to a homepage scrape on miss. Response carries the enriched fields plus `source` (`hunter` / `explorium` / `scrape`) telling you who produced the data. Useful for quickly A/B-ing providers against a reference domain before importing — pair with `--json | jq` to script.
 
 ## People (Contacts)
 

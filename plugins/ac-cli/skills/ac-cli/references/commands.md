@@ -127,6 +127,14 @@ Single atomic call. Always prefer over looping `delete`.
 
 `approve` stamps the acting user as `approved_by` (human-vetted); `unapprove` clears it. Bulk-friendly — pass all ids in one call. Used to vet agent-discovered companies (ENG-819).
 
+#### `ac crm companies enrich <url>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--provider` | enum | no | `hunter` or `explorium`. Omit to use the configured default. |
+| `--json` | flag | no | Output raw JSON |
+
+Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` is the provider that actually produced the data (`hunter` / `explorium` / `scrape` when the picked provider missed and the terminal homepage-scrape ran).
+
 ---
 
 ### People
