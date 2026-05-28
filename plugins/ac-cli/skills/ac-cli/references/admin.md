@@ -5,7 +5,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ## Users
 
 ```bash
-ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
+ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin users get <user-id>
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
 ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin]
@@ -32,7 +32,7 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ## Organizations
 
 ```bash
-ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
+ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
 ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro]
 ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise]
@@ -109,7 +109,7 @@ ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
 ```bash
 ac admin app-usage summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin app-usage users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
-  [--sort total_actions] [--order desc] [--page 1] [--page-size 50] [--search "jane"]
+  [--sort total_events] [--order desc] [--limit 50] [--offset 0] [--search "jane"]
 ac admin app-usage user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
 
@@ -133,7 +133,7 @@ ac admin ai-usage details [--start-date 2026-01-01] [--end-date 2026-03-23] [--o
 ```bash
 ac admin platform-activity summary [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
-  [--sort total_events] [--order desc] [--page 1] [--page-size 50] [--query "jane"]
+  [--sort total_events] [--order desc] [--limit 50] [--offset 0] [--query "jane"]
 ac admin platform-activity user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
 
@@ -148,16 +148,16 @@ ac admin searches summary [--source sonar|headhunter|both] \
 
 ac admin searches runs [--source sonar|headhunter|both] \
   [--org-id <id>...] [--user-id <id>...] [--status completed|failed|running|pending] \
-  [-q "VPs of Eng"] [--page 1] [--page-size 25] [--all]
+  [-q "VPs of Eng"] [--limit 25] [--offset 0] [--all]
 
 ac admin searches run <run-id>
 
 ac admin searches companies [--source sonar|headhunter|both] \
   [--org-id <id>...] [--user-id <id>...] [-q "acme"] \
-  [--page 1] [--page-size 25] [--all]
+  [--limit 25] [--offset 0] [--all]
 
 ac admin searches people [--source headhunter] \
-  [--org-id <id>...] [--user-id <id>...] [--page 1] [--page-size 25] [--all]
+  [--org-id <id>...] [--user-id <id>...] [--limit 25] [--offset 0] [--all]
 ```
 
 Notes:
