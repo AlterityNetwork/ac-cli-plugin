@@ -24,15 +24,7 @@ plugins/ac-cli/
   skills/
     ac-cli/              → Unified skill (CRM, admin, envoy, platform, workflows)
       SKILL.md           → Quick reference guide (≤ 500 lines)
-      references/
-        commands.md           → Full flag tables for every command
-        crm.md                → CRM quick reference
-        envoy.md              → Outreach quick reference
-        workflows.md          → Workflows quick reference
-        admin.md              → Admin quick reference (superadmin)
-        platform.md           → Platform quick reference
-        auth-env.md           → Auth & environment quick reference
-        workflows-recipes.md  → Multi-step recipes beyond the SKILL.md core 6
+      references/            → Per-domain quick refs + commands.md flag tables (ls to enumerate; roles in .claude/rules/02-skill-authoring.md)
       evals/
         evals.json       → Skill evaluation test cases (~70 scenarios)
         run.py           → Eval runner (claude -p, grades assertions)
