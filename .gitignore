@@ -1,0 +1,4 @@
+# Repowise (per-machine tooling: index, MCP config, auto-generated CLAUDE.md)
+.repowise/
+.mcp.json
+.claude/CLAUDE.md
