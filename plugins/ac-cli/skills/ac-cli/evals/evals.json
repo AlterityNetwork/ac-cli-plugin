@@ -285,13 +285,13 @@
     },
     {
       "id": 19,
-      "prompt": "The queues look unhealthy. Check queue health, show me the failed jobs in the 'workflows' queue, and retry them all.",
-      "expected_output": "health \u2192 failed \u2192 retry-all.",
+      "prompt": "The queues look unhealthy. Check queue health, then show me the overall stats and metrics.",
+      "expected_output": "health \u2192 stats \u2192 metrics.",
       "assertions": [
         {
-          "name": "three_step_queue_recovery",
+          "name": "three_step_queue_diagnostics",
           "type": "command_sequence",
-          "text": "Sequence: `ac admin queues health`, `ac admin queues failed.*workflows`, `ac admin queues retry-all.*workflows`"
+          "text": "Sequence: `ac admin queues health`, `ac admin queues stats`, `ac admin queues metrics`"
         }
       ]
     },

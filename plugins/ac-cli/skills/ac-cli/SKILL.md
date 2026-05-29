@@ -249,7 +249,7 @@ Before any irreversible mutation, prefer the preview/list command first.
 
 ```bash
 AC_YES=1 ac crm companies delete abc123
-AC_YES=1 ac admin queues retry-all default
+AC_YES=1 ac admin users delete user-123
 ```
 
 ---

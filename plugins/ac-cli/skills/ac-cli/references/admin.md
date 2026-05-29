@@ -53,18 +53,14 @@ ac admin queues queue-stats <queue-name>
 ac admin queues metrics
 ac admin queues send-to-sentry
 ac admin queues job-performance <job-id>
-ac admin queues failed <queue-name> [--limit 50]
-ac admin queues retry-all <queue-name> [--yes]
-ac admin queues retry-job <job-id>
-ac admin queues clear-failed <queue-name> [--yes]
 ```
 
-**Standard "queue recovery" recipe** — when the user reports unhealthy queues or wants to retry failed jobs, chain all three diagnostic+remediation steps in one call:
+**Standard "queue health" recipe** — when the user reports unhealthy queues, chain the diagnostic steps in one call:
 
 ```bash
 ac admin queues health --json && \
-ac admin queues failed <queue-name> --limit 20 --json && \
-AC_YES=1 ac admin queues retry-all <queue-name>
+ac admin queues stats --json && \
+ac admin queues metrics --json
 ```
 
 ## Demo
