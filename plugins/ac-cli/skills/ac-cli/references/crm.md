@@ -33,6 +33,7 @@ ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
 ac crm people update <person-id> --current-title "CRO"
 ac crm people approve --ids id1,id2,id3           # mark human-approved (ENG-819)
 ac crm people unapprove --ids id1,id2,id3         # clear approval
+ac crm people mark-actioned --ids id1,id2,id3 [--note "..."]   # ENG-1127 Actioned (note → crm_activities)
 ac crm people delete <person-id> [--yes]
 ac crm people bulk-upsert --file people.json
 ac crm people bulk-delete --ids id1,id2,id3 [--yes]
@@ -42,7 +43,7 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 
 > **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
 
-> **Actioned (ENG-912)**: `approved_by` / `approved_at` doubles as the Actioned stamp. Any of {note added, manual outbound comm logged, list-add, sequence-enrol} stamps it forward. `ac crm companies mark-actioned --ids ... [--note "..."]` is the explicit bulk action behind the Sonar / HH Actioned button — with `--note` it also writes a `crm_activities` row (`type=note`, `source_app=manual`) per company, otherwise just stamps. People equivalents land alongside the UI mirror.
+> **Actioned (ENG-912)**: `approved_by` / `approved_at` doubles as the Actioned stamp. Any of {note added, manual outbound comm logged, list-add, sequence-enrol} stamps it forward. `ac crm companies mark-actioned` / `ac crm people mark-actioned --ids ... [--note "..."]` are the explicit bulk actions behind the Sonar / Headhunter Mark-done button — with `--note` each also writes a `crm_activities` row (`type=note`, `source_app=manual`) per company/person, otherwise just stamps (ENG-912 companies, ENG-1127 people).
 
 ## Deals
 

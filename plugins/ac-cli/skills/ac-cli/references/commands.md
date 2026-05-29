@@ -209,6 +209,15 @@ Bulk upserts people from a JSON file. The file must contain a JSON array of pers
 
 `approve` stamps the acting user as `approved_by` (human-vetted); `unapprove` clears it. Bulk-friendly. Used to vet agent-discovered people (ENG-819).
 
+#### `ac crm people mark-actioned`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated people IDs |
+| `--note` | str | no | Optional free-text note. Saved as a CRM activity per person. |
+| `--json` | flag | no | Output raw JSON |
+
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per person. Backs the Headhunter Mark done button (ENG-1127). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+
 ---
 
 ### Deals
