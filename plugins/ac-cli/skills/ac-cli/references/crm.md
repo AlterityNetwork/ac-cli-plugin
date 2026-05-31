@@ -48,7 +48,8 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 ## Deals
 
 ```bash
-ac crm deals list [--stage qualified] [--company-id <id>] [--owner-id <id>]
+ac crm deals list [--stage qualified] [--company-id <id>] [--owner-id <id>] [--limit 100] [--offset 0]
+ac crm deals pipeline-stats            # server-side totals per currency, overall + per stage
 ac crm deals get <deal-id>
 ac crm deals create --name "Acme Enterprise" --stage qualified \
   [--amount 50000] [--currency USD] [--company-id <id>] \
@@ -58,6 +59,8 @@ ac crm deals move <deal-id> --stage negotiation
 ac crm deals order --stage qualified --deal-ids id1,id2,id3
 ac crm deals delete <deal-id> [--yes]
 ```
+
+`deals list` returns an offset-paginated envelope (`{data, total, limit, offset, has_more}`); page past `--limit` by advancing `--offset`. `deals pipeline-stats` returns totals over **every** deal, not just the loaded page — use it for accurate pipeline value/weighted figures rather than summing a `list` page.
 
 ## Activities (Tasks)
 
