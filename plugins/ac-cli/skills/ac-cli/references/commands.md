@@ -228,9 +228,18 @@ Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a 
 | `--stage` | str | -- | Filter by pipeline stage |
 | `--company-id` | str | -- | Filter by company |
 | `--owner-id` | str | -- | Filter by deal owner |
-| `--limit` | int | 100 | Max results |
-| `--offset` | int | 0 | Skip results |
+| `--limit` | int | 100 | Max results per page |
+| `--offset` | int | 0 | Skip results (offset pagination) |
 | `--json` | flag | off | Output raw JSON |
+
+Returns an offset-paginated envelope: `{data, total, limit, offset, has_more}`. Page past `limit` by advancing `--offset`; `has_more` is true while more rows remain.
+
+#### `ac crm deals pipeline-stats`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Output raw JSON |
+
+Server-side pipeline totals (count / value / weighted) per currency, overall and per stage, computed over **every** deal (not just a loaded page). Response: `{by_currency: [{currency, total_deals, total_value, total_weighted}], by_stage: [{stage, currency, deal_count, total_amount, weighted_amount}]}`.
 
 #### `ac crm deals get <deal-id>`
 | Flag | Type | Description |
