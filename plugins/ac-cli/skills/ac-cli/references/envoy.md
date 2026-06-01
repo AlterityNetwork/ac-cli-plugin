@@ -57,9 +57,17 @@ Step types: `message` (email, template or AI prompt) · `delay` (value + unit: d
 ac envoy recipients list <sequence-id> [--status pending] [--step-id <id>]
 ac envoy recipients add <sequence-id> --prospect-ids id1,id2,id3
 ac envoy recipients add <sequence-id> --crm-list-id <list-id>
+ac envoy recipients add <sequence-id> --prospect-ids id1 --reenroll   # re-add previously-removed
 ac envoy recipients add <sequence-id> --source '{"type":"explicit","prospect_ids":["..."]}' # Advanced
 ac envoy recipients remove <sequence-id> <recipient-id> [--yes]
 ```
+
+`add` returns `{added, already_active, requires_confirmation}`. Re-adding an
+already-active prospect is a safe silent skip. Re-adding someone previously
+removed (or whose enrolment completed/errored) is NOT silent — it lands in
+`requires_confirmation` and is only reactivated with `--reenroll` / `--force`
+(or by confirming the interactive prompt; set `AC_YES=1` to auto-confirm).
+Re-adding may send them outreach again, so confirm intentionally.
 
 ## Outbox (Draft Approval)
 

@@ -342,7 +342,7 @@ ac envoy steps create <sequence-id> --type delay \
 ac envoy steps create <sequence-id> --type message \
   --prompt "Write a follow-up" --step-order 3
 
-# 3. Recipients
+# 3. Recipients (re-adding someone previously removed needs --reenroll; see references/envoy.md)
 ac envoy recipients add <sequence-id> --prospect-ids id1,id2,id3
 
 # 4. Launch

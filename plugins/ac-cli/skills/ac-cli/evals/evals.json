@@ -71,6 +71,18 @@
       ]
     },
     {
+      "id": 74,
+      "prompt": "Re-add prospect p1, who I previously removed, back into sequence seq-123 even though they were contacted before.",
+      "expected_output": "Uses `ac envoy recipients add seq-123 --prospect-ids p1 --reenroll` (or --force).",
+      "assertions": [
+        {
+          "name": "uses_reenroll_flag",
+          "type": "command_matches",
+          "text": "`ac envoy recipients add seq-123` with `--prospect-ids p1` and `--reenroll` (or `--force`) to reactivate a previously-removed prospect"
+        }
+      ]
+    },
+    {
       "id": 5,
       "prompt": "Check my outreach inbox for open replies, read the messages in the first thread, and then reply saying we'd love to schedule a call.",
       "expected_output": "list \u2192 messages \u2192 reply.",
