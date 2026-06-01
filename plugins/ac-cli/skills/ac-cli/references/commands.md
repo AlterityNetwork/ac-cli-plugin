@@ -837,9 +837,14 @@ Shows execution statistics for each step in the sequence.
 | `--prospect-ids` / `-p` | str | no | Comma-separated prospect IDs (mutually exclusive with --crm-list-id and --source) |
 | `--crm-list-id` | str | no | CRM list ID to source recipients from (mutually exclusive with --prospect-ids and --source) |
 | `--source` | str | no | Raw JSON source object (advanced, overrides other options) |
+| `--reenroll` / `--force` | flag | no | Reactivate prospects previously removed/completed/errored in this sequence (ENG-1188). Without it they are reported and skipped. |
 | `--json` | flag | no | Raw JSON output |
 
-One of `--prospect-ids`, `--crm-list-id`, or `--source` is required.
+One of `--prospect-ids`, `--crm-list-id`, or `--source` is required. Returns
+`{added, already_active, requires_confirmation}`. Re-adding a previously-removed
+/completed/errored prospect lands in `requires_confirmation` and is only
+reactivated with `--reenroll` (or by confirming the prompt; `AC_YES=1`
+auto-confirms).
 
 #### `ac envoy recipients remove <sequence-id> <recipient-id>`
 | Flag | Type | Description |
