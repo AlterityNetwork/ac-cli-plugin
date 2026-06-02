@@ -1425,6 +1425,12 @@ All admin commands require super admin authentication.
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
 
+#### `ac admin users require-tos-resign <user-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
+
 #### `ac admin users impersonate <user-id>`
 | Flag | Type | Description |
 |------|------|-------------|

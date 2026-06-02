@@ -13,6 +13,7 @@ ac admin users delete <user-id> [--yes]
 ac admin users auth-search --email jane@example.com
 ac admin users search --email jane@example.com
 ac admin users reset-password <user-id> [--yes]
+ac admin users require-tos-resign <user-id> [--yes] [--json]
 ac admin users impersonate <user-id>
 ac admin users exit-impersonation
 ac admin users impersonation-status --session-id <session-id>     # Check active session
