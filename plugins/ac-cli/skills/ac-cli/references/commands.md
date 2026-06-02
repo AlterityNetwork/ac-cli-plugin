@@ -103,6 +103,9 @@ For domain-scoped quick references (just the common commands per domain), see:
 
 #### `ac crm companies update <company-id>`
 Same optional flags as `create`. Only provided fields are updated.
+Also supports manual lead score overrides with `--lead-score <0-10>` and
+`--lead-reason <text>`. Use `--reset-lead-score-to-auto` to clear the manual
+lock so Sonar can update the score on the next run.
 
 #### `ac crm companies delete <company-id>`
 | Flag | Type | Description |
