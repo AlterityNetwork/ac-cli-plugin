@@ -390,7 +390,7 @@ ac login --email "..." --password "..."   # Re-auth on the new env
 
 ## Agent-Friendly Features
 
-- **Structured JSON errors** — `--json` returns `{"error": true, "status_code": ..., "detail": "..."}` instead of pretty text
+- **Structured JSON errors** — `--json` or global `--output json` returns `{"error": true, "status_code": ..., "detail": "..."}` instead of pretty text
 - **Non-interactive mode** — `AC_YES=1` skips every confirmation prompt
 - **Semantic exit codes** — see Exit Codes table above
 - **Pagination + `--all`** — page through then aggregate; respects the 50k cap

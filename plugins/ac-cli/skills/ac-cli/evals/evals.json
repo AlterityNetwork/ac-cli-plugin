@@ -184,12 +184,12 @@
     {
       "id": 12,
       "prompt": "Parse this CSV file at /tmp/leads.csv and show me what companies it found. Use JSON output so I can pipe it.",
-      "expected_output": "csv-parse with --json.",
+      "expected_output": "csv-parse with JSON output, using either global --output json or command-local --json.",
       "assertions": [
         {
           "name": "csv_parse_json",
           "type": "command_matches",
-          "text": "`ac workflows csv-parse` with `leads.csv` and `--json`"
+          "text": "`ac workflows csv-parse` with `leads.csv` and either global `--output json` / `-o json` or command-local `--json`"
         }
       ]
     },
