@@ -3,6 +3,19 @@
 Complete flag reference for all `ac` CLI commands. All commands require
 authentication (`ac login`) unless noted otherwise.
 
+## Global Options
+
+Global options must appear before the command group:
+
+| Flag | Values | Default | Description |
+|------|--------|---------|-------------|
+| `--output` / `-o` | `table`, `json` | `table` | Output format for shared table/detail renderers. Use `json` for machine-readable rows or fields. |
+| `--act-as` | user ID | -- | Superadmin impersonation header for all requests. |
+| `--version` / `-V` | flag | off | Show CLI version and exit. |
+
+Command-local `--json` flags remain available where listed below and return raw
+API payloads.
+
 For domain-scoped quick references (just the common commands per domain), see:
 - [`crm.md`](./crm.md) · [`envoy.md`](./envoy.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
 

@@ -97,14 +97,19 @@ The CLI is not pre-installed on cloud VMs — install from PyPI as above. If `ac
 Every command supports two styles:
 
 - Default — Rich tables/panels for humans
-- `--json` — Raw JSON for piping into `jq`
+- Global `--output json` / `-o json` — JSON from shared table/detail views
+- Command-local `--json` — Raw API JSON for piping into `jq` where exposed
 
 ```bash
-ac crm companies list             # Pretty table
-ac crm companies list --json      # Raw JSON
+ac crm companies list                  # Pretty table
+ac --output json crm companies list    # JSON from displayed rows
+ac -o json crm companies get c-123     # JSON from displayed fields
+ac crm companies list --json           # Raw API JSON where supported
 ```
 
-`--json` also makes errors structured: `{"error": true, "status_code": 404, "detail": "..."}`.
+Use `--output json` before the command group. It accepts only `table` and `json`;
+`table` is the default. `--json` and global JSON output also make errors
+structured: `{"error": true, "status_code": 404, "detail": "..."}`.
 
 ---
 
