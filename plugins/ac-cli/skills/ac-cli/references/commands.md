@@ -5,7 +5,7 @@ authentication (`ac login`) unless noted otherwise.
 
 ## Global Options
 
-Global root options must appear before the command group:
+Global options must appear before the command group:
 
 | Flag | Values | Default | Description |
 |------|--------|---------|-------------|
