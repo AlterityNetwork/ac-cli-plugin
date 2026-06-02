@@ -51,6 +51,20 @@ You can also invoke it directly:
 /ac-cli:ac-cli-crm
 ```
 
+### Output
+
+The CLI defaults to Rich table/detail output for humans. Pass the global
+`--output json` option, or its `-o json` alias, before the command group when
+you need machine-readable output from table/detail views:
+
+```bash
+ac --output json crm companies list
+ac -o json crm companies get <id>
+```
+
+Many commands also keep their existing command-local `--json` flag for raw API
+payloads.
+
 ## What's included
 
 | Skill | Description |
