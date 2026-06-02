@@ -188,7 +188,7 @@
       "assertions": [
         {
           "name": "csv_parse_json",
-          "type": "command_any",
+          "type": "command_matches",
           "text": "`ac workflows csv-parse` with `leads.csv` and either global `--output json` / `-o json` or command-local `--json`"
         }
       ]
