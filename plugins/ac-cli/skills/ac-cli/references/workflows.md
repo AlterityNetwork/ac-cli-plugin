@@ -6,7 +6,9 @@ All workflow subcommands take `<workflow-id>` as their first positional argument
 
 ```bash
 ac workflows runs create <workflow-id> [--input '{"key":"value"}'] [--idempotency-key <key>]
-ac workflows runs list <workflow-id> [--limit 50] [--offset 0]
+ac workflows runs list <workflow-id> [--limit 50] [--offset 0] [--include-archived]
+ac workflows runs archive <workflow-id> <run-id>... [--yes]
+ac workflows runs restore <workflow-id> <run-id>... [--yes]
 ac workflows runs get <workflow-id> <run-id>
 ac workflows runs logs <workflow-id> <run-id> [--limit 50] [--offset 0]
 ```

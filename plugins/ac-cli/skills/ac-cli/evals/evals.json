@@ -296,6 +296,23 @@
       ]
     },
     {
+      "id": 75,
+      "prompt": "Archive old workflow runs run-a and run-b for workflow wf-daily, then restore run-a.",
+      "expected_output": "Archives both run IDs with confirmation skipped, then restores run-a with confirmation skipped.",
+      "assertions": [
+        {
+          "name": "archive_runs",
+          "type": "command_matches",
+          "text": "`ac workflows runs archive wf-daily run-a run-b` with `--yes`"
+        },
+        {
+          "name": "restore_run",
+          "type": "command_matches",
+          "text": "`ac workflows runs restore wf-daily run-a` with `--yes`"
+        }
+      ]
+    },
+    {
       "id": 19,
       "prompt": "The queues look unhealthy. Check queue health, then show me the overall stats and metrics.",
       "expected_output": "health \u2192 stats \u2192 metrics.",
