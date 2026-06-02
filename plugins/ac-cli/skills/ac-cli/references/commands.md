@@ -1119,7 +1119,24 @@ Creates a new workflow run. Returns 202 (accepted) with run ID and status.
 |------|------|---------|-------------|
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
+| `--include-archived` | flag | off | Include archived runs |
 | `--json` | flag | off | Raw JSON output |
+
+#### `ac workflows runs archive <workflow-id> <run-id>...`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip confirmation |
+| `--json` | flag | Raw JSON output |
+
+Archives terminal workflow runs. In-flight runs cannot be archived.
+
+#### `ac workflows runs restore <workflow-id> <run-id>...`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip confirmation |
+| `--json` | flag | Raw JSON output |
+
+Restores archived workflow runs.
 
 #### `ac workflows runs get <workflow-id> <run-id>`
 | Flag | Type | Description |
