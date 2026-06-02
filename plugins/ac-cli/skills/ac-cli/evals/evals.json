@@ -301,14 +301,9 @@
       "expected_output": "Archives both run IDs with confirmation skipped, then restores run-a with confirmation skipped.",
       "assertions": [
         {
-          "name": "archive_runs",
-          "type": "command_matches",
-          "text": "`ac workflows runs archive wf-daily run-a run-b` with `--yes`"
-        },
-        {
-          "name": "restore_run",
-          "type": "command_matches",
-          "text": "`ac workflows runs restore wf-daily run-a` with `--yes`"
+          "name": "archive_then_restore_runs",
+          "type": "command_sequence",
+          "text": "`ac workflows runs archive wf-daily run-a run-b` with `--yes`, then `ac workflows runs restore wf-daily run-a` with `--yes`"
         }
       ]
     },
