@@ -12,6 +12,8 @@ ac crm companies get <company-id>
 ac crm companies create --name "Acme Corp" [--website https://acme.com] \
   [--industry Technology] [--lifecycle-stage lead] [--tags "hot,enterprise"]
 ac crm companies update <company-id> --industry "SaaS"
+ac crm companies update <company-id> --lead-score 8 --lead-reason "Strategic account"
+ac crm companies update <company-id> --reset-lead-score-to-auto
 ac crm companies approve --ids id1,id2,id3        # mark human-approved (ENG-819)
 ac crm companies unapprove --ids id1,id2,id3      # clear approval
 ac crm companies mark-actioned --ids id1,id2,id3 [--note "..."]   # ENG-912 Actioned (note → crm_activities)
