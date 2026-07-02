@@ -2127,12 +2127,19 @@ Standard get/delete.
 | `--status` | str | no | Initial status |
 | `--ended-at` | ISO date | no | End date |
 | `--trial-ends-at` | ISO date | no | Trial end date |
-| `--stripe-customer-id` | str | no | Stripe customer ID |
-| `--stripe-subscription-id` | str | no | Stripe subscription ID |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin subscriptions update <subscription-id>`
-Same flags as `create` (all optional).
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--plan-id` | str | no | Plan ID |
+| `--billing-period` | str | no | `monthly` or `annual` |
+| `--started-at` | ISO date | no | Start date |
+| `--ended-at` | ISO date | no | End date |
+| `--trial-ends-at` | ISO date | no | Trial end date |
+| `--json` | flag | no | Raw JSON output |
+
+`status` (webhook-authoritative) and the Stripe ids (system-managed) are not settable here. The Stripe ids are also not settable on `create`.
 
 ---
 
