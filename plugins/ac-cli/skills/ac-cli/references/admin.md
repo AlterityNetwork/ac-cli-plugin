@@ -203,10 +203,12 @@ ac admin subscriptions get <subscription-id>
 
 # `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at
 ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period monthly \
-  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] \
-  [--trial-ends-at 2026-04-15] [--stripe-customer-id cus_x] [--stripe-subscription-id sub_x]
+  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15]
 
-ac admin subscriptions update <subscription-id> [--plan-id <id>] [--status cancelled]
+# `status` is webhook-authoritative and the stripe ids are system-managed, so
+# neither is settable on update (and the stripe ids are not settable on create).
+ac admin subscriptions update <subscription-id> [--plan-id <id>] [--billing-period annual] \
+  [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15]
 ac admin subscriptions delete <subscription-id> [--yes]
 ```
 
