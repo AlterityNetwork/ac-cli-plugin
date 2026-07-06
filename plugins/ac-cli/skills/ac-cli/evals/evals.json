@@ -1006,6 +1006,23 @@
           "text": "`ac crm companies list` with `--unapproved`"
         }
       ]
+    },
+    {
+      "id": 76,
+      "prompt": "The customer for subscription sub-42 finished their onboarding call. Activate their account and start billing.",
+      "expected_output": "Uses `ac admin subscriptions activate-billing sub-42` (one action grants access and starts billing).",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the admin mutation"
+        },
+        {
+          "name": "activate_billing_command",
+          "type": "command_matches",
+          "text": "`ac admin subscriptions activate-billing sub-42`"
+        }
+      ]
     }
   ]
 }
