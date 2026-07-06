@@ -202,16 +202,18 @@ ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--of
 ac admin subscriptions get <subscription-id>
 
 # `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at.
+# --billing-mode is stripe (default) or manual. A manual subscription is comped/
+# offline/legacy: admin-set status, no Stripe object, no Activate, never reconciled.
 # Per-org custom pricing (kept off the shared catalogue): --custom-price-cents is
 # the NET price in cents; Stripe adds VAT on top at invoice time.
 ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period monthly \
-  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
+  --started-at 2026-04-01 [--billing-mode manual] [--status active] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
   [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
 
 # `status` is webhook-authoritative and the stripe ids are system-managed, so
 # neither is settable on update (and the stripe ids are not settable on create).
 ac admin subscriptions update <subscription-id> [--plan-id <id>] [--billing-period annual] \
-  [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
+  [--billing-mode manual] [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
   [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
 ac admin subscriptions delete <subscription-id> [--yes]
 

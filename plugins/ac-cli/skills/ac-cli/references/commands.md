@@ -2123,6 +2123,7 @@ Standard get/delete.
 | `--org-id` | str | yes | Organization ID |
 | `--plan-id` | str | yes | Plan ID |
 | `--billing-period` | str | yes | `monthly` or `annual` |
+| `--billing-mode` | str | no | `stripe` (default) or `manual` (no Stripe object, admin-set status) |
 | `--started-at` | ISO date | yes | Start date |
 | `--status` | str | no | Initial status |
 | `--ended-at` | ISO date | no | End date |
@@ -2137,6 +2138,7 @@ Standard get/delete.
 |------|------|----------|-------------|
 | `--plan-id` | str | no | Plan ID |
 | `--billing-period` | str | no | `monthly` or `annual` |
+| `--billing-mode` | str | no | `stripe` or `manual` (rejected when the sub is Stripe-linked) |
 | `--started-at` | ISO date | no | Start date |
 | `--ended-at` | ISO date | no | End date |
 | `--trial-ends-at` | ISO date | no | Trial end date |
