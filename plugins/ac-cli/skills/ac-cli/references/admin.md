@@ -201,15 +201,29 @@ ac admin chat-escalations update <escalation-id> --status resolved [--note "..."
 ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--offset 0]
 ac admin subscriptions get <subscription-id>
 
-# `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at
+# `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at.
+# Per-org custom pricing (kept off the shared catalogue): --custom-price-cents is
+# the NET price in cents; Stripe adds VAT on top at invoice time.
 ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period monthly \
-  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15]
+  --started-at 2026-04-01 [--status active] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
+  [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
 
 # `status` is webhook-authoritative and the stripe ids are system-managed, so
 # neither is settable on update (and the stripe ids are not settable on create).
 ac admin subscriptions update <subscription-id> [--plan-id <id>] [--billing-period annual] \
-  [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15]
+  [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
+  [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
 ac admin subscriptions delete <subscription-id> [--yes]
+
+# Activate: ONE action grants the org account access AND starts billing
+# off-session (charges the first period now). If the charge needs authentication
+# it stays incomplete and the customer is emailed the hosted payment link; the
+# org then appears under `worklists` stuck.
+ac admin subscriptions activate-billing <subscription-id> [--yes]
+
+# Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
+# attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
+ac admin subscriptions worklists [--json]
 ```
 
 ## Subscription Plans

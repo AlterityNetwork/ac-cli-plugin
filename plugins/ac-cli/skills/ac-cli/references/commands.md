@@ -2127,6 +2127,9 @@ Standard get/delete.
 | `--status` | str | no | Initial status |
 | `--ended-at` | ISO date | no | End date |
 | `--trial-ends-at` | ISO date | no | Trial end date |
+| `--custom-price-cents` | int | no | Per-org NET price in cents (off-catalogue); Stripe adds VAT |
+| `--currency` | str | no | Price currency (default gbp) |
+| `--coupon` | str | no | Stripe coupon id |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin subscriptions update <subscription-id>`
@@ -2137,9 +2140,18 @@ Standard get/delete.
 | `--started-at` | ISO date | no | Start date |
 | `--ended-at` | ISO date | no | End date |
 | `--trial-ends-at` | ISO date | no | Trial end date |
+| `--custom-price-cents` | int | no | Per-org NET price in cents (off-catalogue); Stripe adds VAT |
+| `--currency` | str | no | Price currency |
+| `--coupon` | str | no | Stripe coupon id |
 | `--json` | flag | no | Raw JSON output |
 
 `status` (webhook-authoritative) and the Stripe ids (system-managed) are not settable here. The Stripe ids are also not settable on `create`.
+
+#### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
+One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
+
+#### `ac admin subscriptions worklists [--json]`
+Revenue-leakage guard: the awaiting-activation queue plus the stuck / needs-attention bucket (`activation_stuck`, `no_plan_assigned`, `unbilled_access`).
 
 ---
 
