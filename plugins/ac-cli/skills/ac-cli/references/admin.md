@@ -223,9 +223,31 @@ ac admin subscriptions delete <subscription-id> [--yes]
 # org then appears under `worklists` stuck.
 ac admin subscriptions activate-billing <subscription-id> [--yes]
 
+# Link an EXISTING Stripe subscription to this local row. Distinct from
+# activate-billing: linking never creates a Stripe object and never charges. It
+# adopts the live Stripe status and stamps our ids into the Stripe metadata.
+# Safeguards: refuses a manual subscription, blocks a Stripe sub already linked
+# elsewhere or one owned by a different customer, and is idempotent (re-linking
+# the same pair is a no-op). Use `ac admin billing stripe-subscriptions` to find
+# orphaned Stripe subscription ids.
+ac admin subscriptions link <subscription-id> --stripe-subscription-id <sub_id> [--yes]
+
+# Clear the Stripe link (leaves the Stripe subscription itself running).
+ac admin subscriptions unlink <subscription-id> [--yes]
+
 # Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
 # attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
 ac admin subscriptions worklists [--json]
+```
+
+## Billing
+
+```bash
+# List live Stripe subscriptions cross-referenced with local rows. Each Stripe
+# sub shows its linked local subscription id (or that it is an orphan);
+# `broken_links` flags local rows whose Stripe subscription no longer exists.
+# Use this to find the Stripe subscription id to pass to `subscriptions link`.
+ac admin billing stripe-subscriptions [--json]
 ```
 
 ## Subscription Plans

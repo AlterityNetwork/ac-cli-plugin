@@ -2152,8 +2152,25 @@ Standard get/delete.
 #### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
 One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
 
+#### `ac admin subscriptions link <subscription-id> [--yes]`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--stripe-subscription-id` / `--sid` | str | yes | Existing Stripe subscription id to link |
+
+Binds the local subscription to an existing Stripe subscription. Unlike `activate-billing`, linking never creates a Stripe object and never charges: it adopts the live Stripe status and stamps `organization_id` / `subscription_id` into the Stripe subscription's metadata. Safeguards: refuses a `manual` subscription (409/400), blocks a Stripe sub already linked to another local row or owned by a different customer (409), and is idempotent (re-linking the same pair is a no-op). `--json` returns the updated subscription.
+
+#### `ac admin subscriptions unlink <subscription-id> [--yes]`
+Clears the local Stripe link (`stripe_subscription_id`) only; the Stripe subscription itself is left running (unlink is not cancel). Idempotent when already unlinked. `--json` returns the updated subscription.
+
 #### `ac admin subscriptions worklists [--json]`
 Revenue-leakage guard: the awaiting-activation queue plus the stuck / needs-attention bucket (`activation_stuck`, `no_plan_assigned`, `unbilled_access`).
+
+---
+
+### Billing
+
+#### `ac admin billing stripe-subscriptions [--json]`
+Lists live Stripe subscriptions cross-referenced with local rows. Each entry carries `linked_local_subscription_id` (or `is_orphan: true` when no local row references it), plus a `broken_links` list of local rows whose `stripe_subscription_id` no longer exists in Stripe. Use it to find the orphaned Stripe subscription id to pass to `ac admin subscriptions link`.
 
 ---
 
