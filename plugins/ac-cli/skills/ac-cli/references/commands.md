@@ -2156,8 +2156,9 @@ One action grants the org account access AND starts billing off-session (charges
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--stripe-subscription-id` / `--sid` | str | yes | Existing Stripe subscription id to link |
+| `--json` | flag | no | Return the updated subscription as raw JSON |
 
-Binds the local subscription to an existing Stripe subscription. Unlike `activate-billing`, linking never creates a Stripe object and never charges: it adopts the live Stripe status and stamps `organization_id` / `subscription_id` into the Stripe subscription's metadata. Safeguards: refuses a `manual` subscription (409/400), blocks a Stripe sub already linked to another local row or owned by a different customer (409), and is idempotent (re-linking the same pair is a no-op). `--json` returns the updated subscription.
+Binds the local subscription to an existing Stripe subscription. Unlike `activate-billing`, linking never creates a Stripe object and never charges: it adopts the live Stripe status and stamps `organization_id` / `subscription_id` into the Stripe subscription's metadata. Safeguards: refuses a `manual` subscription (400), blocks a Stripe sub already linked to another local row or owned by a different customer (409), and is idempotent (re-linking the same pair is a no-op). `--json` returns the updated subscription.
 
 #### `ac admin subscriptions unlink <subscription-id> [--yes]`
 Clears the local Stripe link (`stripe_subscription_id`) only; the Stripe subscription itself is left running (unlink is not cancel). Idempotent when already unlinked. `--json` returns the updated subscription.
