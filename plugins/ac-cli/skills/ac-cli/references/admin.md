@@ -247,7 +247,8 @@ ac admin subscriptions worklists [--json]
 # sub shows its linked local subscription id (or that it is an orphan);
 # `broken_links` flags local rows whose Stripe subscription no longer exists.
 # Use this to find the Stripe subscription id to pass to `subscriptions link`.
-ac admin billing stripe-subscriptions [--json]
+# The Stripe list is paginated; the broken-links set is always complete.
+ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]
 ```
 
 ## Subscription Plans

@@ -2170,8 +2170,8 @@ Revenue-leakage guard: the awaiting-activation queue plus the stuck / needs-atte
 
 ### Billing
 
-#### `ac admin billing stripe-subscriptions [--json]`
-Lists live Stripe subscriptions cross-referenced with local rows. Each entry carries `linked_local_subscription_id` (or `is_orphan: true` when no local row references it), plus a `broken_links` list of local rows whose `stripe_subscription_id` no longer exists in Stripe. Use it to find the orphaned Stripe subscription id to pass to `ac admin subscriptions link`.
+#### `ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]`
+Lists live Stripe subscriptions cross-referenced with local rows. Each entry carries `linked_local_subscription_id` (or `is_orphan: true` when no local row references it), plus a `broken_links` list of local rows whose `stripe_subscription_id` no longer exists in Stripe. The Stripe list is paginated via `--limit` / `--offset`; the `broken_links` set is always complete. Use it to find the orphaned Stripe subscription id to pass to `ac admin subscriptions link`.
 
 ---
 
