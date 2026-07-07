@@ -244,11 +244,21 @@ ac admin subscriptions worklists [--json]
 
 ```bash
 # List live Stripe subscriptions cross-referenced with local rows. Each Stripe
-# sub shows its linked local subscription id (or that it is an orphan);
-# `broken_links` flags local rows whose Stripe subscription no longer exists.
-# Use this to find the Stripe subscription id to pass to `subscriptions link`.
-# The Stripe list is paginated; the broken-links set is always complete.
+# sub shows its plan name (from the catalogue), billing interval, next bill date
+# (current period end), lifetime total paid, its linked local subscription id (or
+# that it is an orphan); `broken_links` flags local rows whose Stripe subscription
+# no longer exists. Use this to find the Stripe subscription id to pass to
+# `subscriptions link`. The Stripe list is paginated; broken-links is complete.
 ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]
+
+# Import active Stripe products + recurring prices into the plan catalogue.
+# Idempotent: each active product with a recurring price is matched to a plan by
+# stripe_product_id (prices / name updated) or created as a new plan; products
+# with no recurring price are skipped. Reports imported / updated / skipped counts
+# plus notes (e.g. a product missing a monthly or annual price). Requires --yes to
+# skip the confirmation prompt. Use when plans were set up in the Stripe dashboard
+# rather than via `subscription-plans create`.
+ac admin billing import-stripe-products [--yes] [--json]
 ```
 
 ## Subscription Plans

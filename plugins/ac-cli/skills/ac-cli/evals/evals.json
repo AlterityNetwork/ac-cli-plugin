@@ -1023,6 +1023,23 @@
           "text": "`ac admin subscriptions activate-billing sub-42`"
         }
       ]
+    },
+    {
+      "id": 77,
+      "prompt": "We set up all our plans in the Stripe dashboard. Pull them into our plan catalogue so they show up when creating a subscription.",
+      "expected_output": "Uses `ac admin billing import-stripe-products` (with `--yes`) to import active Stripe products and prices into subscription_plans.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the admin mutation"
+        },
+        {
+          "name": "import_command",
+          "type": "command_matches",
+          "text": "`ac admin billing import-stripe-products --yes`"
+        }
+      ]
     }
   ]
 }
