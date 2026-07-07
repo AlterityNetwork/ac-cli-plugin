@@ -1037,7 +1037,7 @@
         {
           "name": "import_command",
           "type": "command_matches",
-          "text": "`ac admin billing import-stripe-products`"
+          "text": "`ac admin billing import-stripe-products --yes`"
         }
       ]
     }
