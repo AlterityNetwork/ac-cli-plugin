@@ -1216,6 +1216,7 @@ Gets the schedule details for the workflow.
 | `--cron` | str | yes | Cron expression (5-field: minute hour dom month dow) |
 | `--timezone` | str | no | Timezone (default: UTC) |
 | `--input` | str | no | JSON string of input parameters for each run |
+| `--preset-id` | str | no | Preset this schedule runs, stamped onto every run it fires |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac workflows schedules update <workflow-id> <schedule-id>`
@@ -1224,6 +1225,7 @@ Gets the schedule details for the workflow.
 | `--cron` | str | Updated cron expression |
 | `--timezone` | str | Updated timezone |
 | `--input` | str | Updated JSON input parameters |
+| `--preset-id` | str | Preset this schedule runs |
 | `--json` | flag | Raw JSON output |
 
 #### `ac workflows schedules delete <workflow-id> <schedule-id>`

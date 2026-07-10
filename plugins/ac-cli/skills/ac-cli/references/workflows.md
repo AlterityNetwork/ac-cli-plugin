@@ -23,11 +23,11 @@ ac workflows schedules get <workflow-id>
 
 # create — --cron and --timezone are BOTH required
 ac workflows schedules create <workflow-id> --cron "0 9 * * 1" --timezone "America/New_York" \
-  [--input '{"key":"value"}']
+  [--input '{"key":"value"}'] [--preset-id <preset-id>]
 
-# update — pass any combination of --cron / --timezone / --input
+# update: pass any combination of --cron / --timezone / --input / --preset-id
 ac workflows schedules update <workflow-id> <schedule-id> \
-  [--cron "0 10 * * 1"] [--timezone UTC]
+  [--cron "0 10 * * 1"] [--timezone UTC] [--preset-id <preset-id>]
 
 ac workflows schedules delete <workflow-id> <schedule-id> [--yes]
 
@@ -58,6 +58,10 @@ ac workflows presets create <workflow-id> --name "Daily Sync" \
 ac workflows presets update <workflow-id> <preset-id> --name "Updated Preset"
 ac workflows presets delete <workflow-id> <preset-id> [--yes]
 ```
+
+A preset holds the saved query; a schedule holds the cadence. Pass `--preset-id` to
+`schedules create` to bind them, which makes the pair a "saved search" and stamps the
+preset onto every run it fires. A preset may have at most one schedule.
 
 ## CSV Parsing
 
