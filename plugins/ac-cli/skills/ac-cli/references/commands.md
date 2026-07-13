@@ -2149,6 +2149,18 @@ Standard get/delete.
 
 `status` (webhook-authoritative) and the Stripe ids (system-managed) are not settable here. The Stripe ids are also not settable on `create`.
 
+#### `ac admin subscriptions pause <subscription-id> [--yes]` / `resume <subscription-id> [--yes]`
+
+Pause stops Stripe collection (held invoices voided); resume returns billing to the normal cycle.
+
+#### `ac admin subscriptions switch-comped <subscription-id> [--yes]`
+
+Cancels Stripe billing immediately and comps the org: full access, never billed, excluded from worklists and auto-suspend.
+
+#### `ac admin subscriptions send-reminder <subscription-id> [--yes]`
+
+Emails the account owner the hosted invoice link for an overdue payment and records the send.
+
 #### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
 One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
 

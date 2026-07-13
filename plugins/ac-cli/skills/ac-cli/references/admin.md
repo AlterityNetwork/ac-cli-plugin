@@ -238,6 +238,22 @@ ac admin subscriptions link <subscription-id> --stripe-subscription-id <sub_id> 
 # Clear the Stripe link (leaves the Stripe subscription itself running).
 ac admin subscriptions unlink <subscription-id> [--yes]
 
+# Pause / resume billing. Pause stops Stripe collection (held invoices are
+# voided, the customer is not billed) and the status reads paused; resume
+# returns to the normal cycle. Only active subs pause; only paused subs resume.
+ac admin subscriptions pause <subscription-id> [--yes]
+ac admin subscriptions resume <subscription-id> [--yes]
+
+# Downgrade to free/comped: cancels the Stripe subscription immediately, flags
+# the org comped (kept out of billing worklists and auto-suspend), and converts
+# the local row to a manual active subscription.
+ac admin subscriptions switch-comped <subscription-id> [--yes]
+
+# Email the account owner the hosted invoice link for an overdue payment and
+# record the send (visible as Manual Reminders / Last Reminder on `get`).
+# Requires status past_due/unpaid/incomplete and a hosted invoice link.
+ac admin subscriptions send-reminder <subscription-id> [--yes]
+
 # Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
 # attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
 ac admin subscriptions worklists   # buckets: payment overdue, awaiting activation, stuck [--json]
