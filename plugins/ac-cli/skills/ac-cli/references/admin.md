@@ -43,6 +43,8 @@ ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
+ac admin orgs suspend    <org-id> --reason <trial_expired|non_payment|misconduct> [--yes]   # blocks all members except billing
+ac admin orgs unsuspend  <org-id>                                                          # restores member access
 ```
 
 ## Queues
@@ -199,7 +201,7 @@ ac admin chat-escalations update <escalation-id> --status resolved [--note "..."
 
 ```bash
 ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--offset 0]
-ac admin subscriptions get <subscription-id>
+ac admin subscriptions get <subscription-id>   # includes dunning detail: decline/advice codes, attempt count, next retry, live Stripe amount
 
 # `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at.
 # --billing-mode is stripe (default) or manual. A manual subscription is comped/
@@ -229,6 +231,7 @@ ac admin subscriptions activate-billing <subscription-id> [--yes]
 # Safeguards: refuses a manual subscription, blocks a Stripe sub already linked
 # elsewhere or one owned by a different customer, and is idempotent (re-linking
 # the same pair is a no-op). Use `ac admin billing stripe-subscriptions` to find
+ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraudulent|requested_by_customer] [--yes]
 # orphaned Stripe subscription ids.
 ac admin subscriptions link <subscription-id> --stripe-subscription-id <sub_id> [--yes]
 
@@ -237,7 +240,7 @@ ac admin subscriptions unlink <subscription-id> [--yes]
 
 # Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
 # attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
-ac admin subscriptions worklists [--json]
+ac admin subscriptions worklists   # buckets: payment overdue, awaiting activation, stuck [--json]
 ```
 
 ## Billing
