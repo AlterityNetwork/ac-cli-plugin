@@ -2114,8 +2114,8 @@ Shows application cache hit/miss statistics.
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac admin subscriptions get <subscription-id>   # + dunning fields: decline/advice codes, attempts, next retry, Stripe amount` / `delete <subscription-id> [--yes]`
-Standard get/delete.
+#### `ac admin subscriptions get <subscription-id>` / `delete <subscription-id> [--yes]`
+Standard get/delete. `get` includes the dunning fields (decline/advice codes, attempt count, next retry, live Stripe amount) and manual reminder tracking.
 
 #### `ac admin subscriptions create`
 | Flag | Type | Required | Description |
@@ -2185,8 +2185,10 @@ Revenue-leakage guard: the awaiting-activation queue plus the stuck / needs-atte
 #### `ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]`
 Lists live Stripe subscriptions cross-referenced with local rows. Each entry carries `plan_name` (resolved from the catalogue), `interval`, `current_period_start` / `current_period_end` (the next bill date), `cancel_at_period_end`, `created`, and `total_paid` (lifetime charges for that subscription, minor units), plus `linked_local_subscription_id` (or `is_orphan: true` when no local row references it) and a `broken_links` list of local rows whose `stripe_subscription_id` no longer exists in Stripe. The Stripe list is paginated via `--limit` / `--offset`; `total_paid` is per-subscription lifetime but only computed for rows on the returned page, and the `broken_links` set is always complete. Use it to find the orphaned Stripe subscription id to pass to `ac admin subscriptions link`.
 
-#### `ac admin billing refund <charge-id> [--amount-cents N] [--reason ...] [--yes]
-ac admin billing import-stripe-products [--yes] [--json]`
+#### `ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraudulent|requested_by_customer] [--yes]`
+Refunds a Stripe charge, fully or partially (`--amount-cents`), with an optional Stripe reason. Requires `--yes` (or `AC_YES=1`) to skip the confirmation prompt; the action is admin-audited.
+
+#### `ac admin billing import-stripe-products [--yes] [--json]`
 Imports active Stripe products and their recurring prices into the `subscription_plans` catalogue. Idempotent: each active product with a recurring price is matched to a plan by `stripe_product_id` (prices and name updated in place) or created as a new plan with a derived unique slug; products with no recurring price are skipped. Returns `imported` / `updated` / `skipped` counts plus a `messages` list (e.g. a product missing a monthly or annual price defaults it to 0). Requires `--yes` (or `AC_YES=1`) to skip the confirmation prompt. Use when plans were configured in the Stripe dashboard rather than via `subscription-plans create`.
 
 ---

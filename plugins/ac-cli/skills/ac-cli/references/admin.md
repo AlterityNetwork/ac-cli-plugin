@@ -231,7 +231,6 @@ ac admin subscriptions activate-billing <subscription-id> [--yes]
 # Safeguards: refuses a manual subscription, blocks a Stripe sub already linked
 # elsewhere or one owned by a different customer, and is idempotent (re-linking
 # the same pair is a no-op). Use `ac admin billing stripe-subscriptions` to find
-ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraudulent|requested_by_customer] [--yes]
 # orphaned Stripe subscription ids.
 ac admin subscriptions link <subscription-id> --stripe-subscription-id <sub_id> [--yes]
 
@@ -269,6 +268,9 @@ ac admin subscriptions worklists   # buckets: payment overdue, awaiting activati
 # no longer exists. Use this to find the Stripe subscription id to pass to
 # `subscriptions link`. The Stripe list is paginated; broken-links is complete.
 ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]
+
+# Refund a Stripe charge, fully or partially. Admin-audited.
+ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraudulent|requested_by_customer] [--yes]
 
 # Import active Stripe products + recurring prices into the plan catalogue.
 # Idempotent: each active product with a recurring price is matched to a plan by
