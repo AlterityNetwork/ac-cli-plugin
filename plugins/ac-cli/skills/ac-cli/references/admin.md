@@ -255,7 +255,7 @@ ac admin subscriptions send-reminder <subscription-id> [--yes]
 
 # Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
 # attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
-ac admin subscriptions worklists   # buckets: payment overdue, awaiting activation, stuck [--json]
+ac admin subscriptions worklists [--json]  # buckets: payment overdue, awaiting activation, stuck
 ```
 
 ## Billing

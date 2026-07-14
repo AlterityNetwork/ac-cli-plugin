@@ -2159,7 +2159,7 @@ Cancels Stripe billing immediately and comps the org: full access, never billed,
 
 #### `ac admin subscriptions send-reminder <subscription-id> [--yes]`
 
-Emails the account owner the hosted invoice link for an overdue payment and records the send.
+Emails the account owner the hosted invoice link for an overdue payment and records the send. Requires the subscription to be in `past_due`, `unpaid`, or `incomplete` status and to have a hosted invoice link available; errors otherwise.
 
 #### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
 One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
