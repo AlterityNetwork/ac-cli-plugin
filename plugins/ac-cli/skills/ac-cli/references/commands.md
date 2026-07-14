@@ -1565,6 +1565,21 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--yes` | flag | no | Skip confirmation prompt |
 | `--json` | flag | no | Raw JSON output |
 
+#### `ac admin orgs suspend <org-id>`
+Suspends the organisation: members are blocked from the app except billing, so they can pay their way back in. A non-payment suspension lifts automatically when the subscription returns to active.
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--reason` | str | yes | One of `trial_expired`, `non_payment`, `misconduct` |
+| `--yes` | flag | no | Skip confirmation prompt |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin orgs unsuspend <org-id>`
+Lifts a suspension and restores member access.
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` | flag | no | Skip confirmation prompt |
+| `--json` | flag | no | Raw JSON output |
+
 ---
 
 ### Queues
