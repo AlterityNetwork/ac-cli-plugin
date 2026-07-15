@@ -43,6 +43,8 @@ ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
+ac admin orgs suspend    <org-id> --reason <trial_expired|non_payment|misconduct> [--yes]   # blocks all members except billing
+ac admin orgs unsuspend  <org-id>                                                          # restores member access
 ```
 
 ## Queues
@@ -199,7 +201,7 @@ ac admin chat-escalations update <escalation-id> --status resolved [--note "..."
 
 ```bash
 ac admin subscriptions list [--org-id <id>] [--status active] [--limit 50] [--offset 0]
-ac admin subscriptions get <subscription-id>
+ac admin subscriptions get <subscription-id>   # includes dunning detail: decline/advice codes, attempt count, next retry, live Stripe amount
 
 # `create` requires ALL FOUR: --org-id, --plan-id, --billing-period, --started-at.
 # --billing-mode is stripe (default) or manual. A manual subscription is comped/
@@ -235,9 +237,25 @@ ac admin subscriptions link <subscription-id> --stripe-subscription-id <sub_id> 
 # Clear the Stripe link (leaves the Stripe subscription itself running).
 ac admin subscriptions unlink <subscription-id> [--yes]
 
+# Pause / resume billing. Pause stops Stripe collection (held invoices are
+# voided, the customer is not billed) and the status reads paused; resume
+# returns to the normal cycle. Only active subs pause; only paused subs resume.
+ac admin subscriptions pause <subscription-id> [--yes]
+ac admin subscriptions resume <subscription-id> [--yes]
+
+# Downgrade to free/comped: cancels the Stripe subscription immediately, flags
+# the org comped (kept out of billing worklists and auto-suspend), and converts
+# the local row to a manual active subscription.
+ac admin subscriptions switch-comped <subscription-id> [--yes]
+
+# Email the account owner the hosted invoice link for an overdue payment and
+# record the send (visible as Manual Reminders / Last Reminder on `get`).
+# Requires status past_due/unpaid/incomplete and a hosted invoice link.
+ac admin subscriptions send-reminder <subscription-id> [--yes]
+
 # Revenue-leakage guard: the awaiting-activation queue + the stuck / needs-
 # attention bucket (activation_stuck, no_plan_assigned, unbilled_access).
-ac admin subscriptions worklists [--json]
+ac admin subscriptions worklists [--json]  # buckets: payment overdue, awaiting activation, stuck
 ```
 
 ## Billing
@@ -250,6 +268,9 @@ ac admin subscriptions worklists [--json]
 # no longer exists. Use this to find the Stripe subscription id to pass to
 # `subscriptions link`. The Stripe list is paginated; broken-links is complete.
 ac admin billing stripe-subscriptions [--limit 50] [--offset 0] [--json]
+
+# Refund a Stripe charge, fully or partially. Admin-audited.
+ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraudulent|requested_by_customer] [--yes]
 
 # Import active Stripe products + recurring prices into the plan catalogue.
 # Idempotent: each active product with a recurring price is matched to a plan by
