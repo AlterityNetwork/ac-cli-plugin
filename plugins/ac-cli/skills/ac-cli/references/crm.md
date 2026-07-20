@@ -109,12 +109,15 @@ ac crm lists list
 ac crm lists get <list-id>
 ac crm lists create --name "Q2 Targets" [--member-type person] [--type static]
 ac crm lists add-member <list-id> --person-id <id>
+ac crm lists add-members <list-id> --member-type person --ids id1,id2,id3
 ac crm lists remove-member <list-id> --person-id <id>
 ac crm lists members <list-id>
 ac crm lists lists-for-member --person-id <id>
 ac crm lists lists-for-member --company-id <id>
 ac crm lists bulk-remove-members <list-id> --member-type person --ids id1,id2,id3 [--yes]
 ac crm lists bulk-remove-members <list-id> --member-type company --ids id1,id2,id3 [--yes]
+ac crm lists bulk-move-members <list-id> --target-list-id <id> --member-type person --ids id1,id2,id3 [--yes]
+ac crm lists bulk-move-members <list-id> --target-list-id <id> --member-type company --ids id1,id2,id3 [--yes]
 ac crm lists delete <list-id> [--yes]
 ```
 

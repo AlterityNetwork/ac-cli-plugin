@@ -140,6 +140,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac envoy signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
 | "delete 3 companies c1,c2,c3" | `ac crm companies bulk-delete --ids c1,c2,c3` | looping `ac crm companies delete` per-id — non-atomic and slower |
 | "remove 5 people from list L" | `ac crm lists bulk-remove-members L --member-type person --ids p1,p2,p3,p4,p5` | looping `ac crm lists remove-member` per-id |
+| "move people from list A to list B" | `ac crm lists bulk-move-members A --target-list-id B --member-type person --ids p1,p2` | composing `add-members` + `bulk-remove-members` (the move command is one call and reports duplicates) |
 | "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
 | "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / `ac envoy inbox …` — different surfaces |

@@ -531,6 +531,19 @@ One of `--person-id` or `--company-id` is required.
 #### `ac crm lists remove-member <list-id>`
 Same flags as `add-member`.
 
+#### `ac crm lists add-members <list-id>`
+Bulk-add members with server-side dedup; ids already on the list are
+reported as duplicates, not errors.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--member-type` | enum (`person`\|`company`) | yes | Type of members to add |
+| `--ids` | str | yes | Comma-separated member IDs |
+| `--json` | flag | no | Output raw JSON |
+
+API: `POST /api/v1/crm/lists/{list_id}/members/bulk-add`. Single atomic call.
+Always prefer over looping `add-member`.
+
 #### `ac crm lists bulk-remove-members <list-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -540,6 +553,22 @@ Same flags as `add-member`.
 | `--json` | flag | no | Output raw JSON |
 
 Single atomic call. Always prefer over looping `remove-member`.
+
+#### `ac crm lists bulk-move-members <list-id>`
+Move members from one list to another: adds to the target with server-side
+dedup, then removes from the source. Members already on the target are
+reported as `duplicate_count` and still removed from the source.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--target-list-id` | str | yes | Destination list ID |
+| `--member-type` | enum (`person`\|`company`) | yes | Type of members to move |
+| `--ids` | str | yes | Comma-separated member IDs |
+| `--yes` | flag | no | Skip confirmation |
+| `--json` | flag | no | Output raw JSON |
+
+API: `POST /api/v1/crm/lists/{list_id}/members/bulk-move`. Single call. Always
+prefer over composing `add-members` + `bulk-remove-members`.
 
 #### `ac crm lists delete <list-id>`
 | Flag | Type | Description |
