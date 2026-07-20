@@ -68,7 +68,7 @@ ac workflows csv-parse <file.csv>
 ## Discovered Companies (from workflow runs)
 
 ```bash
-ac workflows run-companies list <workflow-id> [--limit 50] [--offset 0] [--include-in-crm]
+ac workflows run-companies list <workflow-id> [--limit 50] [--offset 0] [--include-in-crm] [--sort-by lead_score] [--min-lead-score 5]
 ac workflows run-companies list-by-run <workflow-id> <run-id>
 ac workflows run-companies add-to-crm <workflow-id> --company-ids id1,id2
 ac workflows run-companies crm-count <workflow-id>

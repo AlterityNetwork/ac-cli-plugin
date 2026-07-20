@@ -1274,6 +1274,9 @@ Manage companies discovered by workflow runs.
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--include-in-crm` | flag | off | Include companies already added to CRM |
+| `--sort-by` | str | -- | Sort column: `discovered_at` (newest first) or `lead_score` (highest first) |
+| `--approved` / `--unapproved` | flag | -- | Actioned filter: `--unapproved` hides rows whose linked CRM company was actioned; `--approved` shows only actioned rows |
+| `--min-lead-score` | float | -- | Relevance floor (0-10): hide companies whose merged lead score is below this value; unscored companies stay visible |
 | `--json` | flag | off | Raw JSON output |
 
 Lists deduplicated companies discovered across all runs of a workflow.
