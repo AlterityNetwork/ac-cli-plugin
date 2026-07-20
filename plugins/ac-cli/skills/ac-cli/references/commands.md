@@ -113,6 +113,7 @@ Same optional flags as `create`. Only provided fields are updated.
 #### `ac crm companies delete <company-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--delete-people` | flag | Also soft-delete the people attached to this company |
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Output raw JSON |
 
@@ -120,10 +121,13 @@ Same optional flags as `create`. Only provided fields are updated.
 | Flag | Type | Description |
 |------|------|-------------|
 | `--ids` | str (req) | Comma-separated company IDs |
+| `--delete-people` | flag | Also soft-delete the people attached to the deleted companies |
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Output raw JSON |
 
-Single atomic call. Always prefer over looping `delete`.
+Single atomic call. Always prefer over looping `delete`. By default attached
+people are kept (they lose their company); `--delete-people` cascades the
+soft delete to them and the response reports `deleted_people_count`.
 
 #### `ac crm companies approve` / `ac crm companies unapprove`
 | Flag | Type | Required | Description |
@@ -158,6 +162,7 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--company-id` | str | -- | Filter by company |
+| `--company-ids` | str | -- | Comma-separated company IDs; matches people attached to any of them |
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |

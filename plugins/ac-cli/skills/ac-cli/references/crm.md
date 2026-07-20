@@ -17,8 +17,8 @@ ac crm companies update <company-id> --reset-lead-score-to-auto
 ac crm companies approve --ids id1,id2,id3        # mark human-approved (ENG-819)
 ac crm companies unapprove --ids id1,id2,id3      # clear approval
 ac crm companies mark-actioned --ids id1,id2,id3 [--note "..."]   # ENG-912 Actioned (note → crm_activities)
-ac crm companies delete <company-id> [--yes]
-ac crm companies bulk-delete --ids id1,id2,id3 [--yes]
+ac crm companies delete <company-id> [--delete-people] [--yes]
+ac crm companies bulk-delete --ids id1,id2,id3 [--delete-people] [--yes]
 ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnostic autofill (ENG-1060)
 ```
 
@@ -27,7 +27,7 @@ ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnosti
 ## People (Contacts)
 
 ```bash
-ac crm people list [--company-id <id>] [--limit 100] \
+ac crm people list [--company-id <id>] [--company-ids id1,id2] [--limit 100] \
   [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>]
 ac crm people get <person-id>
 ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
