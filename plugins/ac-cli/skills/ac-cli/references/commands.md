@@ -536,6 +536,22 @@ Same flags as `add-member`.
 
 Single atomic call. Always prefer over looping `remove-member`.
 
+#### `ac crm lists bulk-move-members <list-id>`
+Move members from one list to another: adds to the target with server-side
+dedup, then removes from the source. Members already on the target are
+reported as `duplicate_count` and still removed from the source.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--target-list-id` | str | yes | Destination list ID |
+| `--member-type` | enum (`person`\|`company`) | yes | Type of members to move |
+| `--ids` | str | yes | Comma-separated member IDs |
+| `--yes` | flag | no | Skip confirmation |
+| `--json` | flag | no | Output raw JSON |
+
+API: `POST /api/v1/crm/lists/{list_id}/members/bulk-move`. Single call. Always
+prefer over composing `add-members` + `bulk-remove-members`.
+
 #### `ac crm lists delete <list-id>`
 | Flag | Type | Description |
 |------|------|-------------|

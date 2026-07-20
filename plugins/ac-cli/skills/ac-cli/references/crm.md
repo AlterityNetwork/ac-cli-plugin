@@ -115,6 +115,8 @@ ac crm lists lists-for-member --person-id <id>
 ac crm lists lists-for-member --company-id <id>
 ac crm lists bulk-remove-members <list-id> --member-type person --ids id1,id2,id3 [--yes]
 ac crm lists bulk-remove-members <list-id> --member-type company --ids id1,id2,id3 [--yes]
+ac crm lists bulk-move-members <list-id> --target-list-id <id> --member-type person --ids id1,id2,id3 [--yes]
+ac crm lists bulk-move-members <list-id> --target-list-id <id> --member-type company --ids id1,id2,id3 [--yes]
 ac crm lists delete <list-id> [--yes]
 ```
 
