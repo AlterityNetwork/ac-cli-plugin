@@ -526,6 +526,19 @@ One of `--person-id` or `--company-id` is required.
 #### `ac crm lists remove-member <list-id>`
 Same flags as `add-member`.
 
+#### `ac crm lists add-members <list-id>`
+Bulk-add members with server-side dedup; ids already on the list are
+reported as duplicates, not errors.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--member-type` | enum (`person`\|`company`) | yes | Type of members to add |
+| `--ids` | str | yes | Comma-separated member IDs |
+| `--json` | flag | no | Output raw JSON |
+
+API: `POST /api/v1/crm/lists/{list_id}/members/bulk-add`. Single atomic call.
+Always prefer over looping `add-member`.
+
 #### `ac crm lists bulk-remove-members <list-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
