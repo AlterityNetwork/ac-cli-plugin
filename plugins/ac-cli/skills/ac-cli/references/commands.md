@@ -51,6 +51,8 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Subscriptions](#subscriptions)
    - [Subscription Plans](#subscription-plans)
 5. [Platform](#platform)
+   - [Organization Analytics](#organization-analytics)
+   - [Launchpad](#launchpad)
    - [Files (Images)](#files-images)
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
@@ -2279,6 +2281,42 @@ Same flags as `create` (all optional).
 ---
 
 ## Platform
+
+### Organization Analytics
+
+#### `ac analytics overview`
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--period-days` | int | 30 | Reporting window from 1 to 365 days |
+| `--json` | flag | off | Raw JSON output |
+
+Shows Sonar, Headhunter, Envoy, CRM, and account-activity output for the active
+organization.
+
+---
+
+### Launchpad
+
+#### `ac launchpad signal-preferences get`
+
+Shows the active organization's Launchpad signal-feed preferences. Pass `--json`
+for raw JSON.
+
+#### `ac launchpad signal-preferences set`
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--sort-mode` | str | `hottest` or `recent` |
+| `--group` / `--no-group` | bool | Group the feed by saved search |
+| `--score-threshold` | int | Lead-score cutoff from 0 to 10 |
+| `--clear-threshold` | flag | Remove the score filter |
+| `--score-direction` | str | `above` or `below` |
+| `--json` | flag | Raw JSON output |
+
+Only supplied fields change; the command preserves the other current values.
+
+---
 
 ### Files (Images)
 

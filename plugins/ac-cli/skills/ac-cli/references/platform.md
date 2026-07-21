@@ -2,6 +2,27 @@
 
 For full flag tables see `commands.md` (Platform section).
 
+## Organization Analytics
+
+```bash
+ac analytics overview [--period-days 30] [--json]
+```
+
+Shows cross-product output for the active organization. The reporting window
+must be between 1 and 365 days.
+
+## Launchpad
+
+```bash
+ac launchpad signal-preferences get
+ac launchpad signal-preferences set --sort-mode recent --score-threshold 5 --score-direction above
+ac launchpad signal-preferences set --group
+ac launchpad signal-preferences set --clear-threshold
+```
+
+Lead scores use a 0-10 scale. `set` preserves unspecified preferences; use
+`--clear-threshold` to remove the score filter.
+
 ## Files (Images)
 
 ```bash

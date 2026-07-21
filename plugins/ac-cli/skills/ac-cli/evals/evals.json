@@ -1040,6 +1040,30 @@
           "text": "`ac admin billing import-stripe-products --yes`"
         }
       ]
+    },
+    {
+      "id": 78,
+      "prompt": "Show companies above a lead score of 6 on my Launchpad and group them by saved search.",
+      "expected_output": "Uses `ac launchpad signal-preferences set --score-threshold 6 --score-direction above --group`.",
+      "assertions": [
+        {
+          "name": "launchpad_signal_preferences",
+          "type": "command_matches",
+          "text": "`ac launchpad signal-preferences set` with `--score-threshold 6`, `--score-direction above`, and `--group`"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "prompt": "Show me our organization's output analytics for the last 90 days.",
+      "expected_output": "Uses `ac analytics overview --period-days 90`.",
+      "assertions": [
+        {
+          "name": "organization_analytics",
+          "type": "command_matches",
+          "text": "`ac analytics overview --period-days 90`"
+        }
+      ]
     }
   ]
 }
