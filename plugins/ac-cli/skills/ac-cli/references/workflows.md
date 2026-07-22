@@ -90,3 +90,6 @@ ac workflows run-people add-to-crm <workflow-id> --person-ids id1,id2 [--overrid
 ac workflows run-people crm-count <workflow-id>
 ac workflows run-people delete <workflow-id> --person-ids id1,id2 [--yes]
 ```
+
+The list response includes workflow-wide title, location, and source filter
+options. Use `--json` to consume the complete `filter_options` object.

@@ -1366,7 +1366,9 @@ Manage people discovered by workflow runs.
 | `--include-in-crm` | flag | off | Include people already added to CRM |
 | `--json` | flag | off | Raw JSON output |
 
-Lists deduplicated people discovered across all runs of a workflow.
+Lists deduplicated people discovered across all runs of a workflow. Text output
+summarizes the available title, location, and source facets; JSON includes the
+complete workflow-wide `filter_options` object.
 
 #### `ac workflows run-people list-by-run <workflow-id> <run-id>`
 | Flag | Type | Description |
