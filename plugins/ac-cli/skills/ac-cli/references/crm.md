@@ -7,6 +7,7 @@ For full flag tables see `commands.md` (CRM section).
 ```bash
 ac crm companies list [--limit 100] [--offset 0] \
   [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>] \
+  [--lead-score-min 7] [--signal-type hiring] [--employee-band 51-200] [--source sonar_v1] \
   [--view full|options]  # --view options (or --lean) = slim selector payload (ENG-933)
 ac crm companies get <company-id>
 ac crm companies create --name "Acme Corp" [--website https://acme.com] \
