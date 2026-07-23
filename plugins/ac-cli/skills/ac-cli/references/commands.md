@@ -79,6 +79,10 @@ For domain-scoped quick references (just the common commands per domain), see:
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
 | `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
+| `--lead-score-min` | int | -- | Minimum lead score (1-10); returns companies with `lead_score >= value`. Omit to include all companies |
+| `--signal-type` | str | -- | Companies with at least one live signal of this type (e.g. `hiring`, `funding`) |
+| `--employee-band` | str | -- | Canonical employee-count band (e.g. `51-200`, `10001+`); sent as `employee_count_band` |
+| `--source` | str | -- | Acquisition source; matches the `sources` array (e.g. `sonar_v1`, `csv_import`) |
 | `--view` | `full`\|`options` | `full` | Projection: `full` returns the wide CRM-table shape; `options` returns the slim selector / hover-card payload (id, name, logo, industry, location, lifecycle_stage). ENG-933. |
 | `--lean` | flag | off | Shortcut for `--view options`. |
 | `--json` | flag | off | Output raw JSON |
