@@ -309,7 +309,8 @@ ac admin subscription-plans delete <plan-id> [--yes]
 
 > Superadmin viewer + CRUD over the **global, org-free** intelligence tables
 > (deny-all RLS — only this admin path can read them). Two entities: `companies`
-> and `people`; each supports `list` / `get` / `create` / `update` / `delete`.
+> and `people`; each supports `list` / `get` / `create` / `update` / `delete` /
+> `bulk-delete`.
 > `get` also returns provenance `sources` (provider / kind / cost / fetched).
 
 ```bash
@@ -336,4 +337,8 @@ ac admin intelligence people update <person-id> [--title "..."] [--email "..."]
 # Delete.
 ac admin intelligence companies delete <company-id> [--yes]
 ac admin intelligence people delete <person-id> [--yes]
+
+# Bulk delete (one request; --id repeats). Backs the table multi-select delete.
+ac admin intelligence companies bulk-delete --id <id> [--id <id> ...] [--yes]
+ac admin intelligence people bulk-delete --id <id> [--id <id> ...] [--yes]
 ```
