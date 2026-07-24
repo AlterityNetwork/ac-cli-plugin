@@ -117,7 +117,7 @@ For the command list of a domain, **read the matching reference file** before co
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
 | Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
-| Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
+| Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, hooks, messaging, chat threads, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 

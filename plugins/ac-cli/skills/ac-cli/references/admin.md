@@ -304,3 +304,36 @@ ac admin subscription-plans create --slug starter --name "Starter" \
 ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"seats":25}']
 ac admin subscription-plans delete <plan-id> [--yes]
 ```
+
+## Intelligence (global intel_companies / intel_people)
+
+> Superadmin viewer + CRUD over the **global, org-free** intelligence tables
+> (deny-all RLS — only this admin path can read them). Two entities: `companies`
+> and `people`; each supports `list` / `get` / `create` / `update` / `delete`.
+> `get` also returns provenance `sources` (provider / kind / cost / fetched).
+
+```bash
+# List. Search covers name/domain/industry (companies) and name/title/company/
+# LinkedIn (people). --sort + --order (asc/desc) take the whitelisted columns.
+ac admin intelligence companies list [-q "acme"] [--sort last_enriched_at] [--order desc] [--limit 50] [--offset 0] [--json]
+ac admin intelligence people list [-q "cto"] [--limit 50] [--offset 0] [--json]
+
+# Get one row + its provenance sources.
+ac admin intelligence companies get <company-id> [--json]
+ac admin intelligence people get <person-id> [--json]
+
+# Create. Company needs at least one of --name/--domain/--linkedin.
+ac admin intelligence companies create [--name "Acme"] [--domain acme.com] \
+  [--linkedin URL] [--website URL] [--industry "..."] [--country US] [--description "..."]
+# Person: --linkedin is the required identity key.
+ac admin intelligence people create --linkedin URL [--name "Jane Doe"] \
+  [--title "CTO"] [--company "Acme"] [--email a@b.com] [--country US] [--location "..."]
+
+# Update (only provided fields change).
+ac admin intelligence companies update <company-id> [--name "..."] [--industry "..."]
+ac admin intelligence people update <person-id> [--title "..."] [--email "..."]
+
+# Delete.
+ac admin intelligence companies delete <company-id> [--yes]
+ac admin intelligence people delete <person-id> [--yes]
+```
