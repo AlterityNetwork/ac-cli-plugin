@@ -952,7 +952,7 @@ Approves and sends the draft.
 #### `ac envoy outbox reject <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--action` | str | yes | What to do next: `regenerate_draft` or `remove_recipient` |
+| `--action` | str | yes | What to do next: `regenerate`, `remove_recipient`, `skip_send`, or `manual_edit` |
 | `--reason` | str | no | Reason for rejection (used as AI context for regeneration) |
 | `--json` | flag | no | Raw JSON output |
 

@@ -77,11 +77,11 @@ ac envoy outbox sent [--sequence-id <id>] [--status delivered] [--limit 50]
 ac envoy outbox step-drafts --sequence-id <id> --step-id <id> [--limit 50]
 ac envoy outbox update-draft <draft-id> [--subject "New subject"] [--body "..."]
 ac envoy outbox approve <draft-id> [--subject "Override"] [--body "Override"]
-ac envoy outbox reject <draft-id> --action regenerate_draft [--reason "Too formal"]
+ac envoy outbox reject <draft-id> --action regenerate [--reason "Too formal"]
 ac envoy outbox regenerate <draft-id> [--instruction "Make it shorter"]
 ```
 
-Reject `--action` values: `regenerate_draft` (AI rewrites) · `remove_recipient` (drop from sequence).
+Reject `--action` values: `regenerate` (AI rewrites) · `remove_recipient` (drop from sequence) · `skip_send` (skip this draft, keep the recipient) · `manual_edit` (edit and resend later).
 
 ## Inbox (Replies)
 

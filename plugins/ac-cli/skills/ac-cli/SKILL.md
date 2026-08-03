@@ -162,7 +162,7 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac admin subscription-plans create` | `--slug` AND `--name` AND `--monthly-price-cents` AND `--annual-price-cents` (dollars × 100; "$9/mo" → 900) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
 | `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
-| `ac envoy outbox reject` | `--action` (`regenerate_draft` or `remove_recipient`) |
+| `ac envoy outbox reject` | `--action` (`regenerate`, `remove_recipient`, `skip_send`, or `manual_edit`) |
 | `ac files images upload` | path AND `--category` |
 | `ac resources upload` | path AND `--name` |
 | `ac admin legal-docs create` | `--document-type` AND `--version` AND `--title` |
@@ -356,7 +356,7 @@ ac envoy sequences launch <sequence-id> --workflow-id <workflow-id>
 ac envoy outbox pending --json
 ac envoy outbox approve <draft-id>
 # OR
-ac envoy outbox reject <draft-id> --action regenerate_draft --reason "Too formal"
+ac envoy outbox reject <draft-id> --action regenerate --reason "Too formal"
 ac envoy outbox sent --json
 ```
 
@@ -410,7 +410,7 @@ ac login --email "..." --password "..."   # Re-auth on the new env
 | App install returns 409 | Already installed for this org |
 | Nylas OAuth fails | Browser must reach the redirect; ensure network allows OAuth flows |
 | No drafts in outbox | Sequence must be launched and steps must have generated drafts |
-| Reject fails | `--action` must be `regenerate_draft` or `remove_recipient` |
+| Reject fails | `--action` must be `regenerate`, `remove_recipient`, `skip_send`, or `manual_edit` |
 | Queue commands return empty | Queues may not be running — start with `ac admin queues health` |
 | AI usage shows no data | Date range covers no AI activity — widen `--start-date` |
 | Run stuck in pending | Check workflow service health and queue status |

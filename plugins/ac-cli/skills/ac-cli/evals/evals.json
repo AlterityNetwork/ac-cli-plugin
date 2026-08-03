@@ -264,7 +264,7 @@
     {
       "id": 17,
       "prompt": "Check my outbox for pending drafts, then approve the first one and reject the second one asking for a regeneration because it's too formal.",
-      "expected_output": "pending \u2192 approve one, reject one with --action regenerate_draft.",
+      "expected_output": "pending \u2192 approve one, reject one with --action regenerate.",
       "assertions": [
         {
           "name": "pending_first",
@@ -274,7 +274,7 @@
         {
           "name": "reject_action_regenerate",
           "type": "command_matches",
-          "text": "`ac envoy outbox reject` with `--action regenerate_draft` and `--reason` mentioning formal/tone"
+          "text": "`ac envoy outbox reject` with `--action regenerate` and `--reason` mentioning formal/tone"
         }
       ]
     },
