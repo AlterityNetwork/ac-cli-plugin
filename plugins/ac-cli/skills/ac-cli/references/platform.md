@@ -53,8 +53,8 @@ ac apps delete-config <app-slug> <config-key> [--org-id <id>] [--yes]
 ```bash
 ac styles list [--include-inactive]
 ac styles get <style-id>
-ac styles create --name "Professional" [--description "..."] [--tone formal] [--formality high]
-ac styles update <style-id> [--name "Updated"] [--tone casual]
+ac styles create --name "Professional" [--prompt "..."] [--sample-email "..."] [--default]
+ac styles update <style-id> [--name "Updated"] [--prompt "..."] [--default|--no-default] [--active|--inactive]
 ac styles delete <style-id> [--yes]
 ac styles train <style-id> --sample-text "Example email text..."
 ac styles feedback <session-id> --rating 4 [--comments "Good but too formal"]

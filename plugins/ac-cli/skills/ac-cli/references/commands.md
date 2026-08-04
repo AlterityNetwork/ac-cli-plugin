@@ -2420,13 +2420,21 @@ Returns usage summary for the app.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Style name |
-| `--description` | str | no | Style description |
-| `--tone` | str | no | Tone (e.g. formal, casual, professional) |
-| `--formality` | str | no | Formality level (e.g. high, medium, low) |
+| `--prompt` | str | no | Initial style prompt |
+| `--sample-email` | str | no | Sample email to learn from (repeatable) |
+| `--default` | flag | no | Make this the organization's default style |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac styles update <style-id>`
-Same optional flags as `create`. Only provided fields are updated.
+| Flag | Type | Description |
+|------|------|-------------|
+| `--name` | str | Style name |
+| `--prompt` | str | Style prompt |
+| `--default` / `--no-default` | flag | Set or clear this style as the default |
+| `--active` / `--inactive` | flag | Activate or deactivate the style |
+| `--json` | flag | Raw JSON output |
+
+Only provided fields are sent; passing none exits 1.
 
 #### `ac styles delete <style-id>`
 | Flag | Type | Description |
