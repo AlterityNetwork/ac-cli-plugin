@@ -154,13 +154,13 @@
     },
     {
       "id": 10,
-      "prompt": "List our messaging sessions and show me which environments I'm logged into.",
+      "prompt": "List our chat threads and show me which environments I'm logged into.",
       "expected_output": "Two independent reads.",
       "assertions": [
         {
-          "name": "messaging_sessions",
+          "name": "chat_threads_list",
           "type": "command_matches",
-          "text": "`ac messaging sessions`"
+          "text": "`ac chat threads list`"
         },
         {
           "name": "env_list",

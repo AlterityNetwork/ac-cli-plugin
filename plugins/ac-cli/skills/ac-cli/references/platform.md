@@ -75,13 +75,6 @@ ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
 ```
 
-## Messaging
-
-```bash
-ac messaging sessions                          # List active messaging sessions
-ac messaging link --token <link-token>         # Link external messaging sender
-```
-
 ## Chat (AI Threads)
 
 ```bash

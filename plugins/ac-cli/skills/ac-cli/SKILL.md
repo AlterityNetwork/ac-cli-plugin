@@ -9,7 +9,7 @@ description: >
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
   usage, cross-org Sonar/Headhunter searches, legal docs, subscriptions, chat
   escalations); platform (file/image upload, knowledge base PDF resources, apps,
-  writing styles, Nylas email, messaging sessions, chat threads, profiles,
+  writing styles, Nylas email, chat threads, profiles,
   environment switching). Use when user mentions "ac"/"AgencyCore", any record
   (deal, contact, sequence, draft, queue), wants to draft a cold email, schedule
   a workflow, upload a PDF to the knowledge base, install an app, switch envs,
@@ -19,7 +19,7 @@ when_to_use: >
   "draft/approve/reject email", "cold email"; "sequence", "Envoy", "playbook",
   "battlecard", "signal"; "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
-  subscriptions; "knowledge base", "upload PDF", "writing style", "messaging",
+  subscriptions; "knowledge base", "upload PDF", "writing style",
   "chat thread", "Nylas", "install app", "switch env"; ids like wf-*/seq-*.
   Run install+auth first if not done.
 allowed-tools:
@@ -118,7 +118,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
-| Platform | organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, messaging, chat threads, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
+| Platform | organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, chat threads, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).

@@ -57,7 +57,6 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
    - [Nylas (Email Integration)](#nylas-email-integration)
-   - [Messaging](#messaging)
    - [Chat (AI Threads)](#chat-ai-threads)
    - [Resources (Knowledge Base)](#resources-knowledge-base)
    - [Profiles](#profiles)
@@ -2521,25 +2520,6 @@ Lists all connected accounts in the organization.
 |------|------|----------|-------------|
 | `--signature` | str | yes | Signature to validate |
 | `--json` | flag | no | Raw JSON output |
-
----
-
-### Messaging
-
-#### `ac messaging sessions`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Lists active messaging sessions for the organization. Shows platform, display name, sender ID, and last activity.
-
-#### `ac messaging link`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--token` | str | yes | Link token from the bot's login URL |
-| `--json` | flag | no | Raw JSON output |
-
-Links an external messaging sender to the user's AgencyCore account.
 
 ---
 
