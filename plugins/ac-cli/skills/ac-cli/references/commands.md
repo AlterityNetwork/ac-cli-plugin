@@ -57,7 +57,6 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
    - [Nylas (Email Integration)](#nylas-email-integration)
-   - [Hooks](#hooks)
    - [Messaging](#messaging)
    - [Chat (AI Threads)](#chat-ai-threads)
    - [Resources (Knowledge Base)](#resources-knowledge-base)
@@ -2522,17 +2521,6 @@ Lists all connected accounts in the organization.
 |------|------|----------|-------------|
 | `--signature` | str | yes | Signature to validate |
 | `--json` | flag | no | Raw JSON output |
-
----
-
-### Hooks
-
-#### `ac hooks list <capability>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Lists available hooks for the specified capability.
 
 ---
 

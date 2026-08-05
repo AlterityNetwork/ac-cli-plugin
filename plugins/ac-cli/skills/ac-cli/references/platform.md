@@ -75,12 +75,6 @@ ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
 ```
 
-## Hooks
-
-```bash
-ac hooks list <capability>     # List available hooks for a capability
-```
-
 ## Messaging
 
 ```bash

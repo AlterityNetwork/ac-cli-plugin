@@ -765,18 +765,6 @@
       ]
     },
     {
-      "id": 55,
-      "prompt": "What hooks are available for the 'recipient' capability?",
-      "expected_output": "Runs `ac hooks list recipient`.",
-      "assertions": [
-        {
-          "name": "hooks_list",
-          "type": "command_matches",
-          "text": "`ac hooks list recipient`"
-        }
-      ]
-    },
-    {
       "id": 56,
       "prompt": "Show me the CRM pipeline overview for the last 14 days.",
       "expected_output": "Runs `ac crm dashboard --period 14`.",
