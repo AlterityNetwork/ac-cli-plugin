@@ -113,6 +113,8 @@ Same optional flags as `create`. Only provided fields are updated.
 | `--lead-score` | int (0-10) | Manual lead score override |
 | `--lead-reason` | str | Reason for the lead score |
 | `--reset-lead-score-to-auto` | flag | Clear the manual score lock so Sonar can update it |
+| `--linkedin-url` | str | LinkedIn company page |
+| `--clear-linkedin-url` | flag | Set `linkedin_url` to null. Mutually exclusive with `--linkedin-url` |
 
 #### `ac crm companies delete <company-id>`
 | Flag | Type | Description |
