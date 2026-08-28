@@ -2284,6 +2284,50 @@ Same flags as `create` (all optional).
 
 ## Platform
 
+### Agentic Prospect Review
+
+#### `ac agentic prospects list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--review-state` | str | new | `new`, `watching`, `dismissed`, or `promoted` |
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic prospects get <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac agentic prospects people <prospect-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic prospects signals <prospect-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic prospects watch <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac agentic prospects dismiss <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+`watch` and `dismiss` return the durable prospect detail. They are idempotent
+and do not accept `--yes` or a review-state body.
+
+---
+
 ### Organization Analytics
 
 #### `ac analytics overview`
