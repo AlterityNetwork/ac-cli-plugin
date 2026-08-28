@@ -11,11 +11,18 @@ ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
+ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
 ```
 
 Use `--json` when a later command needs an ID or the full nested company,
 person, or signal data. `watch` and `dismiss` are repeatable intents. Neither
-can change a promoted prospect. Promotion is a separate workflow.
+can change a promoted prospect.
+
+`promote` is the one command that writes CRM. It resolves or creates the CRM
+company and each selected person, then sets the prospect to `promoted`. Repeat
+`--person` for each prospect person id, taken from `ac agentic prospects people`.
+It asks before it writes; pass `--yes` to skip the question. A second promotion
+writes nothing and answers the same references.
 
 ## Organization Analytics
 

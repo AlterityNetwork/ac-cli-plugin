@@ -1074,6 +1074,28 @@
           "text": "Sequence: `ac agentic prospects list .*--review-state new`, then `ac agentic prospects watch p-123`"
         }
       ]
+    },
+    {
+      "id": 81,
+      "prompt": "Promote agentic prospect p-123 into the CRM with its person pp-1, and add the company to list l-9.",
+      "expected_output": "Reads the prospect's people, then promotes p-123 with --person pp-1 and --list l-9.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the promotion"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the promote command"
+        },
+        {
+          "name": "promotes_with_the_selection",
+          "type": "command_sequence",
+          "text": "Runs `ac agentic prospects promote p-123 .*--person pp-1.*--list l-9`"
+        }
+      ]
     }
   ]
 }
