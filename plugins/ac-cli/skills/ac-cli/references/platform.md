@@ -2,6 +2,21 @@
 
 For full flag tables see `commands.md` (Platform section).
 
+## Agentic Prospect Review
+
+```bash
+ac agentic prospects list [--review-state new] [--cursor <cursor>] [--limit 50]
+ac agentic prospects get <prospect-id>
+ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
+ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
+ac agentic prospects watch <prospect-id>
+ac agentic prospects dismiss <prospect-id>
+```
+
+Use `--json` when a later command needs an ID or the full nested company,
+person, or signal data. `watch` and `dismiss` are repeatable intents. Neither
+can change a promoted prospect. Promotion is a separate workflow.
+
 ## Organization Analytics
 
 ```bash

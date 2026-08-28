@@ -1052,6 +1052,28 @@
           "text": "`ac analytics overview --period-days 90`"
         }
       ]
+    },
+    {
+      "id": 80,
+      "prompt": "Show me the new agentic prospects, then put prospect p-123 on my watch list.",
+      "expected_output": "Lists new prospects, then sends the watch intent for p-123.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the prospect mutation"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the prospect commands"
+        },
+        {
+          "name": "list_then_watch",
+          "type": "command_sequence",
+          "text": "Sequence: `ac agentic prospects list .*--review-state new`, then `ac agentic prospects watch p-123`"
+        }
+      ]
     }
   ]
 }
