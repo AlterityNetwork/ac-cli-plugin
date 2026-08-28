@@ -2323,8 +2323,24 @@ Same flags as `create` (all optional).
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac agentic prospects promote <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person` | uuid | no | A prospect person id to promote. Repeat for each person. At most 25, and no repeats. |
+| `--list` | uuid | no | A static CRM list. The company joins it. |
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
 `watch` and `dismiss` return the durable prospect detail. They are idempotent
 and do not accept `--yes` or a review-state body.
+
+`promote` is the one prospect command that writes CRM. Person ids are prospect
+person ids from `ac agentic prospects people`, never CRM ids. An empty
+selection promotes the company alone. The answer carries `crm_company_id`, one
+`people` row for each selection, and `list_id`. A second promotion writes
+nothing and answers the same references. A selected person who already holds a
+different CRM company link returns `409` and names that person; deselect that
+person and retry.
 
 ---
 
