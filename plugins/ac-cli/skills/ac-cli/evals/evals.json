@@ -1096,6 +1096,23 @@
           "text": "Runs `ac agentic prospects promote p-123 .*--person pp-1.*--list l-9`"
         }
       ]
+    },
+    {
+      "id": 82,
+      "prompt": "Create an agentic saved search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}.",
+      "expected_output": "Creates the saved search with the exact agentic command, name, and brief.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the saved-search mutation"
+        },
+        {
+          "name": "creates_saved_search",
+          "type": "command_matches",
+          "text": "`ac agentic saved-searches create .*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
+        }
+      ]
     }
   ]
 }

@@ -2284,6 +2284,67 @@ Same flags as `create` (all optional).
 
 ## Platform
 
+### Agentic Saved Searches
+
+#### `ac agentic saved-searches create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
+| `--brief` | JSON object | yes | Full Signals Search brief |
+| `--json` | flag | no | Raw saved-search detail |
+
+#### `ac agentic saved-searches list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+List rows omit `brief`. Use `get` to read it.
+
+#### `ac agentic saved-searches get <saved-search-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw saved-search detail, including `brief` |
+
+#### `ac agentic saved-searches patch <saved-search-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
+| `--name` | str | no | Replacement name |
+| `--brief` | JSON object | no | Replacement Signals Search brief |
+| `--json` | flag | no | Raw saved-search detail |
+
+Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
+
+#### `ac agentic saved-searches delete <saved-search-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Print the deleted id as JSON |
+
+Deleting a saved search does not cancel a Run that already started.
+
+#### `ac agentic saved-searches start <saved-search-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--definition` | str | yes | Published Signals Search workflow definition id |
+| `--idempotency-key` | str | no | Delivery identity. The CLI creates one when absent. |
+| `--json` | flag | no | Raw Run start result |
+
+Start freezes the saved brief and current comparison baseline in a normal Run.
+It does not create a Trigger or schedule.
+
+#### `ac agentic saved-searches diff <saved-search-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque cursor bound to the published Run |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw diff page JSON |
+
+Diff reads only the latest published successful Run. If that Run changes during
+a page walk, the API returns exit code 5. Start a new page walk.
+
 ### Agentic Prospect Review
 
 #### `ac agentic prospects list`
