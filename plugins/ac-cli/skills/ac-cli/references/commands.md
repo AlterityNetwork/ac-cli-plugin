@@ -47,7 +47,6 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Legal Documents](#legal-documents)
    - [Analytics Overview](#analytics-overview)
    - [Cache Stats](#cache-stats)
-   - [Chat Escalations](#chat-escalations)
    - [Subscriptions](#subscriptions)
    - [Subscription Plans](#subscription-plans)
 5. [Platform](#platform)
@@ -57,7 +56,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
    - [Nylas (Email Integration)](#nylas-email-integration)
-   - [Chat (AI Threads)](#chat-ai-threads)
+   - [Agentic Conversations](#agentic-conversations)
    - [Resources (Knowledge Base)](#resources-knowledge-base)
    - [Profiles](#profiles)
 6. [Auth & Environment](#auth--environment)
@@ -2148,23 +2147,6 @@ Shows application cache hit/miss statistics.
 
 ---
 
-### Chat Escalations
-
-#### `ac admin chat-escalations list`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--status` | str | Filter: `open`, `triaged`, `resolved` |
-| `--json` | flag | Raw JSON output |
-
-#### `ac admin chat-escalations update <escalation-id>`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--status` | str | yes | `open`, `triaged`, or `resolved` |
-| `--note` | str | no | Optional triage note (max 2000 chars) |
-| `--json` | flag | no | Raw JSON output |
-
----
-
 ### Subscriptions
 
 #### `ac admin subscriptions list`
@@ -2402,6 +2384,39 @@ selection promotes the company alone. The answer carries `crm_company_id`, one
 nothing and answers the same references. A selected person who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
+
+### Agentic Conversations
+
+#### `ac agentic conversations list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic conversations create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--title` | str | no | Optional title |
+| `--json` | flag | no | Raw conversation detail |
+
+#### `ac agentic conversations messages <conversation-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--cursor` | str | None | Opaque next-page cursor |
+| `--limit` | int | 50 | Page size, 1 to 100 |
+| `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic conversations send <conversation-id> <text>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--idempotency-key` | str | no | Delivery identity. The CLI creates one when absent. |
+| `--json` | flag | no | Raw message detail |
+
+The CLI does not read the live conversation stream. After `send`, run
+`messages` to inspect stored replies. `send` takes the message text as a
+positional argument. There is no `--message` flag and no single-conversation
+`get` command.
 
 ---
 
@@ -2642,78 +2657,6 @@ Lists all connected accounts in the organization.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--signature` | str | yes | Signature to validate |
-| `--json` | flag | no | Raw JSON output |
-
----
-
-### Chat (AI Threads)
-
-#### `ac chat threads list`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Lists all chat threads with id, title, archived status, and creation date.
-
-#### `ac chat threads create`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--title` | str | yes | Thread title |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac chat threads update <thread-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--title` | str | New thread title |
-| `--archived/--no-archived` | flag | Archive or unarchive the thread |
-| `--json` | flag | Raw JSON output |
-
-At least one of `--title` or `--archived/--no-archived` is required.
-
-#### `ac chat threads delete <thread-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--yes` | flag | Skip confirmation prompt |
-| `--json` | flag | Raw JSON output |
-
-#### `ac chat threads messages <thread-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Lists messages in a thread with id, role, content (truncated), and creation date.
-
-#### `ac chat threads generate-title <thread-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Generates an AI-suggested title for the thread based on its conversation content.
-
-#### `ac chat threads send <thread-id> <content>`
-Non-streaming send of a message to a chat thread.
-
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--context` | str | no | Surrounding context for the model (max 20000 chars) |
-| `--document-id` | str (repeatable) | no | Restrict knowledge retrieval to these resource_hub IDs (max 10) |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac chat threads escalate <thread-id>`
-Escalate a thread to a human.
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `--note` | str | Optional escalation note (max 2000 chars) |
-| `--message-id` | str | Specific message to escalate |
-| `--json` | flag | Raw JSON output |
-
-#### `ac chat messages update-data <message-id>`
-Update structured data attached to a chat message.
-
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--data` | JSON object | yes | JSON object to merge into the message's data field |
 | `--json` | flag | no | Raw JSON output |
 
 ---

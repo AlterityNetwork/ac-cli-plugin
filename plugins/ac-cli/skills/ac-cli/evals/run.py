@@ -6,6 +6,7 @@ Spawns `claude -p` per scenario, captures the stream, and grades each
 
 Assertion vocabulary (see ./README.md):
 - command_matches    : at least one Bash invocation matches the regex in `text`
+- command_forbidden  : no Bash invocation may match any backticked regex
 - command_sequence   : a list of regexes appears in order across Bash invocations
 - reads_file         : Read tool was invoked on a path matching the text
 - auth_check_first   : `ac whoami` or `ac login` runs before any mutating `ac` cmd
@@ -121,7 +122,11 @@ def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
             # get a softer variant that still permits `ac login / logout`.
             stub_lines = [
                 "\n\n# EVAL HARNESS NOTE",
-                "Running inside an automated eval harness. Skip Step 0 (install).",
+                "Running inside an automated eval harness. Skip Step 0 (install). "
+                "Assume the latest documented `ac` CLI is installed, even if "
+                "local help output is stale. Do not probe `ac --help` to "
+                "rediscover command names, and do not fall back to commands the "
+                "loaded skill says are removed.",
             ]
             if _is_auth_flow_prompt(prompt):
                 stub_lines.append(
@@ -140,7 +145,7 @@ def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
                 )
             stub_lines.append(
                 "Execute end-to-end in one response, chaining commands with `&&` "
-                "where needed."
+                "where needed. Stop after the requested command sequence."
             )
             stub = "\n".join(stub_lines) + "\n"
             cmd += [
@@ -237,6 +242,20 @@ def grade_command_any(cap: Capture, text: str) -> tuple[bool, str]:
     return False, "none of: " + " | ".join(f[:50] for f in fragments)
 
 
+def grade_command_forbidden(cap: Capture, text: str) -> tuple[bool, str]:
+    """No command may match any backticked regex."""
+    fragments = _extract_regexes(text) or [text.strip()]
+    haystack = "\n".join(cap.commands)
+    for frag in fragments:
+        try:
+            matched = re.search(frag, haystack, re.IGNORECASE)
+        except re.error:
+            matched = frag in haystack
+        if matched:
+            return False, f"forbidden command matched: {frag[:60]}"
+    return True, "ok"
+
+
 def grade_command_sequence(cap: Capture, text: str) -> tuple[bool, str]:
     """Backticked regexes must match Bash commands in the listed order."""
     fragments = _extract_regexes(text)
@@ -289,6 +308,7 @@ def grade_auth_check_first(cap: Capture, _text: str) -> tuple[bool, str]:
 GRADERS = {
     "command_matches": grade_command_matches,
     "command_any": grade_command_any,
+    "command_forbidden": grade_command_forbidden,
     "command_sequence": grade_command_sequence,
     "reads_file": grade_reads_file,
     "auth_check_first": grade_auth_check_first,

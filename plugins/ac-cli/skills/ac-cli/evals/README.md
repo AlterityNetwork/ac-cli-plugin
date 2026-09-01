@@ -28,6 +28,7 @@ Exit code: 0 if every scenario passes, 1 otherwise.
 | `type` | Meaning | Pattern |
 |--------|---------|---------|
 | `command_matches` | At least one Bash command Claude ran matches the regex in `text`. | regex over the executed command line |
+| `command_forbidden` | No Bash command Claude ran or proposed may match any backticked regex in `text`. | regex over the executed command line |
 | `command_sequence` | Multiple commands ran **in the listed order** (extra commands between them are allowed). | comma- or sentence-separated regexes inside `text` |
 | `reads_file` | Claude invoked the Read tool on one of the listed reference paths before the related command. | absolute or `references/`-relative path |
 | `auth_check_first` | `ac whoami` (or `ac login`) appears before the first mutating command. | implicit — no extra args needed |
