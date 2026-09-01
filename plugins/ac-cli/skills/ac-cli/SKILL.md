@@ -7,9 +7,9 @@ description: >
   replies, signals, battlecards, playbooks, cold emails); workflows (runs,
   schedules, cron, presets, CSV, discovered companies/people); admin (users,
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
-  usage, cross-org Sonar/Headhunter searches, legal docs, subscriptions, chat
-  escalations); platform (file/image upload, knowledge base PDF resources, apps,
-  agentic saved searches and prospect review, writing styles, Nylas email, chat threads, profiles,
+  usage, cross-org Sonar/Headhunter searches, legal docs, subscriptions);
+  platform (file/image upload, knowledge base PDF resources, apps,
+  agentic saved searches, prospect review, web chat conversations, writing styles, Nylas email, profiles,
   environment switching). Use when user mentions "ac"/"AgencyCore", any record
   (deal, contact, sequence, draft, queue), wants to draft a cold email, schedule
   a workflow, upload a PDF to the knowledge base, install an app, switch envs,
@@ -21,7 +21,7 @@ when_to_use: >
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
   "knowledge base", "upload PDF", "writing style",
-  "chat thread", "Nylas", "install app", "switch env"; ids like wf-*/seq-*.
+  "web chat conversation", "Nylas", "install app", "switch env"; ids like wf-*/seq-*.
   Run install+auth first if not done.
 allowed-tools:
   - Bash(ac *)
@@ -43,6 +43,8 @@ The `ac` CLI manages CRM, outreach, workflows, admin, and platform from the term
 2. **Co-required flags must appear together.** Never emit half a command. See [Co-required flags](#co-required-flags) below.
 3. **Preview before any irreversible mutation.** Run the preview/list command before `commit` / `add-to-crm` / `launch` / `delete`. See [Dry-Run / Preview Patterns](#dry-run--preview-patterns).
 4. **Look up reference files for any non-obvious flag.** Read `references/<domain>.md` instead of guessing — Claude may have stale memory of older flag names.
+5. **Legacy chat is gone.** Do not run `ac chat ...` or `ac admin chat-escalations ...`; web chat conversations use `ac agentic conversations ...`. To create, send, then check a reply:
+   `CONV_ID=$(ac agentic conversations create --title "Q3 strategy" --json | jq -r '.id') && ac agentic conversations send "$CONV_ID" "What's my top priority?" --json && ac agentic conversations messages "$CONV_ID" --json`
 
 ---
 
@@ -119,7 +121,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
-| Platform | agentic saved searches and prospect review, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, chat threads, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
+| Platform | agentic saved searches, prospect review, web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).
@@ -145,8 +147,8 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "move people from list A to list B" | `ac crm lists bulk-move-members A --target-list-id B --member-type person --ids p1,p2` | composing `add-members` + `bulk-remove-members` (the move command is one call and reports duplicates) |
 | "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
-| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / `ac envoy inbox …` — different surfaces |
-| "AI chat thread" (user-facing) | `ac chat threads …` | `ac admin chat-threads …` — admin path is for chat-escalations only |
+| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Envoy inbox — different surfaces |
+| "web chat conversation" / "AI chat thread" (user-facing) | `ac agentic conversations …` | `ac chat …` was removed; admin chat triage no longer exists |
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
 | "cache stats" / "cache hit rate" / "cache hit ratio" | `ac admin cache-stats` (top-level admin command) | `ac admin ai-usage summary` (token cache) is not the same — `cache-stats` covers platform cache, ai-usage covers Anthropic prompt cache |

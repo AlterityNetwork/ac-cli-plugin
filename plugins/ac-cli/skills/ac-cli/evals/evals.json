@@ -154,13 +154,18 @@
     },
     {
       "id": 10,
-      "prompt": "List our chat threads and show me which environments I'm logged into.",
+      "prompt": "List my web chat conversations and show me which environments I'm logged into.",
       "expected_output": "Two independent reads.",
       "assertions": [
         {
-          "name": "chat_threads_list",
+          "name": "agentic_conversations_list",
           "type": "command_matches",
-          "text": "`ac chat threads list`"
+          "text": "`ac agentic conversations list`"
+        },
+        {
+          "name": "legacy_chat_not_used",
+          "type": "command_forbidden",
+          "text": "`\\bac chat\\b|\\bac admin chat-escalations\\b`"
         },
         {
           "name": "env_list",
@@ -616,18 +621,6 @@
       ]
     },
     {
-      "id": 43,
-      "prompt": "List all open chat escalations and resolve escalation esc-7 with note 'duplicate ticket'.",
-      "expected_output": "list --status open \u2192 update --status resolved.",
-      "assertions": [
-        {
-          "name": "escalation_resolve",
-          "type": "command_sequence",
-          "text": "Sequence: `ac admin chat-escalations list --status open`, `ac admin chat-escalations update esc-7 --status resolved --note .duplicate ticket.`"
-        }
-      ]
-    },
-    {
       "id": 44,
       "prompt": "How many failed Sonar searches did each org have in the last 7 days? Pipe through jq for grouping.",
       "expected_output": "Uses `ac admin searches runs --source sonar --status failed --start-date <7d-ago> --all` and pipes via jq for group_by org.",
@@ -718,25 +711,18 @@
     },
     {
       "id": 51,
-      "prompt": "Open a new AI chat thread titled 'Q3 strategy', send 'What's my top priority?', and check the response.",
-      "expected_output": "create \u2192 send.",
+      "prompt": "Open a new web chat conversation titled 'Q3 strategy', send 'What's my top priority?', and check the response.",
+      "expected_output": "create \u2192 send with positional text \u2192 messages.",
       "assertions": [
         {
-          "name": "chat_create_then_send",
+          "name": "agentic_conversation_create_then_send",
           "type": "command_sequence",
-          "text": "Sequence: `ac chat threads create --title .Q3 strategy.`, `ac chat threads send`"
-        }
-      ]
-    },
-    {
-      "id": 52,
-      "prompt": "Escalate AI chat thread t-9 to a human with note 'needs eng help'.",
-      "expected_output": "Runs `ac chat threads escalate t-9 --note 'needs eng help'`.",
-      "assertions": [
+          "text": "Sequence: `ac agentic conversations create .*--title .Q3 strategy.`, `ac agentic conversations send .*What.s my top priority`, `ac agentic conversations messages`"
+        },
         {
-          "name": "chat_escalate",
-          "type": "command_matches",
-          "text": "`ac chat threads escalate t-9` with `--note .[\"']?needs eng help`"
+          "name": "legacy_chat_not_used",
+          "type": "command_forbidden",
+          "text": "`\\bac chat\\b|\\bac admin chat-escalations\\b`"
         }
       ]
     },

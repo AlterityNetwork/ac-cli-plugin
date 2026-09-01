@@ -190,13 +190,6 @@ ac admin analytics-overview [--start-date 2026-01-01] [--end-date 2026-03-23] [-
 ac admin cache-stats
 ```
 
-## Chat Escalations
-
-```bash
-ac admin chat-escalations list [--status open|triaged|resolved]
-ac admin chat-escalations update <escalation-id> --status resolved [--note "..."]
-```
-
 ## Subscriptions
 
 ```bash

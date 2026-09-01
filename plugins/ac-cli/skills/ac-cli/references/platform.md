@@ -119,20 +119,20 @@ ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
 ```
 
-## Chat (AI Threads)
+## Agentic Conversations
 
 ```bash
-ac chat threads list
-ac chat threads create --title "Project Discussion"
-ac chat threads update <thread-id> [--title "New Title"] [--archived/--no-archived]
-ac chat threads delete <thread-id> [--yes]
-ac chat threads messages <thread-id>
-ac chat threads generate-title <thread-id>
-ac chat threads send <thread-id> "What's on my plate today?" [--context "..."] \
-  [--document-id <id>...]                       # Non-streaming send
-ac chat threads escalate <thread-id> [--note "..."] [--message-id <id>]
-ac chat messages update-data <message-id> --data '{"key":"value"}'
+ac agentic conversations list [--cursor <cursor>] [--limit 50]
+ac agentic conversations create [--title "Project Discussion"]
+ac agentic conversations messages <conversation-id> [--cursor <cursor>] [--limit 50]
+ac agentic conversations send <conversation-id> "What's on my plate today?" \
+  [--idempotency-key <key>]
 ```
+
+The CLI sends one message and returns immediately. Read the answer with
+`ac agentic conversations messages`; the browser owns the live event stream.
+`send` takes the message text as a positional argument. There is no `--message`
+flag and no single-conversation `get` command.
 
 ## Resources (Knowledge Base)
 
