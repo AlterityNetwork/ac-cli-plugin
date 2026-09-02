@@ -19,5 +19,5 @@ do not add parent and child usage totals. Capability cost metrics use separate
 usage deltas and can be incomplete. Use durable usage records for billing.
 
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
-page. For these commands, `--all` includes child Runs; it does not read all
-pages. The default lists root Runs.
+page. The default lists root Runs. Use `--all` to include child Runs.
+To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
