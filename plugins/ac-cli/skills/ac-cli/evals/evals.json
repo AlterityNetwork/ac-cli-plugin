@@ -1094,6 +1094,38 @@
           "text": "`ac agentic saved-searches create .*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
         }
       ]
+    },
+    {
+      "id": 83,
+      "prompt": "Start AgencyCore company.search contract version 1 for supplied domain example.com. Use the exact input {\"sources\":[\"supplied\"],\"companies\":[{\"kind\":\"domain\",\"value\":\"example.com\"}]}, delivery key company-search-request-42, and JSON output. Use the stable capability command, not an executor UUID.",
+      "expected_output": "Starts company.search with the exact supplied input, explicit version, delivery key and JSON output.",
+      "assertions": [
+        {
+          "name": "starts_stable_capability",
+          "type": "command_matches",
+          "text": "`ac agentic capabilities start company.search`"
+        },
+        {
+          "name": "version",
+          "type": "command_matches",
+          "text": "`--contract-version 1`"
+        },
+        {
+          "name": "input",
+          "type": "command_matches",
+          "text": "`--input .*example.com`"
+        },
+        {
+          "name": "delivery",
+          "type": "command_matches",
+          "text": "`--idempotency-key company-search-request-42`"
+        },
+        {
+          "name": "json",
+          "type": "command_matches",
+          "text": "`--json`"
+        }
+      ]
     }
   ]
 }

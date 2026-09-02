@@ -1,6 +1,38 @@
-# Agentic Runs
+# Agentic Capabilities and Runs
 
 These commands require the CLI and API from `agentic-platform` until cutover.
+
+## Start a capability
+
+Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
+`people.enrich` or `signals.search`. The capability must be installed and active
+for the current organization. Its published schema defines the input fields.
+
+```bash
+ac agentic capabilities start company.search --contract-version 1 \
+  --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
+  --idempotency-key company-search-request-42 --json
+```
+
+All three flags are required. Use a positive integer contract version, a JSON
+input object, and a nonblank delivery key with 1–200 header-safe ASCII characters.
+Input is limited to 32 KiB. The server applies the published schema and preserves
+omitted fields; it does not insert schema defaults.
+
+Reuse the same key and request after a timeout. A matching replay returns the
+original Run, even after a binding change. A changed capability, version or input
+with that key returns `idempotency_conflict` (409). Use a new key for a new request.
+Keys are isolated by organization, caller and start source.
+
+The response is the existing Run detail. Read `status` as well as `outcome`:
+`started` can mean queued, waiting for approval, or failed on policy admission.
+A duplicate does not start another execution. Read the Run with the commands below.
+
+Errors preserve the API code in JSON output: unknown ID (404), unavailable binding
+or stale version (409), missing scope (403), invalid input (422), oversized input
+(413), and invalid key (400). The CLI uses its existing semantic exit codes.
+
+## Read Runs
 
 ```bash
 ac agentic runs list --json

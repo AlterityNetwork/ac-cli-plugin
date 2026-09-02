@@ -2848,3 +2848,21 @@ Switches the active environment. Valid names: `local`, `staging`, `production`.
 | `--json` | flag | Raw JSON output |
 
 Checks if the API is reachable and returns health status.
+
+
+### Agentic Capability Starts
+
+#### `ac agentic capabilities start <capability-id>`
+
+Requires the `agentic-platform` API and CLI until cutover.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--contract-version` | Positive integer | Yes | Select the published input contract. |
+| `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
+| `--idempotency-key` | String | Yes | Use 1–200 header-safe ASCII characters. Reuse only for the same request. |
+| `--json` | Boolean | No | Print the raw Run detail or structured error. |
+
+The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
+Read both `outcome` and `status`. A duplicate returns the original Run; a changed
+request with the same key returns 409. See `agentic-runs.md` for retry rules.
