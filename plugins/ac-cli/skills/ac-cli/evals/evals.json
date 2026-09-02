@@ -1124,6 +1124,11 @@
           "name": "json",
           "type": "command_matches",
           "text": "`--json`"
+        },
+        {
+          "name": "no_invented_tree_command",
+          "type": "command_forbidden",
+          "text": "Do not run or propose `ac agentic runs trees`."
         }
       ]
     }
