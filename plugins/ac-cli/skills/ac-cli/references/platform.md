@@ -5,7 +5,7 @@ For full flag tables see `commands.md` (Platform section).
 ## Agentic Saved Searches
 
 ```bash
-ac agentic saved-searches create --name "UK fintech" --brief '{"icp":"UK fintech firms"}'
+ac agentic saved-searches create --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
 ac agentic saved-searches list [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
 ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
@@ -15,7 +15,13 @@ ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50
 ```
 
 The brief must be a JSON object. It must contain a non-empty `icp` string or a
-non-empty `company_criteria` array. `list` omits the brief. Use `get` when you
+non-empty `company_criteria` array. It also requires a `persona` object.
+Use `titles`, `departments`, `seniority` and `country_codes` lists. Supply at least one list.
+Each list contains 1 to 20 unique values. Omit unused lists; do not send null or empty lists.
+Text values contain 1 to 1,000 characters. Country codes use uppercase ISO alpha-2 values.
+Values use OR within each list and AND between fields. The complete execution input must also fit the byte limits.
+Do not infer a country from free-text location or convert a title family into exact titles.
+`list` omits the brief. Use `get` when you
 need the full brief or the current `updated_at` write token.
 
 `patch` requires that token and at least one replacement field. A stale token
@@ -23,6 +29,13 @@ returns exit code 5. `start` freezes the stored brief and current baseline in a
 normal Run. It does not create a schedule. `diff` reads only the latest
 published successful Run. Start a new page walk if the published Run changes.
 Deleting a saved search does not cancel a Run that already started.
+
+To correct a legacy persona, first use `get --json` and preserve the original brief.
+Obtain explicit criteria for ambiguous legacy values. Replace only `brief.persona` in a copy of the full brief.
+Send that full copy with `patch --brief` and the current `--expected-updated-at` token.
+Keep unrelated brief fields. If the token changes, read the search again before correcting it.
+An incompatible search remains readable and permits a name-only edit, but cannot start until corrected.
+Read the returned field errors with `--json`. Do not recreate the search or change its ID, watches or schedule.
 
 ## Agentic Prospect Review
 
