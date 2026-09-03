@@ -10,7 +10,7 @@ ac agentic saved-searches list [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
 ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
 ac agentic saved-searches delete <saved-search-id> [--yes]
-ac agentic saved-searches start <saved-search-id> --definition <definition-id> [--idempotency-key <key>]
+ac agentic saved-searches start <saved-search-id> --contract-version <version> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
 ```
 
@@ -26,7 +26,8 @@ need the full brief or the current `updated_at` write token.
 
 `patch` requires that token and at least one replacement field. A stale token
 returns exit code 5. `start` freezes the stored brief and current baseline in a
-normal Run. It does not create a schedule. `diff` reads only the latest
+normal Run. Reuse its key only for the same saved search and contract version.
+It does not create a schedule. `diff` reads only the latest
 published successful Run. Start a new page walk if the published Run changes.
 Deleting a saved search does not cancel a Run that already started.
 

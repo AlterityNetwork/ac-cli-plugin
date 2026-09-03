@@ -2310,8 +2310,8 @@ Deleting a saved search does not cancel a Run that already started.
 #### `ac agentic saved-searches start <saved-search-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--definition` | str | yes | Published Signals Search workflow definition id |
-| `--idempotency-key` | str | no | Delivery identity. The CLI creates one when absent. |
+| `--contract-version` | int | yes | Published Signals Search contract version, 1 or later |
+| `--idempotency-key` | str | yes | Delivery identity. Reuse it only for the same saved search and contract version. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief and current comparison baseline in a normal Run.
