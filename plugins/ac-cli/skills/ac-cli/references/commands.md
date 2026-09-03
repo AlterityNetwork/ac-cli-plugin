@@ -2272,7 +2272,7 @@ Same flags as `create` (all optional).
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
-| `--brief` | JSON object | yes | Full Signals Search brief |
+| `--brief` | JSON object | yes | Full brief with shared persona lists: titles, departments, seniority, country_codes |
 | `--json` | flag | no | Raw saved-search detail |
 
 #### `ac agentic saved-searches list`
@@ -2294,7 +2294,7 @@ List rows omit `brief`. Use `get` to read it.
 |------|------|----------|-------------|
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
-| `--brief` | JSON object | no | Replacement Signals Search brief |
+| `--brief` | JSON object | no | Full replacement brief with a corrected shared persona; preserve unrelated fields |
 | `--json` | flag | no | Raw saved-search detail |
 
 Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
