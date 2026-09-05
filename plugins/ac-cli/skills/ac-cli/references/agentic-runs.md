@@ -8,11 +8,20 @@ Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
 `people.enrich` or `signals.search`. The capability must be installed and active
 for the current organization. Its published schema defines the input fields.
 
+⚠️ **Read the contract version before you start.** Each capability publishes its
+own version, and the versions differ. A start that names another version answers
+`contract_version_conflict` (409). `ac agentic capabilities get <id> --json`
+reports the served value in `contract_version`.
+
 ```bash
-ac agentic capabilities start company.search --contract-version 1 \
+ac agentic capabilities get company.search --json   # reports contract_version
+ac agentic capabilities start company.search --contract-version 2 \
   --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
   --idempotency-key company-search-request-42 --json
 ```
+
+`company.search`, `people.search` and `signals.search` publish version 2.
+`company.enrich` and `people.enrich` publish version 1.
 
 All three flags are required. Use a positive integer contract version, a JSON
 input object, and a nonblank delivery key with 1–200 header-safe ASCII characters.
