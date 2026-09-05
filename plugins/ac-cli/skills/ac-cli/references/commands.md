@@ -1153,7 +1153,7 @@ Returns total inbox thread count.
 #### `ac workflows runs create <workflow-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--input` | str | no | JSON string of input parameters |
+| `--input` | str | no | JSON string of input parameters. The command refuses a string that is not JSON, and sends no request. |
 | `--idempotency-key` | str | no | Idempotency key to prevent duplicate runs. Use 1–200 header-safe ASCII characters. The command refuses an empty flag. |
 | `--json` | flag | no | Raw JSON output |
 
@@ -2877,7 +2877,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
 | `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
-| `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. |
+| `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. The command refuses a value that is not a JSON object, and sends no request. |
 | `--idempotency-key` | String | No | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
