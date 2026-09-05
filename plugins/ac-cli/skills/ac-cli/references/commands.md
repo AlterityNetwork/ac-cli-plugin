@@ -1154,7 +1154,7 @@ Returns total inbox thread count.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--input` | str | no | JSON string of input parameters |
-| `--idempotency-key` | str | no | Idempotency key to prevent duplicate runs |
+| `--idempotency-key` | str | no | Idempotency key to prevent duplicate runs. Use 1–200 header-safe ASCII characters. The command refuses an empty flag. |
 | `--json` | flag | no | Raw JSON output |
 
 Creates a new workflow run. Returns 202 (accepted) with run ID and status.
@@ -2311,7 +2311,7 @@ Deleting a saved search does not cancel a Run that already started.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--contract-version` | int | yes | Published Signals Search contract version, 1 or later |
-| `--idempotency-key` | str | yes | Delivery identity. Reuse it only for the same saved search and contract version. |
+| `--idempotency-key` | str | yes | Delivery identity. Use 1–200 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief and current comparison baseline in a normal Run.
@@ -2410,7 +2410,7 @@ person and retry.
 #### `ac agentic conversations send <conversation-id> <text>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--idempotency-key` | str | no | Delivery identity. The CLI creates one when absent. |
+| `--idempotency-key` | str | no | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | flag | no | Raw message detail |
 
 The CLI does not read the live conversation stream. After `send`, run
