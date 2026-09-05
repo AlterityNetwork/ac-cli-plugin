@@ -122,12 +122,16 @@ For the command list of a domain, **read the matching reference file** before co
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
-| Agentic Capabilities and Runs | Start stable product IDs; read Run identity, detail and children on agentic-platform | [`references/agentic-runs.md`](references/agentic-runs.md) |
+| Agentic Capabilities and Runs | Start stable product IDs; start one definition; read Run identity, detail and children on agentic-platform | [`references/agentic-runs.md`](references/agentic-runs.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For capability input and retry rules, read `references/agentic-runs.md`. Use
 `ac agentic capabilities start <id> --contract-version <integer> --input '<JSON>' --idempotency-key <key> --json`.
 All three value flags are required. Preserve the user's delivery key on a retry.
+Start a published definition with
+`ac agentic runs start --definition <definition-id> --input '<JSON>' --json`.
+Only `--definition` is required. The CLI mints the delivery key when
+`--idempotency-key` is absent. A draft definition returns 409.
 Read a Run with `ac agentic runs get <run-id> --json`. Read its children with
 `ac agentic runs list --parent <run-id> --json`.
 
@@ -141,6 +145,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 
 | User says | Correct command | Wrong guesses to avoid |
 |-----------|----------------|------------------------|
+| "start a run of an agentic definition (agent or workflow definition ID)" | `ac agentic runs start --definition <definition-id>` | `ac workflows runs create <workflow-id>` — a different runtime that takes a workflow ID, not an agentic definition ID |
 | "saved search" / "repeat this Signals Search" | `ac agentic saved-searches …` | `ac platform agentic-saved-searches` · workflow schedules (a saved search starts Runs but creates no schedule) |
 | "switch / change active organization to X" | `ac profiles set-organization X` | `ac env use` (envs are local/staging/production) · `ac admin orgs` (manages records) · `ac apps … --org-id` (per-app) |
 | "delete the 3 people IDs p-100, p-101, p-102" / any list of 2+ ids | `ac crm people bulk-delete --ids p-100,p-101,p-102` (single call, comma-separated) | NEVER loop `ac crm people delete <id>` per-id — even with `AC_YES=1`, this is wrong because (a) bulk-delete exists, (b) the loop is non-atomic |

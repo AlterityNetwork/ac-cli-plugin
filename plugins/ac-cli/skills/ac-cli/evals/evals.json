@@ -1131,6 +1131,28 @@
           "text": "`ac agentic runs trees`"
         }
       ]
+    },
+    {
+      "id": 84,
+      "prompt": "Start a run of AgencyCore agentic definition 7c2f1a90-3b44-4f2e-9a10-88d1e6c4b512 with the input {\"query\":\"series B fintech\"} and JSON output. Use the agentic run starter, not the ac workflows runtime.",
+      "expected_output": "Starts the definition with ac agentic runs start, passing the definition id, the exact input and JSON output.",
+      "assertions": [
+        {
+          "name": "starts_agentic_run_with_definition",
+          "type": "command_matches",
+          "text": "`ac agentic runs start .*--definition 7c2f1a90-3b44-4f2e-9a10-88d1e6c4b512`"
+        },
+        {
+          "name": "input",
+          "type": "command_matches",
+          "text": "`--input .*series B fintech`"
+        },
+        {
+          "name": "json",
+          "type": "command_matches",
+          "text": "`--json`"
+        }
+      ]
     }
   ]
 }

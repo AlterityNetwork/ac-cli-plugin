@@ -32,6 +32,30 @@ Errors preserve the API code in JSON output: unknown ID (404), unavailable bindi
 or stale version (409), missing scope (403), invalid input (422), oversized input
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
+## Start a run
+
+The command starts one Run of one definition. The definition is an agent or a
+workflow. Read the IDs with `ac agentic definitions list`.
+
+```bash
+ac agentic runs start --definition <definition-id> \
+  --input '{"query":"series B fintech"}' --json
+```
+
+Only `--definition` is required. An absent or empty `--input` sends an empty
+object. Any other value must be a JSON object of at most 32 KiB.
+
+The CLI mints a fresh key for each start when `--idempotency-key` is absent, so
+two identical commands start two Runs. Pass a key only when a retry must not
+start a second Run, and use 1–200 header-safe ASCII characters. The CLI refuses
+an empty flag before it calls the API. A repeat with the same key returns the
+first Run and starts no second execution; human output marks it `Duplicate`.
+
+The definition must be published, and it must be an agent or a workflow.
+`ac agentic definitions list` also returns drafts, disabled definitions and
+skills. Each of those returns 409. `ac agentic capabilities start` above starts
+a published product capability, and it takes a contract version.
+
 ## Read Runs
 
 ```bash
