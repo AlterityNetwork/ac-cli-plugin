@@ -2877,7 +2877,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
 | `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
-| `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent flag sends an empty object. |
+| `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. |
 | `--idempotency-key` | String | No | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
