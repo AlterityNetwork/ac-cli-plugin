@@ -2866,3 +2866,23 @@ Requires the `agentic-platform` API and CLI until cutover.
 The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
 Read both `outcome` and `status`. A duplicate returns the original Run; a changed
 request with the same key returns 409. See `agentic-runs.md` for retry rules.
+
+
+### Agentic Runs
+
+#### `ac agentic runs start`
+
+Requires the `agentic-platform` API and CLI until cutover.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
+| `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. |
+| `--idempotency-key` | String | No | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--json` | Boolean | No | Print the raw Run detail or structured error. |
+
+The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
+`ac agentic definitions list`. The definition must be published; a draft returns
+409. A start names the Run, the definition and the status. A duplicate key names
+the Run that key already started and its status, and starts no second execution.
+See `agentic-runs.md` for the worked example.
