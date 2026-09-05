@@ -279,7 +279,7 @@ The CLI uses semantic exit codes so agents can branch on failure type:
 |------|---------|------|
 | 0 | Success | 2xx |
 | 1 | General/unknown error | 500, connection errors |
-| 2 | Validation error | 422 |
+| 2 | Validation error | 422, or a flag refused before the request — see the flag's own row |
 | 3 | Not found | 404 |
 | 4 | Auth / permission denied | 401, 403 |
 | 5 | Conflict | 409 |
