@@ -24,7 +24,7 @@ ac agentic capabilities start company.search --contract-version 2 \
 `company.enrich` and `people.enrich` publish version 1.
 
 All three flags are required. Use a positive integer contract version, a JSON
-input object, and a nonblank delivery key with 1–200 header-safe ASCII characters.
+input object, and a nonblank delivery key with 1–255 header-safe ASCII characters.
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
@@ -56,7 +56,7 @@ object. Any other value must be a JSON object of at most 32 KiB.
 
 The CLI mints a fresh key for each start when `--idempotency-key` is absent, so
 two identical commands start two Runs. Pass a key only when a retry must not
-start a second Run, and use 1–200 header-safe ASCII characters. The CLI refuses
+start a second Run, and use 1–255 header-safe ASCII characters. The CLI refuses
 an empty flag before it calls the API. A repeat with the same key returns the
 first Run and starts no second execution; human output marks it `Duplicate`.
 

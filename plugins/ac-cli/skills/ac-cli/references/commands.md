@@ -1154,7 +1154,7 @@ Returns total inbox thread count.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--input` | str | no | JSON string of input parameters. The command refuses a string that is not JSON, and sends no request. |
-| `--idempotency-key` | str | no | Idempotency key to prevent duplicate runs. Use 1–200 header-safe ASCII characters. The command refuses an empty flag. |
+| `--idempotency-key` | str | no | Idempotency key to prevent duplicate runs. Use 1–255 header-safe ASCII characters. The command refuses an empty flag. |
 | `--json` | flag | no | Raw JSON output |
 
 Creates a new workflow run. Returns 202 (accepted) with run ID and status.
@@ -2311,7 +2311,7 @@ Deleting a saved search does not cancel a Run that already started.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--contract-version` | int | yes | Published Signals Search contract version, 1 or later |
-| `--idempotency-key` | str | yes | Delivery identity. Use 1–200 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
+| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief and current comparison baseline in a normal Run.
@@ -2410,7 +2410,7 @@ person and retry.
 #### `ac agentic conversations send <conversation-id> <text>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--idempotency-key` | str | no | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--idempotency-key` | str | no | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | flag | no | Raw message detail |
 
 The CLI does not read the live conversation stream. After `send`, run
@@ -2860,7 +2860,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 |---|---|---|---|
 | `--contract-version` | Positive integer | Yes | Select the published input contract. |
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
-| `--idempotency-key` | String | Yes | Use 1–200 header-safe ASCII characters. Reuse only for the same request. |
+| `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
@@ -2878,7 +2878,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 |---|---|---|---|
 | `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
 | `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. The command refuses a value that is not a JSON object, and sends no request. |
-| `--idempotency-key` | String | No | Delivery identity. Use 1–200 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--idempotency-key` | String | No | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
