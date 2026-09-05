@@ -12,9 +12,39 @@
       "name": "ac-cli",
       "source": "./plugins/ac-cli",
       "description": "AgencyCore CLI skills for CRM, outreach automation (Envoy), workflow management, admin operations, and platform utilities -- companies, people, deals, sequences, drafts, inbox, schedules, user management, usage analytics, and more",
-      "version": "0.1.49",
+      "version": "0.1.50",
       "category": "productivity",
-      "tags": ["crm", "cli", "sales", "pipeline", "admin", "analytics", "outreach", "workflows", "envoy", "platform"]
+      "tags": [
+        "crm",
+        "cli",
+        "sales",
+        "pipeline",
+        "admin",
+        "analytics",
+        "outreach",
+        "workflows",
+        "envoy",
+        "platform"
+      ]
+    },
+    {
+      "name": "agencycore-design",
+      "source": {
+        "source": "github",
+        "repo": "AlterityNetwork/ac-design-system",
+        "ref": "master"
+      },
+      "description": "Build UI in any AgencyCore repository against the shipped design system: resolves the repo's declared kit and theme, reads the installed DESIGN.md specs, answers component and icon lookups, and runs the design preflight. The plugin lives in the ac-design-system repository; its version is that repository's .claude-plugin/plugin.json.",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": [
+        "design-system",
+        "ui",
+        "tailwind",
+        "vue",
+        "brand",
+        "lint"
+      ]
     }
   ]
 }
