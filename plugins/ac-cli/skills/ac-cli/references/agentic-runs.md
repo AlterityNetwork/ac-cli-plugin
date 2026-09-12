@@ -15,13 +15,13 @@ reports the served value in `contract_version`.
 
 ```bash
 ac agentic capabilities get company.search --json   # reports contract_version
-ac agentic capabilities start company.search --contract-version 2 \
+ac agentic capabilities start company.search --contract-version 3 \
   --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
   --idempotency-key company-search-request-42 --json
 ```
 
-`company.search`, `people.search` and `signals.search` publish version 2.
-`company.enrich` and `people.enrich` publish version 1.
+The version in the example is illustrative. A schema change raises it, so pass
+the value the `get` command reports.
 
 All three flags are required. Use a positive integer contract version, a JSON
 input object, and a nonblank delivery key with 1–255 header-safe ASCII characters.
