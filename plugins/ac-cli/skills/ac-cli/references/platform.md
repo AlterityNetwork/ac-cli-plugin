@@ -140,13 +140,26 @@ ac agentic conversations list [--cursor <cursor>] [--limit 50]
 ac agentic conversations create [--title "Project Discussion"]
 ac agentic conversations messages <conversation-id> [--cursor <cursor>] [--limit 50]
 ac agentic conversations send <conversation-id> "What's on my plate today?" \
-  [--idempotency-key <key>]
+  [--entity-ref <kind>:<id>] [--idempotency-key <key>]
 ```
 
 The CLI sends one message and returns immediately. Read the answer with
 `ac agentic conversations messages`; the browser owns the live event stream.
 `send` takes the message text as a positional argument. There is no `--message`
 flag and no single-conversation `get` command.
+
+`--entity-ref` names a row the message is about, as `kind:id`. Repeat it for
+each row. Each one enters the conversation entity scope before the turn runs,
+so the turn resolves "this company" and a capability input can carry the id.
+The scope survives the turn, so a later message needs no ref for the same row.
+
+```bash
+ac agentic conversations send <conversation-id> "Enrich this company." \
+  --entity-ref crm.company:2f57d848-34df-4593-b144-c8815027db87
+```
+
+Name one row when you mean one row. Two rows of one kind make "this company"
+ambiguous, and the platform asks which one instead of guessing.
 
 ## Resources (Knowledge Base)
 

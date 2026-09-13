@@ -2410,6 +2410,7 @@ person and retry.
 #### `ac agentic conversations send <conversation-id> <text>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
+| `--entity-ref` | str | no | A row the message is about, as `kind:id` (`crm.company:<uuid>`). Repeatable, 10 rows at most. Each one enters the conversation entity scope, so the turn resolves "this company" and a later message needs no ref for the same row. |
 | `--idempotency-key` | str | no | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--json` | flag | no | Raw message detail |
 
