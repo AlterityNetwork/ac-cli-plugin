@@ -1886,6 +1886,7 @@ Returns current onboarding settings.
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--calendly-enabled/--no-calendly-enabled` | flag | no | Enable/disable Calendly integration |
 | `--copilot-display-label` | str | no | The label a customer sees for a member whose role is copilot (default Copilot) |
+| `--copilot-account-limit` | int | no | The number of organizations one copilot is expected to hold, 1 or more (default 10) |
 | `--json` | flag | no | Raw JSON output |
 
 ---
