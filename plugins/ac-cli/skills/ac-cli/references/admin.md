@@ -47,6 +47,18 @@ ac admin orgs suspend    <org-id> --reason <trial_expired|non_payment|misconduct
 ac admin orgs unsuspend  <org-id>                                                          # restores member access
 ```
 
+## Copilots
+
+A copilot seat is a membership whose role is `copilot`. A superadmin gives an AgencyCore
+copilot user a seat in each customer organization the copilot works in. The customer sees the
+label set with `--copilot-display-label` (default `Copilot`) in their team list.
+
+```bash
+ac admin copilots list                                  # every copilot and the organizations they hold a seat in
+ac admin copilots assign <user-id> <org-id>             # refused with 400 when the user already holds a membership there
+ac admin copilots unassign <user-id> <org-id> [--yes]   # removes a copilot seat only; any other role answers 400
+```
+
 ## Queues
 
 ```bash
@@ -100,7 +112,8 @@ ac admin onboarding deactivate <org-id>
 ac admin onboarding update-config <org-id> [--show-calendly] [--calendly-url "https://..."]
 ac admin onboarding get-settings
 ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
-  [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled]
+  [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled] \
+  [--copilot-display-label "Copilot"]
 ```
 
 ## App Usage

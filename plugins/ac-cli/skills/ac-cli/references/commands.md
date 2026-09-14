@@ -1626,6 +1626,19 @@ Lifts a suspension and restores member access.
 | `--yes` | flag | no | Skip confirmation prompt |
 | `--json` | flag | no | Raw JSON output |
 
+#### `ac admin copilots list`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin copilots assign <user-id> <org-id>`
+Gives the user a copilot seat in the organization. No flags. Answers 400 when the user already holds a membership there.
+
+#### `ac admin copilots unassign <user-id> <org-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+
 ---
 
 ### Queues
@@ -1871,6 +1884,7 @@ Returns current onboarding settings.
 | `--terms-html` | str | no | HTML content for terms and conditions |
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--calendly-enabled/--no-calendly-enabled` | flag | no | Enable/disable Calendly integration |
+| `--copilot-display-label` | str | no | The label a customer sees for a member whose role is copilot (default Copilot) |
 | `--json` | flag | no | Raw JSON output |
 
 ---
