@@ -1644,6 +1644,7 @@ Gives the user a copilot seat in the organization. Answers 400 when the user is 
 | `--json` | flag | Raw JSON output |
 
 #### `ac admin copilots unassign <user-id> <org-id>`
+Removes a copilot seat from the organization. Answers 400 when the membership does not carry the copilot role.
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
