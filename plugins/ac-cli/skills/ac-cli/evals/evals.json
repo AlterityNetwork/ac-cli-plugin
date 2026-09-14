@@ -1085,13 +1085,13 @@
     },
     {
       "id": 82,
-      "prompt": "Create an agentic saved search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}.",
-      "expected_output": "Creates the saved search with the exact agentic command, name, and brief.",
+      "prompt": "Create an agentic saved search for Signals Search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}. Signals Search publishes contract version 3.",
+      "expected_output": "Creates the saved search with the exact agentic command, naming the capability, the contract version, the name, and the brief.",
       "assertions": [
         {
           "name": "creates_saved_search",
           "type": "command_matches",
-          "text": "`ac agentic saved-searches create .*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
+          "text": "`ac agentic saved-searches create .*--capability [\"']?signals\\.search[\"']?.*--contract-version 3.*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
         }
       ]
     },

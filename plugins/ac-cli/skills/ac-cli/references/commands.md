@@ -2268,21 +2268,34 @@ Same flags as `create` (all optional).
 
 ### Agentic Saved Searches
 
+Three capabilities hold a saved search: `signals.search`, `people.search` and
+`company.search`. An enrich capability holds none, because it takes the rows it
+works on. Each brief is read through the input contract of its own capability,
+so a Signals brief and a People brief have different shapes.
+
+`--contract-version` is the version the capability publishes **to your
+organization**, which `ac agentic capabilities get <id>` reads. It is not a
+constant: a tenant runs the binding its provisioning wrote.
+
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
+| `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
+| `--contract-version` | int | yes | The version that capability publishes to your organization now |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
-| `--brief` | JSON object | yes | Full brief with shared persona lists: titles, departments, seniority, country_codes |
+| `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--json` | flag | no | Raw saved-search detail |
 
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
+| `--capability` | str | required | Which product's saved searches to list |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-List rows omit `brief`. Use `get` to read it.
+A list read returns one capability's rows. List rows omit `brief`; use `get` to
+read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`
 | Flag | Type | Description |
@@ -2294,10 +2307,13 @@ List rows omit `brief`. Use `get` to read it.
 |------|------|----------|-------------|
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
-| `--brief` | JSON object | no | Full replacement brief with a corrected shared persona; preserve unrelated fields |
+| `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
+| `--contract-version` | int | with `--brief` | The version the replacement brief was written under |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
+Provide `--name`, `--brief`, or both. `--contract-version` goes with `--brief`
+and only with it: a rename reads no schema. A stale write token returns exit
+code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
@@ -2310,12 +2326,16 @@ Deleting a saved search does not cancel a Run that already started.
 #### `ac agentic saved-searches start <saved-search-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--contract-version` | int | yes | Published Signals Search contract version, 1 or later |
+| `--contract-version` | int | yes | The version the capability publishes to your organization now |
 | `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
 | `--json` | flag | no | Raw Run start result |
 
-Start freezes the saved brief and current comparison baseline in a normal Run.
+Start freezes the saved brief in a normal Run of the capability the row names.
 It does not create a Trigger or schedule.
+
+A start refuses a brief whose **stored** version is not the one you are serving:
+exit code 5 with `contract_version_stale`, naming both numbers. Record the brief
+again with `patch --brief --contract-version` to clear it.
 
 #### `ac agentic saved-searches diff <saved-search-id>`
 | Flag | Type | Default | Description |
@@ -2324,8 +2344,10 @@ It does not create a Trigger or schedule.
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw diff page JSON |
 
-Diff reads only the latest published successful Run. If that Run changes during
-a page walk, the API returns exit code 5. Start a new page walk.
+Diff reads the Smart Feed, which only `signals.search` publishes. A saved search
+of another capability returns exit code 5. Otherwise it reads the latest
+published successful Run; if that Run changes during a page walk it also returns
+exit code 5, and you start a new page walk.
 
 ### Agentic Prospect Review
 
