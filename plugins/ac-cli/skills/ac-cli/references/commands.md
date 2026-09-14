@@ -1451,6 +1451,7 @@ All admin commands require super admin authentication.
 |------|------|----------|-------------|
 | `--full-name` | str | no | Update full name |
 | `--is-superadmin` | flag | no | Grant super admin privileges |
+| `--copilot/--no-copilot` | flag | no | Mark or unmark the user as an AgencyCore copilot. Unmarking is refused while the user holds a seat |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin users delete <user-id>`

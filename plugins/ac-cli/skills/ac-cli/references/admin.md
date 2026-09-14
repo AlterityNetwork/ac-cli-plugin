@@ -8,7 +8,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin users get <user-id>
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
-ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin]
+ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin] [--copilot/--no-copilot]
 ac admin users delete <user-id> [--yes]
 ac admin users auth-search --email jane@example.com
 ac admin users search --email jane@example.com
@@ -49,13 +49,14 @@ ac admin orgs unsuspend  <org-id>                                               
 
 ## Copilots
 
+A copilot is a user with the copilot flag, set with `ac admin users update <user-id> --copilot`.
 A copilot seat is a membership whose role is `copilot`. A superadmin gives an AgencyCore
 copilot user a seat in each customer organization the copilot works in. The customer sees the
 label set with `--copilot-display-label` (default `Copilot`) in their team list.
 
 ```bash
-ac admin copilots list                                  # every copilot and the organizations they hold a seat in
-ac admin copilots assign <user-id> <org-id>             # refused with 400 when the user already holds a membership there
+ac admin copilots list                                  # every flagged copilot, seated or not, with the organizations they hold
+ac admin copilots assign <user-id> <org-id>             # refused with 400 when the user is not flagged or already holds a membership there
 ac admin copilots unassign <user-id> <org-id> [--yes]   # removes a copilot seat only; any other role answers 400
 ```
 
