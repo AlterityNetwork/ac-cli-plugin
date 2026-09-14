@@ -5,10 +5,11 @@ For full flag tables see `commands.md` (Platform section).
 ## Agentic Saved Searches
 
 ```bash
-ac agentic saved-searches create --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
-ac agentic saved-searches list [--cursor <cursor>] [--limit 50]
+ac agentic saved-searches create --capability signals.search --contract-version 3 --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability company.search --contract-version 4 --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
+ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
-ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
+ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}' --contract-version 3]
 ac agentic saved-searches delete <saved-search-id> [--yes]
 ac agentic saved-searches start <saved-search-id> --contract-version <version> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
