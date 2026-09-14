@@ -56,8 +56,8 @@ label set with `--copilot-display-label` (default `Copilot`) in their team list.
 
 ```bash
 ac admin copilots list                                  # every flagged copilot, seated or not, with the organizations they hold
-ac admin copilots assign <user-id> <org-id>             # refused with 400 when the user is not flagged or already holds a membership there
-ac admin copilots unassign <user-id> <org-id> [--yes]   # removes a copilot seat only; any other role answers 400
+ac admin copilots assign <user-id> <org-id> [--json]    # refused with 400 when the user is not flagged or already holds a membership there
+ac admin copilots unassign <user-id> <org-id> [--yes] [--json]   # removes a copilot seat only; any other role answers 400
 ```
 
 ## Queues

@@ -38,6 +38,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 4. [Admin](#admin)
    - [Users](#users)
    - [Organizations](#organizations)
+   - [Copilots](#copilots)
    - [Queues](#queues)
    - [Demo](#demo)
    - [Onboarding](#onboarding)
@@ -1627,18 +1628,26 @@ Lifts a suspension and restores member access.
 | `--yes` | flag | no | Skip confirmation prompt |
 | `--json` | flag | no | Raw JSON output |
 
+### Copilots
+
+A copilot is a user with the copilot flag. A seat is a membership with the role `copilot`, one per customer organization.
+
 #### `ac admin copilots list`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 #### `ac admin copilots assign <user-id> <org-id>`
-Gives the user a copilot seat in the organization. No flags. Answers 400 when the user already holds a membership there.
+Gives the user a copilot seat in the organization. Answers 400 when the user is not flagged as a copilot or already holds a membership there.
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
 
 #### `ac admin copilots unassign <user-id> <org-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
 
 ---
 
