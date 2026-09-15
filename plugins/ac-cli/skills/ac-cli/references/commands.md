@@ -53,6 +53,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 5. [Platform](#platform)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
+   - [Settings](#settings)
    - [Files (Images)](#files-images)
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
@@ -1572,6 +1573,9 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--name` | str | no | Update organization name |
 | `--slug` | str | no | Update slug |
 | `--plan` | str | no | Update subscription plan |
+| `--logo-url` | str | no | Organization logo URL |
+| `--target-customers` | str | no | Who the organization sells to, as prose. Signals Search reads it as the default brief |
+| `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
@@ -1897,6 +1901,7 @@ Returns current onboarding settings.
 | `--calendly-enabled/--no-calendly-enabled` | flag | no | Enable/disable Calendly integration |
 | `--copilot-display-label` | str | no | The label a customer sees for a member whose role is copilot (default Copilot) |
 | `--copilot-account-limit` | int | no | The number of organizations one copilot is expected to hold, 1 or more (default 10) |
+| `--framework-template-file` | path | no | Markdown file with the approval framework template a new organization receives as its first draft |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -2502,6 +2507,43 @@ for raw JSON.
 | `--json` | flag | Raw JSON output |
 
 Only supplied fields change; the command preserves the other current values.
+
+---
+
+### Settings
+
+Settings of the active organization. The copilot approval framework is one
+Markdown document per organization with a draft and a published copy. Any
+member of the organization saves and publishes it; a guest reads it.
+
+#### `ac settings framework get`
+
+Shows the status, who published it and when, and the draft text. Pass `--json`
+for the full record, including `published_content_md` and `is_template`.
+`is_template` is true when nothing was saved yet and the text is the global
+template.
+
+#### `ac settings framework set`
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--content` | str | Markdown text (mutually exclusive with `--content-file`) |
+| `--content-file` | path | Markdown file whose contents become the draft |
+| `--json` | flag | Raw JSON output |
+
+Saves the draft. The published copy does not change. One of the two content
+flags is required.
+
+#### `ac settings framework publish`
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--content` | str | Markdown text to publish (mutually exclusive with `--content-file`) |
+| `--content-file` | path | Markdown file whose contents are published |
+| `--json` | flag | Raw JSON output |
+
+Publishes the given text, or the stored draft when no text is given. Records who
+published and when, and writes a platform activity event.
 
 ---
 

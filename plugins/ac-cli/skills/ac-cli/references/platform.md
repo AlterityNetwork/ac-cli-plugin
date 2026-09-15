@@ -70,6 +70,22 @@ ac analytics overview [--period-days 30] [--json]
 Shows cross-product output for the active organization. The reporting window
 must be between 1 and 365 days.
 
+## Settings
+
+The copilot approval framework of the active organization.
+
+```bash
+ac settings framework get
+ac settings framework get --json
+ac settings framework set --content-file ./framework.md
+ac settings framework publish
+ac settings framework publish --content-file ./framework.md
+```
+
+`set` saves the draft and leaves the published copy. `publish` without content
+publishes the stored draft. Run `ac whoami` first: the commands act on the
+selected organization.
+
 ## Launchpad
 
 ```bash
