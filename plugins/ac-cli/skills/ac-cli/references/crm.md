@@ -33,6 +33,7 @@ ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnosti
 ac crm people list [--company-id <id>] [--company-ids id1,id2] [--limit 100] \
   [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>]
 ac crm people get <person-id>
+ac crm people by-ids --ids id1,id2 [--include-deleted]
 ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
   [--current-title "VP Sales"] [--company-id <id>] [--tags "decision-maker"]
 ac crm people update <person-id> --current-title "CRO"
@@ -45,6 +46,10 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 ```
 
 > **Bulk vs single rule**: when the user names **more than one** id for delete or upsert, ALWAYS use `bulk-delete --ids id1,id2,id3` or `bulk-upsert --file <path>`. Do not loop single `delete` calls — slower and breaks atomicity.
+
+> For a read of multiple known person IDs, use `people by-ids`; do not loop
+> `people get`. The endpoint preserves caller order and silently omits unknown
+> or inaccessible IDs.
 
 > **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
 

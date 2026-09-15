@@ -182,6 +182,13 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 |------|------|-------------|
 | `--json` | flag | Output raw JSON |
 
+#### `ac crm people by-ids`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated person IDs, up to 200 |
+| `--include-deleted` | flag | no | Include soft-deleted people when resolving existing references |
+| `--json` | flag | no | Output raw paginated JSON |
+
 #### `ac crm people create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

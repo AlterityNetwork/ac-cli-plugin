@@ -1187,6 +1187,23 @@
           "text": "`ac settings targeting set` includes `--profiles-file /tmp/icps.json`"
         }
       ]
+    },
+    {
+      "id": 87,
+      "prompt": "Fetch CRM people p1 and p2 in one request, including soft-deleted records, and return JSON.",
+      "expected_output": "Uses the CRM people bulk-read command with both IDs, --include-deleted, and --json.",
+      "assertions": [
+        {
+          "name": "people_by_ids_command",
+          "type": "command_matches",
+          "text": "`ac crm people by-ids` includes `--ids p1,p2`"
+        },
+        {
+          "name": "people_by_ids_flags",
+          "type": "command_matches",
+          "text": "The same `ac crm people by-ids` command includes `--include-deleted` and `--json`"
+        }
+      ]
     }
   ]
 }
