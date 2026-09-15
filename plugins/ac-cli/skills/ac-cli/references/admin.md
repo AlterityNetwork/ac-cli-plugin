@@ -336,7 +336,7 @@ ac admin entitlement-grants create --org-id <org-id> --key network --source comp
 ac admin entitlement-grants create --org-id <org-id> --key chat --source trial --expires-at 2026-10-01T00:00:00+00:00
 ac admin entitlement-grants create --org-id <org-id> --key crm --source comp --mode revoke
 
-ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes]
+ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
 ```
 
 ## Intelligence (global intel_companies / intel_people)
