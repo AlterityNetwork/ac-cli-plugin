@@ -35,8 +35,8 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ```bash
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
-ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise]
+ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
+ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
@@ -45,6 +45,14 @@ ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
 ac admin orgs suspend    <org-id> --reason <trial_expired|non_payment|misconduct> [--yes]   # blocks all members except billing
 ac admin orgs unsuspend  <org-id>                                                          # restores member access
+```
+
+`--icps-file` reads an array of ideal customer profiles. Each profile has a required
+`name`, optional `description`, and `country_codes` (two-letter uppercase country codes).
+An optional UUID `id` keeps a profile's identity on updates. Pass `[]` to clear all ICPs.
+
+```json
+[{"name":"UK software companies","description":"Software teams in the UK","country_codes":["GB"]}]
 ```
 
 ## Copilots

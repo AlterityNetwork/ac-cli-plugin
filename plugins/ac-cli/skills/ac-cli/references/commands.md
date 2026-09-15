@@ -1565,6 +1565,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--name` | str | yes | Organization name |
 | `--slug` | str | no | URL-friendly slug (auto-generated from name if omitted) |
 | `--plan` | str | no | Subscription plan |
+| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs update <org-id>`
@@ -1574,8 +1575,9 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--slug` | str | no | Update slug |
 | `--plan` | str | no | Update subscription plan |
 | `--logo-url` | str | no | Organization logo URL |
-| `--target-customers` | str | no | Who the organization sells to, as prose. Signals Search reads it as the default brief |
+| `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
+| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
