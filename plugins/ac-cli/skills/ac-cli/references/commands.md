@@ -2519,6 +2519,17 @@ Settings of the active organization. The copilot approval framework is one
 Markdown document per organization with a draft and a published copy. Any
 member of the organization saves and publishes it; a guest reads it.
 
+#### `ac settings targeting set`
+
+Replace the active organization's ideal customer profiles. Requires owner, admin,
+or copilot membership; general organization settings remain owner/admin-only.
+
+| Flag | Type | Required | Description |
+|---|---|---|---|
+| `--profiles-file` | path | yes | JSON array of profiles (`id`, `name`, `description`, `country_codes`); preserve existing IDs, omit ID for new profiles, `[]` clears targeting |
+| `--json` | flag | no | Return the updated organization as JSON |
+
+
 #### `ac settings framework get`
 
 Shows the status, who published it and when, and the draft text. Pass `--json`

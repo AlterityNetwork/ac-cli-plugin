@@ -216,3 +216,17 @@ ac profiles subscription                          # View current org subscriptio
 ```
 
 > **"Switch active organization" → `ac profiles set-organization <org-id>`**, NOT `ac env use` (env is local/staging/production) and NOT `ac admin orgs` (which manages org records, not user's active org).
+
+
+### Targeting settings
+
+Owners, admins and assigned copilots can replace the active organization's ICPs:
+
+```bash
+ac settings targeting set --profiles-file ./icps.json --json
+```
+
+The file is a JSON array of profiles with `id`, `name`, `description` and
+`country_codes` (ISO-2 codes). Keep existing IDs when editing profiles so offers
+retain their selections. Omit `id` only for a new profile. An empty array clears
+all profiles. This command does not grant access to general organization settings.

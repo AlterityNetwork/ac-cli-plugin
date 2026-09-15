@@ -1170,6 +1170,18 @@
           "text": "`ac settings framework publish --content-file ./framework.md`"
         }
       ]
+    },
+    {
+      "id": 86,
+      "prompt": "As the assigned copilot, replace the active organization targeting with the profiles in /tmp/icps.json. Do not edit other company settings.",
+      "expected_output": "Run ac settings targeting set --profiles-file /tmp/icps.json --json, using the targeting-only endpoint rather than admin org updates.",
+      "assertions": [
+        {
+          "name": "targeting_only_command",
+          "type": "command_matches",
+          "text": "`ac settings targeting set` includes `--profiles-file /tmp/icps.json`"
+        }
+      ]
     }
   ]
 }
