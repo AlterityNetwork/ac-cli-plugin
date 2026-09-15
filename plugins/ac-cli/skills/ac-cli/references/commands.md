@@ -2312,7 +2312,7 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 | `--key` | str | yes | Commercial key: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library` |
 | `--source` | str | yes | `plan_addon`, `trial` or `comp` |
 | `--mode` | str | no | `grant` (default) or `revoke` |
-| `--expires-at` | ISO 8601 | no | Instant with a timezone, later than now. Required for a trial |
+| `--expires-at` | ISO 8601 | conditional | Instant with a timezone, later than now. Required when `--source trial` |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin entitlement-grants delete <grant-id>`
@@ -2320,6 +2320,7 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 |------|------|----------|-------------|
 | `--org-id` | str | yes | Organization ID |
 | `--yes` | flag | no | Skip confirmation |
+| `--json` | flag | no | Raw JSON output |
 
 ---
 
