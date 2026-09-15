@@ -8,7 +8,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin users get <user-id>
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
-ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin]
+ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin] [--copilot/--no-copilot]
 ac admin users delete <user-id> [--yes]
 ac admin users auth-search --email jane@example.com
 ac admin users search --email jane@example.com
@@ -35,8 +35,8 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ```bash
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
-ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise]
+ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
+ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
@@ -45,6 +45,27 @@ ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
 ac admin orgs suspend    <org-id> --reason <trial_expired|non_payment|misconduct> [--yes]   # blocks all members except billing
 ac admin orgs unsuspend  <org-id>                                                          # restores member access
+```
+
+`--icps-file` reads an array of ideal customer profiles. Each profile has a required
+`name`, optional `description`, and `country_codes` (two-letter uppercase country codes).
+An optional UUID `id` keeps a profile's identity on updates. On `orgs update`, pass `[]` to clear all ICPs.
+
+```json
+[{"name":"UK software companies","description":"Software teams in the UK","country_codes":["GB"]}]
+```
+
+## Copilots
+
+A copilot is a user with the copilot flag, set with `ac admin users update <user-id> --copilot`.
+A copilot seat is a membership whose role is `copilot`. A superadmin gives an AgencyCore
+copilot user a seat in each customer organization the copilot works in. The customer sees the
+label set with `--copilot-display-label` (default `Copilot`) in their team list.
+
+```bash
+ac admin copilots list                                  # every flagged copilot, seated or not, with the organizations they hold
+ac admin copilots assign <user-id> <org-id> [--json]    # refused with 400 when the user is not flagged or already holds a membership there
+ac admin copilots unassign <user-id> <org-id> [--yes] [--json]   # removes a copilot seat only; any other role answers 400
 ```
 
 ## Queues
@@ -100,7 +121,9 @@ ac admin onboarding deactivate <org-id>
 ac admin onboarding update-config <org-id> [--show-calendly] [--calendly-url "https://..."]
 ac admin onboarding get-settings
 ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
-  [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled]
+  [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled] \
+  [--copilot-display-label "Copilot"] [--copilot-account-limit 10] \
+  [--framework-template-file ./template.md]
 ```
 
 ## App Usage

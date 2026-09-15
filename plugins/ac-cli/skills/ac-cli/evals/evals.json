@@ -1153,6 +1153,40 @@
           "text": "`--json`"
         }
       ]
+    },
+    {
+      "id": 85,
+      "prompt": "Publish the approval framework in ./framework.md for the organization I am working in.",
+      "expected_output": "Checks the active organization with `ac whoami`, then publishes the file with `ac settings framework publish --content-file ./framework.md`.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the publish"
+        },
+        {
+          "name": "publish_from_file",
+          "type": "command_matches",
+          "text": "`ac settings framework publish --content-file ./framework.md`"
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "prompt": "As the assigned copilot, replace the active organization targeting with the profiles in /tmp/icps.json. Do not edit other company settings.",
+      "expected_output": "Run ac settings targeting set --profiles-file /tmp/icps.json --json, using the targeting-only endpoint rather than admin org updates.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the targeting update"
+        },
+        {
+          "name": "targeting_only_command",
+          "type": "command_matches",
+          "text": "`ac settings targeting set` includes `--profiles-file /tmp/icps.json`"
+        }
+      ]
     }
   ]
 }

@@ -38,6 +38,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 4. [Admin](#admin)
    - [Users](#users)
    - [Organizations](#organizations)
+   - [Copilots](#copilots)
    - [Queues](#queues)
    - [Demo](#demo)
    - [Onboarding](#onboarding)
@@ -52,6 +53,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 5. [Platform](#platform)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
+   - [Settings](#settings)
    - [Files (Images)](#files-images)
    - [Apps](#apps)
    - [Writing Styles](#writing-styles)
@@ -1101,6 +1103,7 @@ Creates a copy of the battlecard.
 | `--description` | str | no | Playbook description |
 | `--status` | str | no | Playbook status |
 | `--competitor-name` | str | no | Competitor name |
+| `--icp-id` | str | no | Target an ideal customer profile; repeat for several profiles |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy playbooks update <playbook-id>`
@@ -1451,6 +1454,7 @@ All admin commands require super admin authentication.
 |------|------|----------|-------------|
 | `--full-name` | str | no | Update full name |
 | `--is-superadmin` | flag | no | Grant super admin privileges |
+| `--copilot/--no-copilot` | flag | no | Mark or unmark the user as an AgencyCore copilot. Unmarking is refused while the user holds a seat |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin users delete <user-id>`
@@ -1562,6 +1566,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--name` | str | yes | Organization name |
 | `--slug` | str | no | URL-friendly slug (auto-generated from name if omitted) |
 | `--plan` | str | no | Subscription plan |
+| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`) |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs update <org-id>`
@@ -1570,6 +1575,10 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--name` | str | no | Update organization name |
 | `--slug` | str | no | Update slug |
 | `--plan` | str | no | Update subscription plan |
+| `--logo-url` | str | no | Organization logo URL |
+| `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
+| `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
+| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
@@ -1625,6 +1634,28 @@ Lifts a suspension and restores member access.
 |------|------|----------|-------------|
 | `--yes` | flag | no | Skip confirmation prompt |
 | `--json` | flag | no | Raw JSON output |
+
+### Copilots
+
+A copilot is a user with the copilot flag. A seat is a membership with the role `copilot`, one per customer organization.
+
+#### `ac admin copilots list`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin copilots assign <user-id> <org-id>`
+Gives the user a copilot seat in the organization. Answers 400 when the user is not flagged as a copilot or already holds a membership there.
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac admin copilots unassign <user-id> <org-id>`
+Removes a copilot seat from the organization. Answers 400 when the membership does not carry the copilot role.
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
 
 ---
 
@@ -1871,6 +1902,9 @@ Returns current onboarding settings.
 | `--terms-html` | str | no | HTML content for terms and conditions |
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--calendly-enabled/--no-calendly-enabled` | flag | no | Enable/disable Calendly integration |
+| `--copilot-display-label` | str | no | The label a customer sees for a member whose role is copilot (default Copilot) |
+| `--copilot-account-limit` | int | no | The number of organizations one copilot is expected to hold, 1 or more (default 10) |
+| `--framework-template-file` | path | no | Markdown file with the approval framework template a new organization receives as its first draft |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -2476,6 +2510,58 @@ for raw JSON.
 | `--json` | flag | Raw JSON output |
 
 Only supplied fields change; the command preserves the other current values.
+
+---
+
+### Settings
+
+Settings of the active organization. The copilot approval framework is one
+Markdown document per organization with a draft and a published copy. Any
+member of the organization saves and publishes it; a guest reads it.
+
+#### `ac settings targeting set`
+
+Replace the active organization's ideal customer profiles. Requires owner, admin,
+or copilot membership; general organization settings remain owner/admin-only.
+
+| Flag | Type | Required | Description |
+|---|---|---|---|
+| `--profiles-file` | path | yes | JSON array of profiles (`id`, `name`, `description`, `country_codes`); preserve existing IDs, omit ID for new profiles, `[]` clears targeting |
+| `--json` | flag | no | Return the updated organization as JSON |
+
+
+#### `ac settings framework get`
+
+Shows the status, who published it and when, and the draft text. Pass `--json`
+for the full record, including `published_content_md` and `is_template`.
+`is_template` is true when nothing was saved yet and the text is the global
+template.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Full JSON record including `published_content_md` and `is_template` |
+
+#### `ac settings framework set`
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--content` | str | Markdown text (mutually exclusive with `--content-file`) |
+| `--content-file` | path | Markdown file whose contents become the draft |
+| `--json` | flag | Raw JSON output |
+
+Saves the draft. The published copy does not change. One of the two content
+flags is required.
+
+#### `ac settings framework publish`
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--content` | str | Markdown text to publish (mutually exclusive with `--content-file`) |
+| `--content-file` | path | Markdown file whose contents are published |
+| `--json` | flag | Raw JSON output |
+
+Publishes the given text, or the stored draft when no text is given. Records who
+published and when, and writes a platform activity event.
 
 ---
 

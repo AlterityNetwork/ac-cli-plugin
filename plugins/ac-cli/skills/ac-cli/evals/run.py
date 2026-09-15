@@ -88,7 +88,8 @@ def _is_auth_flow_prompt(prompt: str) -> bool:
 
 
 def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
-               timeout: int, inline_skill: bool = True) -> Capture:
+               timeout: int, inline_skill: bool = True,
+               require_auth_check: bool = False) -> Capture:
     """Run claude -p and capture tool actions.
 
     `--plugin-dir` makes a plugin DISCOVERABLE but does NOT enable it. To
@@ -135,6 +136,11 @@ def run_claude(prompt: str, plugin_dir: str | None, model: str | None,
                     "re-auth) — execute the relevant `ac login`, `ac logout`, "
                     "`ac env use`, `ac whoami` commands as the skill recipe "
                     "instructs. Use a placeholder password when asked."
+                )
+            elif require_auth_check:
+                stub_lines.append(
+                    "The user is already authenticated. Run `ac whoami` before any mutation "
+                    "to verify the active organization. Do NOT ask for credentials."
                 )
             else:
                 stub_lines.append(
@@ -296,11 +302,16 @@ def grade_auth_check_first(cap: Capture, _text: str) -> tuple[bool, str]:
         r"send|reply|complete|archive|escalate|generate-drafts)",
         re.IGNORECASE,
     )
+    settings_write_re = re.compile(
+        r"^\s*ac settings (?:targeting set|framework (?:set|publish))\b",
+        re.IGNORECASE,
+    )
     saw_auth = False
-    for cmd in cap.commands:
+    # Grade executed commands only. Suggested commands cannot prove authentication.
+    for cmd in Capture(bash=cap.bash).commands:
         if auth_re.search(cmd):
             saw_auth = True
-        elif mutating_re.search(cmd) and not saw_auth:
+        elif (mutating_re.search(cmd) or settings_write_re.search(cmd)) and not saw_auth:
             return False, f"mutated before auth: {cmd[:80]}"
     return True, "ok"
 
@@ -367,7 +378,9 @@ def main() -> int:
         runs = []
         for _ in range(args.runs):
             cap = run_claude(ev["prompt"], plugin_dir, args.model, args.timeout,
-                             inline_skill=not args.no_inline)
+                             inline_skill=not args.no_inline,
+                             require_auth_check=any(a.get("type") == "auth_check_first"
+                                                    for a in ev.get("assertions", [])))
             runs.append(grade_eval(ev, cap))
         # Pass = all runs pass (strict). Use majority vote if --runs > 1 desired.
         passed = all(r["pass"] for r in runs)
