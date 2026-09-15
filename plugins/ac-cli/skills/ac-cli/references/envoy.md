@@ -123,11 +123,13 @@ ac envoy battlecards duplicate <battlecard-id>
 ```bash
 ac envoy playbooks list [--query "enterprise"] [--limit 50]
 ac envoy playbooks get <playbook-id>
-ac envoy playbooks create --name "Enterprise Outreach" [--description "..."]
-ac envoy playbooks update <playbook-id> --name "Updated Playbook"
+ac envoy playbooks create --name "Enterprise Outreach" [--description "..."] [--icp-id <profile-id>]
+ac envoy playbooks update <playbook-id> --name "Updated Playbook" [--icp-id <profile-id>]
 ac envoy playbooks delete <playbook-id> [--yes]
 ac envoy playbooks duplicate <playbook-id>
 ```
+
+Repeat `--icp-id` to target several ideal customer profiles on an offer. Omitting it on update preserves the existing selection.
 
 ## Dashboard, Signals & Inbox Count
 

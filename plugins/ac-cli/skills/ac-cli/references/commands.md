@@ -1103,6 +1103,7 @@ Creates a copy of the battlecard.
 | `--description` | str | no | Playbook description |
 | `--status` | str | no | Playbook status |
 | `--competitor-name` | str | no | Competitor name |
+| `--icp-id` | str | no | Target an ideal customer profile; repeat for several profiles |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy playbooks update <playbook-id>`
