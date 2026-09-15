@@ -2537,6 +2537,10 @@ for the full record, including `published_content_md` and `is_template`.
 `is_template` is true when nothing was saved yet and the text is the global
 template.
 
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Full JSON record including `published_content_md` and `is_template` |
+
 #### `ac settings framework set`
 
 | Flag | Type | Description |
