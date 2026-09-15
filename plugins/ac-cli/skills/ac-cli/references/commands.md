@@ -50,6 +50,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Cache Stats](#cache-stats)
    - [Subscriptions](#subscriptions)
    - [Subscription Plans](#subscription-plans)
+   - [Entitlement Grants](#entitlement-grants)
 5. [Platform](#platform)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
@@ -2289,12 +2290,36 @@ Standard get/delete.
 | `--monthly-price-cents` | int | yes | Monthly price in cents |
 | `--annual-price-cents` | int | yes | Annual price in cents |
 | `--description` | str | no | Plan description |
-| `--features` | JSON object | no | Feature flags (e.g. `'{"seats":10}'`) |
+| `--features` | JSON object | no | Typed template: `{"keys":[...],"credits_monthly":N,"limits":{"seats":N,"email_sends_per_day":N}}`. Any other field or key is refused. |
 | `--active/--inactive` | flag | no | Active state |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin subscription-plans update <plan-id>`
-Same flags as `create` (all optional).
+Same flags as `create` (all optional). A given `--features` replaces the stored template whole.
+
+### Entitlement Grants
+
+#### `ac admin entitlement-grants list`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--org-id` | str | yes | Organization ID |
+| `--json` | flag | no | Raw JSON output (`grants` plus the resolved `snapshot`) |
+
+#### `ac admin entitlement-grants create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--org-id` | str | yes | Organization ID |
+| `--key` | str | yes | Commercial key: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library` |
+| `--source` | str | yes | `plan_addon`, `trial` or `comp` |
+| `--mode` | str | no | `grant` (default) or `revoke` |
+| `--expires-at` | ISO 8601 | no | Instant with a timezone, later than now. Required for a trial |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin entitlement-grants delete <grant-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--org-id` | str | yes | Organization ID |
+| `--yes` | flag | no | Skip confirmation |
 
 ---
 
