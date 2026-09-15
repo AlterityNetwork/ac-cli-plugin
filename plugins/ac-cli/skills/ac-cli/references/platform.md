@@ -70,6 +70,22 @@ ac analytics overview [--period-days 30] [--json]
 Shows cross-product output for the active organization. The reporting window
 must be between 1 and 365 days.
 
+## Settings
+
+The copilot approval framework of the active organization.
+
+```bash
+ac settings framework get
+ac settings framework get --json
+ac settings framework set --content-file ./framework.md
+ac settings framework publish
+ac settings framework publish --content-file ./framework.md
+```
+
+`set` saves the draft and leaves the published copy. `publish` without content
+publishes the stored draft. Run `ac whoami` first: the commands act on the
+selected organization.
+
 ## Launchpad
 
 ```bash
@@ -201,3 +217,17 @@ ac profiles usage                                 # Period usage per action (cal
 ```
 
 > **"Switch active organization" → `ac profiles set-organization <org-id>`**, NOT `ac env use` (env is local/staging/production) and NOT `ac admin orgs` (which manages org records, not user's active org).
+
+
+### Targeting settings
+
+Owners, admins and assigned copilots can replace the active organization's ICPs:
+
+```bash
+ac settings targeting set --profiles-file ./icps.json --json
+```
+
+The file is a JSON array of profiles with `id`, `name`, `description` and
+`country_codes` (ISO-2 codes). Keep existing IDs when editing profiles so offers
+retain their selections. Omit `id` only for a new profile. An empty array clears
+all profiles. This command does not grant access to general organization settings.
