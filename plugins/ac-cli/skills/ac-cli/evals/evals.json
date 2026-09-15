@@ -1177,6 +1177,11 @@
       "expected_output": "Run ac settings targeting set --profiles-file /tmp/icps.json --json, using the targeting-only endpoint rather than admin org updates.",
       "assertions": [
         {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the targeting update"
+        },
+        {
           "name": "targeting_only_command",
           "type": "command_matches",
           "text": "`ac settings targeting set` includes `--profiles-file /tmp/icps.json`"

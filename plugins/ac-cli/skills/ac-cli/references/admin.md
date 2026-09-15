@@ -122,7 +122,8 @@ ac admin onboarding update-config <org-id> [--show-calendly] [--calendly-url "ht
 ac admin onboarding get-settings
 ac admin onboarding update-settings [--terms-html "<p>...</p>"] \
   [--calendly-url "https://..."] [--calendly-enabled/--no-calendly-enabled] \
-  [--copilot-display-label "Copilot"] [--copilot-account-limit 10]
+  [--copilot-display-label "Copilot"] [--copilot-account-limit 10] \
+  [--framework-template-file ./template.md]
 ```
 
 ## App Usage

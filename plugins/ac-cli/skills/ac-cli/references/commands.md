@@ -1566,7 +1566,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--name` | str | yes | Organization name |
 | `--slug` | str | no | URL-friendly slug (auto-generated from name if omitted) |
 | `--plan` | str | no | Subscription plan |
-| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
+| `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`) |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs update <org-id>`
