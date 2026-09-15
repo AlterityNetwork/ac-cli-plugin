@@ -10,7 +10,7 @@ class SettingsAuthTests(unittest.TestCase):
     def test_settings_writes_require_prior_auth(self):
         for command in (
             'ac settings targeting set --profiles-file /tmp/icps.json --json',
-            'ac settings framework set --file /tmp/framework.md',
+            'ac settings framework set --content-file /tmp/framework.md',
             'ac settings framework publish',
         ):
             with self.subTest(command=command):

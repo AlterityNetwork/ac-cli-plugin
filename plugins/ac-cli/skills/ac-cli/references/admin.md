@@ -49,7 +49,7 @@ ac admin orgs unsuspend  <org-id>                                               
 
 `--icps-file` reads an array of ideal customer profiles. Each profile has a required
 `name`, optional `description`, and `country_codes` (two-letter uppercase country codes).
-An optional UUID `id` keeps a profile's identity on updates. Pass `[]` to clear all ICPs.
+An optional UUID `id` keeps a profile's identity on updates. On `orgs update`, pass `[]` to clear all ICPs.
 
 ```json
 [{"name":"UK software companies","description":"Software teams in the UK","country_codes":["GB"]}]
