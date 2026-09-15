@@ -1199,9 +1199,14 @@
           "text": "`ac crm people by-ids` includes `--ids p1,p2`"
         },
         {
-          "name": "people_by_ids_flags",
+          "name": "people_by_ids_include_deleted",
           "type": "command_matches",
-          "text": "The same `ac crm people by-ids` command includes `--include-deleted` and `--json`"
+          "text": "The `ac crm people by-ids` command includes `--include-deleted`"
+        },
+        {
+          "name": "people_by_ids_json",
+          "type": "command_matches",
+          "text": "The `ac crm people by-ids` command includes `--json`"
         }
       ]
     }

@@ -49,7 +49,8 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 
 > For a read of multiple known person IDs, use `people by-ids`; do not loop
 > `people get`. The endpoint preserves caller order and silently omits unknown
-> or inaccessible IDs.
+> or inaccessible IDs. Add `--include-deleted` when the user asks for
+> soft-deleted records.
 
 > **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
 

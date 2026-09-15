@@ -149,7 +149,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "saved search" / "repeat this search" | `ac agentic saved-searches …` (name the product with `--capability`) | `ac platform agentic-saved-searches` · workflow schedules (a saved search starts Runs but creates no schedule) |
 | "switch / change active organization to X" | `ac profiles set-organization X` | `ac env use` (envs are local/staging/production) · `ac admin orgs` (manages records) · `ac apps … --org-id` (per-app) |
 | "delete the 3 people IDs p-100, p-101, p-102" / any list of 2+ ids | `ac crm people bulk-delete --ids p-100,p-101,p-102` (single call, comma-separated) | NEVER loop `ac crm people delete <id>` per-id — even with `AC_YES=1`, this is wrong because (a) bulk-delete exists, (b) the loop is non-atomic |
-| "fetch these people IDs" / read multiple known person IDs | `ac crm people by-ids --ids p-100,p-101,p-102` | looping `ac crm people get <id>` — the batch read exists and preserves caller order |
+| "fetch these people IDs" / read multiple known person IDs | `ac crm people by-ids --ids p-100,p-101,p-102` (add `--include-deleted` when soft-deleted records are requested) | looping `ac crm people get <id>` — the batch read exists and preserves caller order |
 | "JSON file of people, bulk upsert / import" | `ac crm people bulk-upsert --file <path>` | `ac crm import preview --file <path>` is for the CSV-style CRM import flow; for a JSON file of people use `bulk-upsert` |
 | "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
 | "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
