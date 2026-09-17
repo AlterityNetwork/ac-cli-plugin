@@ -2395,7 +2395,8 @@ exit code 5, and you start a new page walk.
 #### `ac agentic prospects list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--review-state` | str | new | `new`, `watching`, `dismissed`, or `promoted` |
+| `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
+| `--last-seen-run-id` | str | None | Only prospects last written by this Run |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
