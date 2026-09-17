@@ -311,14 +311,32 @@ ac admin subscription-plans get <plan-id>
 # Required flags: --slug, --name, --monthly-price-cents, --annual-price-cents
 ac admin subscription-plans create --slug pro --name "Pro" \
   --monthly-price-cents 4900 --annual-price-cents 49000 \
-  [--description "..."] [--features '{"seats":10}'] [--active/--inactive]
+  [--description "..."] [--features '{"keys":["crm","chat"],"credits_monthly":10000,"limits":{"seats":3,"email_sends_per_day":200}}'] [--active/--inactive]
 
 # Example: "Starter $9/mo $99/yr"
 ac admin subscription-plans create --slug starter --name "Starter" \
   --monthly-price-cents 900 --annual-price-cents 9900
 
-ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"seats":25}']
+ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"keys":["crm"],"credits_monthly":500,"limits":{"seats":25}}']
 ac admin subscription-plans delete <plan-id> [--yes]
+```
+
+> **`--features` is a typed template.** The top-level fields are `keys`, `credits_monthly` and `limits`. `limits` holds `seats` and `email_sends_per_day`. `keys` holds commercial keys: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library`. The API refuses any other field or key. A given template replaces the stored one whole.
+
+## Entitlement Grants
+
+> Per-organization changes to the plan template. A `grant` row adds one key, a `revoke` row removes one, and a trial is a grant with `--expires-at`. `list` also prints the resolved snapshot: plan keys plus active grants minus active revokes, with expiry compared at read time.
+
+```bash
+ac admin entitlement-grants list --org-id <org-id> [--json]
+
+# --source is plan_addon, trial or comp. --mode defaults to grant.
+# A trial needs --expires-at (ISO 8601 with a timezone, later than now).
+ac admin entitlement-grants create --org-id <org-id> --key network --source comp
+ac admin entitlement-grants create --org-id <org-id> --key chat --source trial --expires-at 2026-10-01T00:00:00+00:00
+ac admin entitlement-grants create --org-id <org-id> --key crm --source comp --mode revoke
+
+ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
 ```
 
 ## Intelligence (global intel_companies / intel_people)
