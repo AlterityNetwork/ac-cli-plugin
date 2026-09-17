@@ -2856,6 +2856,13 @@ Show the current organization's subscription. Calls `GET /api/v1/subscriptions/m
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac profiles usage`
+Show what the current organization used in its billing period, one row per action with calls and tokens. Calls `GET /api/v1/subscriptions/me/usage`. The period is the live billing period, or the UTC calendar month when the organization has none.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
 ---
 
 ### Notifications
