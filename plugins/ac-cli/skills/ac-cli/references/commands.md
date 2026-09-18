@@ -2409,6 +2409,35 @@ projection, or null when the prospect has no people. A prospect in
 table adds a `Top person` column and `get` adds a `Top person` row. Read
 `persona_fit_score` from `--json`; no column prints it.
 
+`list` JSON and `get` JSON also carry `suggested_action`: the next move a person
+makes, or null when no Run scored the prospect. It holds `kind`, `args`,
+`rationale` and `timing`. Each kind maps to a command the product already runs,
+and `args` differs by kind:
+
+| `kind` | what it does | `args` |
+|---|---|---|
+| `create_task` | `ac crm activities create --type task` | `title`, `due_in_days` 0 to 90, optional `person_id` |
+| `promote` | `ac agentic prospects promote` | none |
+| `watch` | `ac agentic prospects watch` | `until`, the trigger |
+| `dismiss` | `ac agentic prospects dismiss` | `reason` |
+
+The human table adds an `Action` column with the kind, and `get` adds a
+`Suggested action` row reading the kind and the argument that names the move.
+`recommended_action` still holds the same move as one free-text sentence.
+
+#### `ac agentic prospects act <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Performs the stored `suggested_action` and returns `{prospect, result}`, where
+`result` is `{kind, task_id}`. `task_id` is set for `create_task` and null for
+every other kind. `create_task` promotes the prospect first when it holds no
+CRM company, because a task hangs on a CRM company; it promotes the person the
+action names, or the best matched attached person when it names none. A
+prospect that carries no `suggested_action` returns exit code 5, and a missing
+prospect returns 3.
+
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|
