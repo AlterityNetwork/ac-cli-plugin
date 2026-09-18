@@ -2405,8 +2405,8 @@ exit code 5, and you start a new page walk.
 highest `persona_fit_score`, as a `prospect_people` row with its person
 projection, or null when the prospect has no people. A prospect in
 `people_state` `pending` that already holds people names one too. The human
-table adds a `Top person` column and a `Fit` column; `get` adds a `Top person`
-row.
+table adds a `Top person` column and `get` adds a `Top person` row. Read
+`persona_fit_score` from `--json`; no column prints it.
 
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
