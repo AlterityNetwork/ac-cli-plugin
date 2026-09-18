@@ -89,12 +89,12 @@ ac admin onboarding create --email "newcustomer@example.com" \
 #    A paid customer (created without --comped) gets a Stripe-mode row, and
 #    activate-billing charges the saved card:
 ac admin subscriptions create --org-id <org-id> --plan-id <plan-id> \
-  --billing-period monthly --started-at 2026-01-01
+  --billing-period monthly --started-at <YYYY-MM-DD>
 #    A comped customer (created with --comped) gets a manual, active,
 #    zero-price row. activate-billing refuses a comped organization, so
 #    activate it with `ac admin onboarding activate` instead:
 ac admin subscriptions create --org-id <org-id> --plan-id <plan-id> \
-  --billing-period monthly --started-at 2026-01-01 \
+  --billing-period monthly --started-at <YYYY-MM-DD> \
   --billing-mode manual --status active --custom-price-cents 0
 #    To reverse a comped flag: ac admin orgs update <org-id> --no-comped
 
