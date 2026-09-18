@@ -1837,6 +1837,7 @@ Returns aggregate statistics about demo accounts.
 | `--products-services` | str | no | Products and services offered |
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--show-calendly/--no-show-calendly` | flag | no | Show Calendly widget |
+| `--comped` | flag | no | Mark the organization comped: the setup wizard has no card step and the organization is never billed |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin onboarding list`

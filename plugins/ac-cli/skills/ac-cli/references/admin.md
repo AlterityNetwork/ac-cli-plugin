@@ -109,7 +109,7 @@ ac admin onboarding create --email user@example.com --first-name "Jane" \
   --last-name "Smith" --org-name "Acme Corp" [--website-url "https://acme.com"] \
   [--country US] [--timezone "America/New_York"] [--locale en] [--currency USD] \
   [--job-title "CEO"] [--bio "..."] [--linkedin "https://..."] \
-  [--contact-email "alt@example.com"] [--calendly-url "https://..."]
+  [--contact-email "alt@example.com"] [--calendly-url "https://..."] [--comped]
 ac admin onboarding list [--status pending] [--query "acme"] [--page 1] [--page-size 25]
 ac admin onboarding get <org-id>
 ac admin onboarding delete <org-id>
