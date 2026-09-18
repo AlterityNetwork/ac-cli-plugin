@@ -1586,6 +1586,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
 | `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
+| `--comped/--no-comped` | flag | no | Set or clear the comped flag. A comped organization is never billed, and `activate-billing` refuses it |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
