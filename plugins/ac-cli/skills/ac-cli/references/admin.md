@@ -36,7 +36,7 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
 ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json]
+ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json] [--comped/--no-comped]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
@@ -109,7 +109,7 @@ ac admin onboarding create --email user@example.com --first-name "Jane" \
   --last-name "Smith" --org-name "Acme Corp" [--website-url "https://acme.com"] \
   [--country US] [--timezone "America/New_York"] [--locale en] [--currency USD] \
   [--job-title "CEO"] [--bio "..."] [--linkedin "https://..."] \
-  [--contact-email "alt@example.com"] [--calendly-url "https://..."]
+  [--contact-email "alt@example.com"] [--calendly-url "https://..."] [--comped]
 ac admin onboarding list [--status pending] [--query "acme"] [--page 1] [--page-size 25]
 ac admin onboarding get <org-id>
 ac admin onboarding delete <org-id>
