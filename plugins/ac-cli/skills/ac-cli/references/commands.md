@@ -2409,10 +2409,10 @@ projection, or null when the prospect has no people. A prospect in
 table adds a `Top person` column and `get` adds a `Top person` row. Read
 `persona_fit_score` from `--json`; no column prints it.
 
-`list` JSON and `get` JSON also carry `suggested_action`: the next move a person
-makes, or null when no Run scored the prospect. It holds `kind`, `args`,
-`rationale` and `timing`. Each kind maps to a command the product already runs,
-and `args` differs by kind:
+`list` JSON and `get` JSON also carry `suggested_action`: the next action the
+user should take on this prospect, or null when no Run scored the prospect. It
+holds `kind`, `args`, `rationale` and `timing`. Each kind maps to a command the
+product already runs, and `args` differs by kind:
 
 | `kind` | what it does | `args` |
 |---|---|---|
