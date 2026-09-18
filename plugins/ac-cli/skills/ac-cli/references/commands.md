@@ -2401,6 +2401,13 @@ exit code 5, and you start a new page walk.
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
+`list` JSON and `get` JSON carry `top_person`: the attached person with the
+highest `persona_fit_score`, as a `prospect_people` row with its person
+projection, or null when the prospect has no people. A prospect in
+`people_state` `pending` that already holds people names one too. The human
+table adds a `Top person` column and a `Fit` column; `get` adds a `Top person`
+row.
+
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|
