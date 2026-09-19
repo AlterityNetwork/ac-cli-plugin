@@ -49,8 +49,8 @@ ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
-ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects restore <prospect-id>
+ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
 ```
 
