@@ -2403,11 +2403,11 @@ exit code 5, and you start a new page walk.
 
 `list` JSON and `get` JSON carry `top_person`: the attached person with the
 highest `persona_fit_score`, as a `prospect_people` row with its person
-projection, or null when the prospect has no people. A prospect in
-`people_state` `pending` that already holds people will also have a
-`top_person`. The human
-table adds a `Top person` column and `get` adds a `Top person` row. Read
-`persona_fit_score` from `--json`; no column prints it.
+projection, or null when the prospect has no people.
+A prospect in `people_state` `pending` that already holds people will also
+have a `top_person`.
+The human table adds a `Top person` column and `get` adds a `Top person` row.
+Read `persona_fit_score` from `--json`; no column prints it.
 
 `list` JSON and `get` JSON also carry `suggested_action`: the next action the
 user should take on this prospect, or null when no Run scored the prospect. It
