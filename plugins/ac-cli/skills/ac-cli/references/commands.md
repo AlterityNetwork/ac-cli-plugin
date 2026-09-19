@@ -2510,9 +2510,10 @@ different CRM company link returns `409` and names that person; deselect that
 person and retry.
 
 A promotion sets the `lifecycle_stage` of the company and of each promoted
-person to `prospect`, with the reason `Promoted from Sonar`. It moves only a
-row at the `identified` stage, so a qualified lead or a customer keeps the
-stage it holds.
+person to `prospect`, with the reason `Promoted from Sonar`. It moves a row at
+the `identified` stage, and a person that holds no stage. A qualified lead or a
+customer keeps the stage it holds. Only a person can hold no stage, because a
+company always holds one.
 
 ### Agentic Conversations
 

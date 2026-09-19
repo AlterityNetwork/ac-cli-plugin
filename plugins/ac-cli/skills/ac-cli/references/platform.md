@@ -71,8 +71,9 @@ It asks before it writes; pass `--yes` to skip the question. A second promotion
 writes nothing and answers the same references.
 
 A promotion also sets the `lifecycle_stage` of the company and of each promoted
-person to `prospect`. It moves only a row at the `identified` stage, so a
-customer keeps the stage it holds.
+person to `prospect`. It moves a row at the `identified` stage, and a person
+that holds no stage. A customer keeps the stage it holds. A company always
+holds a stage, so only a person can hold none.
 
 ## Organization Analytics
 
