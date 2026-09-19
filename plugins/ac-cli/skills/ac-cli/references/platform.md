@@ -43,6 +43,7 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 
 ```bash
 ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects act <prospect-id>
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
