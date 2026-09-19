@@ -2455,6 +2455,14 @@ action names, or the best matched attached person when it names none. A
 prospect that carries no `suggested_action` returns exit code 5, and a missing
 prospect returns 3.
 
+#### `ac agentic prospects counts`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Counts the prospects in each review state, exactly. The body carries all four
+keys, and a state with no prospect reads 0.
+
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|

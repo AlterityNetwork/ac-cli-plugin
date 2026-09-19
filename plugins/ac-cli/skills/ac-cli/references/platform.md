@@ -43,6 +43,7 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 
 ```bash
 ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects counts
 ac agentic prospects act <prospect-id>
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
@@ -71,6 +72,9 @@ keeps the first stamp.
 
 `restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
 prospect already at `new` writes nothing, and a promoted prospect is refused.
+
+`counts` reads how many prospects each review state holds. Every state carries
+a number, and a state with no prospect reads 0.
 
 `promote` is the one command that writes CRM. It resolves or creates the CRM
 company and each selected person, then sets the prospect to `promoted`. Repeat
