@@ -2425,6 +2425,11 @@ The human table adds an `Action` column with the kind, and `get` adds a
 `Suggested action` row reading the kind and the argument that names the move.
 `recommended_action` still holds the same move as one free-text sentence.
 
+`list` JSON and `get` JSON also carry `suggested_action_dismissed_at`: the time
+a person closed the suggested action card, or null while the card is open. The
+stamp does not clear `suggested_action`, so `act` still performs the move.
+`get` adds an `Action dismissed` row, and the row is blank for an open card.
+
 #### `ac agentic prospects act <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -2466,6 +2471,15 @@ prospect returns 3.
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
+
+#### `ac agentic prospects dismiss-action <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Closes the suggested action card and returns the durable prospect detail. It
+stamps `suggested_action_dismissed_at` and changes no review state. A repeat
+call keeps the first stamp, and a missing prospect returns exit code 3.
 
 #### `ac agentic prospects promote <prospect-id>`
 | Flag | Type | Required | Description |
