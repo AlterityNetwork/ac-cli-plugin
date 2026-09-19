@@ -2397,9 +2397,71 @@ exit code 5, and you start a new page walk.
 |------|------|---------|-------------|
 | `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
+
+`--sort` picks the order. `discovered` reads `first_seen_at`, the date this
+organization first saw the company. `score` reads `opportunity_score`.
+`signal_strength` reads `latest_signal_score`, which is the score of the most
+recently attached signal, not the highest one. Both scores put an ungraded
+prospect last, then break a tie on the creation time.
+
+A cursor belongs to one sort, because the three sorts order the same rows
+three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
+it for you. A cursor another sort wrote is refused with a 400, which is exit
+code 1. Read `latest_signal_score` from `--json`; no column prints it.
+
+`list` JSON and `get` JSON carry `top_person`: the attached person with the
+highest `persona_fit_score`, as a `prospect_people` row with its person
+projection, or null when the prospect has no people.
+A prospect in `people_state` `pending` that already holds people will also
+have a `top_person`.
+The human table adds a `Top person` column and `get` adds a `Top person` row.
+Read `persona_fit_score` from `--json`; no column prints it.
+
+`list` JSON and `get` JSON also carry `suggested_action`: the next action the
+user should take on this prospect, or null when no Run scored the prospect. It
+holds `kind`, `args`, `rationale` and `timing`. Each kind maps to a command the
+product already runs, and `args` differs by kind:
+
+| `kind` | what it does | `args` |
+|---|---|---|
+| `create_task` | `ac crm activities create --type task` | `title`, `due_in_days` 0 to 90, optional `person_id` |
+| `promote` | `ac agentic prospects promote` | none |
+| `watch` | `ac agentic prospects watch` | `until`, the trigger |
+| `dismiss` | `ac agentic prospects dismiss` | `reason` |
+
+The human table adds an `Action` column with the kind, and `get` adds a
+`Suggested action` row reading the kind and the argument that names the move.
+`recommended_action` still holds the same move as one free-text sentence.
+
+`list` JSON and `get` JSON also carry `suggested_action_dismissed_at`: the time
+the user closed the suggested action card, or null while the card is open. The
+stamp does not clear `suggested_action`, so `act` still performs the move.
+`get` adds an `Action dismissed` row, and the row is blank for an open card.
+
+#### `ac agentic prospects act <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Performs the stored `suggested_action` and returns `{prospect, result}`, where
+`result` is `{kind, task_id}`. `task_id` is set for `create_task` and null for
+every other kind. `create_task` promotes the prospect first when it holds no
+CRM company, because a task hangs on a CRM company; it promotes the person the
+action names, or the best matched attached person when it names none. A
+prospect that carries no `suggested_action` returns exit code 5, and a missing
+prospect returns 3.
+
+#### `ac agentic prospects counts`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Counts the prospects in each review state, exactly. The body carries all four
+keys, and a state with no prospect reads 0.
 
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
@@ -2430,6 +2492,24 @@ exit code 5, and you start a new page walk.
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac agentic prospects restore <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns one watched or dismissed prospect to `new` and answers the durable
+detail. A prospect already at `new` exits 0 and writes nothing. A promoted
+prospect returns exit code 5, because promotion wrote CRM rows.
+
+#### `ac agentic prospects dismiss-action <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Closes the suggested action card and returns the durable prospect detail. It
+stamps `suggested_action_dismissed_at` and changes no review state. A repeat
+call keeps the first stamp, and a missing prospect returns exit code 3.
+
 #### `ac agentic prospects promote <prospect-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -2448,6 +2528,12 @@ selection promotes the company alone. The answer carries `crm_company_id`, one
 nothing and answers the same references. A selected person who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
+
+A promotion sets the `lifecycle_stage` of the company and of each promoted
+person to `prospect`, with the reason `Promoted from Sonar`. It moves a row at
+the `identified` stage, and a person that holds no stage. A qualified lead or a
+customer keeps the stage it holds. Only a person can hold no stage, because a
+company always holds one.
 
 ### Agentic Conversations
 

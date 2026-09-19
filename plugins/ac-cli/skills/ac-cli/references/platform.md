@@ -42,12 +42,16 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects act <prospect-id>
+ac agentic prospects counts
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
+ac agentic prospects restore <prospect-id>
+ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
 ```
 
@@ -55,11 +59,33 @@ Use `--json` when a later command needs an ID or the full nested company,
 person, or signal data. `watch` and `dismiss` are repeatable intents. Neither
 can change a promoted prospect.
 
+`--sort` takes `score`, `signal_strength` or `discovered`. The default is
+`discovered`, the date this organization first saw the company. `score` reads
+`opportunity_score` and `signal_strength` reads the score of the most recently
+attached signal. Both put an ungraded prospect last. A cursor belongs to one
+sort, so keep `--sort` on every page of a walk. A cursor another sort wrote
+is refused with a 400, which is exit code 1.
+
+`dismiss-action` closes the suggested action card and stamps
+`suggested_action_dismissed_at`. It changes no review state, and a repeat call
+keeps the first stamp.
+
+`restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
+prospect already at `new` writes nothing, and a promoted prospect is refused.
+
+`counts` reads how many prospects each review state holds. Every state carries
+a number, and a state with no prospect reads 0.
+
 `promote` is the one command that writes CRM. It resolves or creates the CRM
 company and each selected person, then sets the prospect to `promoted`. Repeat
 `--person` for each prospect person id, taken from `ac agentic prospects people`.
 It asks before it writes; pass `--yes` to skip the question. A second promotion
 writes nothing and answers the same references.
+
+A promotion also sets the `lifecycle_stage` of the company and of each promoted
+person to `prospect`. It moves a row at the `identified` stage, and a person
+that holds no stage. A qualified lead or a customer keeps the stage it holds.
+A company always holds a stage, so only a person can hold none.
 
 ## Organization Analytics
 
