@@ -42,7 +42,7 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
 ac agentic prospects act <prospect-id>
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
@@ -57,6 +57,13 @@ ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>]
 Use `--json` when a later command needs an ID or the full nested company,
 person, or signal data. `watch` and `dismiss` are repeatable intents. Neither
 can change a promoted prospect.
+
+`--sort` takes `score`, `signal_strength` or `discovered`. The default is
+`discovered`, the date this organization first saw the company. `score` reads
+`opportunity_score` and `signal_strength` reads the score of the most recently
+attached signal. Both put an ungraded prospect last. A cursor belongs to one
+sort, so keep `--sort` on every page of a walk. A cursor another sort wrote
+is refused with a 400, which is exit code 1.
 
 `dismiss-action` closes the suggested action card and stamps
 `suggested_action_dismissed_at`. It changes no review state, and a repeat call

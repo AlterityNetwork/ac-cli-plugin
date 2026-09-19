@@ -2397,9 +2397,21 @@ exit code 5, and you start a new page walk.
 |------|------|---------|-------------|
 | `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
+
+`--sort` picks the order. `discovered` reads `first_seen_at`, the date this
+organization first saw the company. `score` reads `opportunity_score`.
+`signal_strength` reads `latest_signal_score`, which is the score of the most
+recently attached signal, not the highest one. Both scores put an ungraded
+prospect last, then break a tie on the creation time.
+
+A cursor belongs to one sort, because the three sorts order the same rows
+three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
+it for you. A cursor another sort wrote is refused with a 400, which is exit
+code 1. Read `latest_signal_score` from `--json`; no column prints it.
 
 `list` JSON and `get` JSON carry `top_person`: the attached person with the
 highest `persona_fit_score`, as a `prospect_people` row with its person
