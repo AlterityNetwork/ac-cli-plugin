@@ -86,3 +86,10 @@ usage deltas and can be incomplete. Use durable usage records for billing.
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
 page. The default lists root Runs. Use `--all` to include child Runs.
 To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
+
+`list` JSON and the human `Prospects` column carry `prospect_count`: how many
+prospects the Run last wrote. It is null on every list but a
+`--capability signals.search` one, because only that list pays for the count.
+Zero is a Run that wrote no prospect, so do not read null as zero. A later Run
+that returns a company again claims the row, so the count of an older Run falls.
+Run detail always carries null.
