@@ -2472,6 +2472,15 @@ prospect returns 3.
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac agentic prospects restore <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns one watched or dismissed prospect to `new` and answers the durable
+detail. A prospect already at `new` answers `200` and writes nothing. A
+promoted prospect returns exit code 5, because promotion wrote CRM rows.
+
 #### `ac agentic prospects dismiss-action <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|

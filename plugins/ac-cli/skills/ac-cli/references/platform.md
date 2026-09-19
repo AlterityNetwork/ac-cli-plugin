@@ -49,6 +49,7 @@ ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
 ac agentic prospects dismiss-action <prospect-id>
+ac agentic prospects restore <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
 ```
 
@@ -59,6 +60,9 @@ can change a promoted prospect.
 `dismiss-action` closes the suggested action card and stamps
 `suggested_action_dismissed_at`. It changes no review state, and a repeat call
 keeps the first stamp.
+
+`restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
+prospect already at `new` writes nothing, and a promoted prospect is refused.
 
 `promote` is the one command that writes CRM. It resolves or creates the CRM
 company and each selected person, then sets the prospect to `promoted`. Repeat
