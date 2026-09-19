@@ -66,6 +66,10 @@ company and each selected person, then sets the prospect to `promoted`. Repeat
 It asks before it writes; pass `--yes` to skip the question. A second promotion
 writes nothing and answers the same references.
 
+A promotion also sets the `lifecycle_stage` of the company and of each promoted
+person to `prospect`. It moves only a row at the `identified` stage, so a
+customer keeps the stage it holds.
+
 ## Organization Analytics
 
 ```bash
