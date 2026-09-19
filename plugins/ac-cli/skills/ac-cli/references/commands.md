@@ -2426,7 +2426,7 @@ The human table adds an `Action` column with the kind, and `get` adds a
 `recommended_action` still holds the same move as one free-text sentence.
 
 `list` JSON and `get` JSON also carry `suggested_action_dismissed_at`: the time
-a person closed the suggested action card, or null while the card is open. The
+the user closed the suggested action card, or null while the card is open. The
 stamp does not clear `suggested_action`, so `act` still performs the move.
 `get` adds an `Action dismissed` row, and the row is blank for an open card.
 
