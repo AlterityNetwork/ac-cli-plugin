@@ -2314,15 +2314,10 @@ Three capabilities hold a saved search: `signals.search`, `people.search` and
 works on. Each brief is read through the input contract of its own capability,
 so a Signals brief and a People brief have different shapes.
 
-`--contract-version` is the version the capability publishes **to your
-organization**, which `ac agentic capabilities get <id>` reads. It is not a
-constant: a tenant runs the binding its provisioning wrote.
-
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
-| `--contract-version` | int | yes | The version that capability publishes to your organization now |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--json` | flag | no | Raw saved-search detail |
@@ -2349,12 +2344,9 @@ read it.
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
 | `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
-| `--contract-version` | int | with `--brief` | The version the replacement brief was written under |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide `--name`, `--brief`, or both. `--contract-version` goes with `--brief`
-and only with it: a rename reads no schema. A stale write token returns exit
-code 5.
+Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
@@ -2367,16 +2359,14 @@ Deleting a saved search does not cancel a Run that already started.
 #### `ac agentic saved-searches start <saved-search-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--contract-version` | int | yes | The version the capability publishes to your organization now |
-| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
+| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief in a normal Run of the capability the row names.
 It does not create a Trigger or schedule.
 
-A start refuses a brief whose **stored** version is not the one you are serving:
-exit code 5 with `contract_version_stale`, naming both numbers. Record the brief
-again with `patch --brief --contract-version` to clear it.
+A start validates the stored brief against the active server contract. If a
+schema update made it incompatible, correct the fields reported by the API.
 
 #### `ac agentic saved-searches diff <saved-search-id>`
 | Flag | Type | Default | Description |
@@ -3061,7 +3051,6 @@ Requires the `agentic-platform` API and CLI until cutover.
 
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
-| `--contract-version` | Positive integer | Yes | Select the published input contract. |
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
 | `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
