@@ -5,13 +5,13 @@ For full flag tables see `commands.md` (Platform section).
 ## Agentic Saved Searches
 
 ```bash
-ac agentic saved-searches create --capability signals.search --contract-version 3 --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
-ac agentic saved-searches create --capability company.search --contract-version 4 --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
-ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}' --contract-version 3]
+ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
 ac agentic saved-searches delete <saved-search-id> [--yes]
-ac agentic saved-searches start <saved-search-id> --contract-version <version> --idempotency-key <key>
+ac agentic saved-searches start <saved-search-id> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
 ```
 
@@ -27,7 +27,7 @@ need the full brief or the current `updated_at` write token.
 
 `patch` requires that token and at least one replacement field. A stale token
 returns exit code 5. `start` freezes the stored brief and current baseline in a
-normal Run. Reuse its key only for the same saved search and contract version.
+normal Run. Reuse its key only for the same saved search.
 It does not create a schedule. `diff` reads only the latest
 published successful Run. Start a new page walk if the published Run changes.
 Deleting a saved search does not cancel a Run that already started.
