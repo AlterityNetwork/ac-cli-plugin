@@ -29,7 +29,7 @@ The response is the existing Run detail. Read `status` as well as `outcome`:
 A duplicate does not start another execution. Read the Run with the commands below.
 
 Errors preserve the API code in JSON output: unknown ID (404), unavailable binding
-binding (409), missing scope (403), invalid input (422), oversized input
+(409), missing scope (403), invalid input (422), oversized input
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
 ## Start a run
