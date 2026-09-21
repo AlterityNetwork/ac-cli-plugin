@@ -2525,6 +2525,21 @@ the `identified` stage, and a person that holds no stage. A qualified lead or a
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
 
+#### `ac agentic prospects delete <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
+Deletes one prospect with its people, its signals and its saved search links.
+It accepts every review state and changes no CRM row. A missing prospect
+returns exit code 3. With `--json` the answer is
+`{"ok": true, "id": "<prospect-id>", "action": "delete"}`.
+
+The delete keeps no record of the company. A later run that finds the same
+company writes a new prospect at `new`. Use `dismiss` to keep a company out of
+the review list.
+
 ### Agentic Conversations
 
 #### `ac agentic conversations list`

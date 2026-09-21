@@ -53,6 +53,7 @@ ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
 ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
+ac agentic prospects delete <prospect-id> [--yes]
 ```
 
 Use `--json` when a later command needs an ID or the full nested company,
@@ -72,6 +73,10 @@ keeps the first stamp.
 
 `restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
 prospect already at `new` writes nothing, and a promoted prospect is refused.
+
+`delete` removes the prospect with its people and its signals, and asks first
+unless `--yes` is set. It keeps no record of the company, so a later run that
+finds the company writes a new prospect. Use `dismiss` to keep a company out.
 
 `counts` reads how many prospects each review state holds. Every state carries
 a number, and a state with no prospect reads 0.
