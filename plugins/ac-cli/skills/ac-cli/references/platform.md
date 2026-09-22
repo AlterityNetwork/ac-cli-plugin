@@ -5,13 +5,13 @@ For full flag tables see `commands.md` (Platform section).
 ## Agentic Saved Searches
 
 ```bash
-ac agentic saved-searches create --capability signals.search --contract-version 3 --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
-ac agentic saved-searches create --capability company.search --contract-version 4 --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
-ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}' --contract-version 3]
+ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
 ac agentic saved-searches delete <saved-search-id> [--yes]
-ac agentic saved-searches start <saved-search-id> --contract-version <version> --idempotency-key <key>
+ac agentic saved-searches start <saved-search-id> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
 ```
 
@@ -27,7 +27,7 @@ need the full brief or the current `updated_at` write token.
 
 `patch` requires that token and at least one replacement field. A stale token
 returns exit code 5. `start` freezes the stored brief and current baseline in a
-normal Run. Reuse its key only for the same saved search and contract version.
+normal Run. Reuse its key only for the same saved search.
 It does not create a schedule. `diff` reads only the latest
 published successful Run. Start a new page walk if the published Run changes.
 Deleting a saved search does not cancel a Run that already started.
@@ -42,24 +42,55 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects act <prospect-id>
+ac agentic prospects counts
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
+ac agentic prospects restore <prospect-id>
+ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
+ac agentic prospects delete <prospect-id> [--yes]
 ```
 
 Use `--json` when a later command needs an ID or the full nested company,
 person, or signal data. `watch` and `dismiss` are repeatable intents. Neither
 can change a promoted prospect.
 
+`--sort` takes `score`, `signal_strength` or `discovered`. The default is
+`discovered`, the date this organization first saw the company. `score` reads
+`opportunity_score` and `signal_strength` reads the score of the most recently
+attached signal. Both put an ungraded prospect last. A cursor belongs to one
+sort, so keep `--sort` on every page of a walk. A cursor another sort wrote
+is refused with a 400, which is exit code 1.
+
+`dismiss-action` closes the suggested action card and stamps
+`suggested_action_dismissed_at`. It changes no review state, and a repeat call
+keeps the first stamp.
+
+`restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
+prospect already at `new` writes nothing, and a promoted prospect is refused.
+
+`delete` removes the prospect with its people and its signals, and asks first
+unless `--yes` is set. It keeps no record of the company, so a later run that
+finds the company writes a new prospect. Use `dismiss` to keep a company out.
+
+`counts` reads how many prospects each review state holds. Every state carries
+a number, and a state with no prospect reads 0.
+
 `promote` is the one command that writes CRM. It resolves or creates the CRM
 company and each selected person, then sets the prospect to `promoted`. Repeat
 `--person` for each prospect person id, taken from `ac agentic prospects people`.
 It asks before it writes; pass `--yes` to skip the question. A second promotion
 writes nothing and answers the same references.
+
+A promotion also sets the `lifecycle_stage` of the company and of each promoted
+person to `prospect`. It moves a row at the `identified` stage, and a person
+that holds no stage. A qualified lead or a customer keeps the stage it holds.
+A company always holds a stage, so only a person can hold none.
 
 ## Organization Analytics
 
