@@ -1272,7 +1272,13 @@ Shows the next N upcoming run times for a cron expression without creating a sch
 #### `ac workflows presets list <workflow-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--limit` | int | Page size, 1 to 100 (default: 50) |
+| `--offset` | int | Zero-based row offset (default: 0) |
 | `--json` | flag | Raw JSON output |
+
+Returns an `items` page with `total`, `limit` and `offset`. Each item carries a
+`stats` object with `last_run_at`, `run_count`, `companies_total`,
+`signals_total` and `people_total` across all non-archived runs for that preset.
 
 #### `ac workflows presets get <workflow-id> <preset-id>`
 | Flag | Type | Description |

@@ -51,7 +51,7 @@ Cron format: standard 5-field (`minute hour dom month dow`). Common patterns:
 ## Presets
 
 ```bash
-ac workflows presets list <workflow-id>
+ac workflows presets list <workflow-id> [--limit 50] [--offset 0]
 ac workflows presets get <workflow-id> <preset-id>
 ac workflows presets create <workflow-id> --name "Daily Sync" \
   [--description "..."] [--config '{"key":"value"}']
@@ -62,6 +62,9 @@ ac workflows presets delete <workflow-id> <preset-id> [--yes]
 A preset holds the saved query; a schedule holds the cadence. Pass `--preset-id` to
 `schedules create` to bind them, which makes the pair a "saved search" and stamps the
 preset onto every run it fires. A preset may have at most one schedule.
+Preset list rows include whole-history, non-archived run totals for runs,
+companies, signals and people plus the latest run timestamp. These totals do
+not depend on which run-history page was read.
 
 ## CSV Parsing
 
