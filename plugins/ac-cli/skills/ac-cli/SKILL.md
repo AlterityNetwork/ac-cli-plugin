@@ -134,6 +134,8 @@ Only `--definition` is required. The CLI mints the delivery key when
 `--idempotency-key` is absent. A draft definition returns 409.
 Read a Run with `ac agentic runs get <run-id> --json`. Read its children with
 `ac agentic runs list --parent <run-id> --json`.
+For search progress across child agents, use
+`ac agentic runs progress <root-run-id> --json`.
 
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).
 

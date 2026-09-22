@@ -3089,3 +3089,14 @@ The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
 409. A start names the Run, the definition and the status. A duplicate key names
 the Run that key already started and its status, and starts no second execution.
 See `agentic-runs.md` for the worked example.
+
+
+#### `ac agentic runs progress <run-id>`
+
+Reads product milestones across a root run and its children.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--json` | Boolean | No | Print the progress summary or structured error. |
+
+The command reads `/api/v1/agentic/runs/{run_id}/progress`. Child run IDs return 422.

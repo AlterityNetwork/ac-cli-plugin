@@ -1209,6 +1209,18 @@
           "text": "The `ac crm people by-ids` command includes `--json`"
         }
       ]
+    },
+    {
+      "id": 88,
+      "prompt": "Show the current Sonar search progress, including its child agents, for root run 11111111-1111-4111-8111-111111111111.",
+      "expected_output": "Reads the bounded product progress summary with ac agentic runs progress and reports observed milestones and run status.",
+      "assertions": [
+        {
+          "name": "reads_product_progress",
+          "type": "command_matches",
+          "text": "`ac agentic runs progress 11111111-1111-4111-8111-111111111111 --json`"
+        }
+      ]
     }
   ]
 }

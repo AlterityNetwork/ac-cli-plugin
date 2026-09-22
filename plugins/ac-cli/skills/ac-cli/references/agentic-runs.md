@@ -93,3 +93,17 @@ prospects the Run last wrote. It is null on every list but a
 Zero is a Run that wrote no prospect, so do not read null as zero. A later Run
 that returns a company again claims the row, so the count of an older Run falls.
 Run detail always carries null.
+
+
+### Product progress
+
+`ac agentic runs progress <run-id> --json` reads a bounded summary of observed
+product milestones across a root run and its child agents. It supports Signals,
+Company and People Search. Pass a root run ID; a child ID returns 422.
+
+The response contains `run_id`, `status` and `stages`. Each stage has a stable
+`id`, readable `name` and `description`, `status`, `started_at`, `updated_at`
+and `incomplete`. An incomplete stage does not establish completion. An empty
+stage list does not mean the run has stopped; read the run status.
+
+The progress response includes up to six agent and tool activity entries per active stage. Each entry has a name, kind and status. `activity_incomplete` marks a limited view; tool arguments and outputs are omitted.
