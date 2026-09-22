@@ -78,10 +78,11 @@ usage deltas and can be incomplete. Use durable usage records for billing.
 page. The default lists root Runs. Use `--all` to include child Runs.
 To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
 
-Search-run list rows include `search_query`, normalized from the capability's
-input contract. The human table shows it in the `Definition / Search` column.
-It is null for non-search Runs and older Runs whose input did not retain the
-submitted query.
+When `list` is filtered with `--capability company.search`, `people.search` or
+`signals.search`, its rows include `search_query`, normalized from the
+capability's input contract. The human table shows it in the
+`Definition / Search` column. It is null for unfiltered lists, non-search Runs
+and older Runs whose input did not retain the submitted query.
 
 `list` JSON and the human `Prospects` column carry `prospect_count`: how many
 prospects the Run last wrote. It is null on every list but a
