@@ -1175,6 +1175,7 @@ Creates a new workflow run. Returns 202 (accepted) with run ID and status.
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--include-archived` | flag | off | Include archived runs |
+| `--archived-only` | flag | off | Return only archived runs; mutually exclusive with `--include-archived` |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac workflows runs archive <workflow-id> <run-id>...`
