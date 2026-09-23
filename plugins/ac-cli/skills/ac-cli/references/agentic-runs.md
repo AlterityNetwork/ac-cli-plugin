@@ -8,28 +8,19 @@ Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
 `people.enrich` or `signals.search`. The capability must be installed and active
 for the current organization. Its published schema defines the input fields.
 
-⚠️ **Read the contract version before you start.** Each capability publishes its
-own version, and the versions differ. A start that names another version answers
-`contract_version_conflict` (409). `ac agentic capabilities get <id> --json`
-reports the served value in `contract_version`.
-
 ```bash
-ac agentic capabilities get company.search --json   # reports contract_version
-ac agentic capabilities start company.search --contract-version 3 \
+ac agentic capabilities start company.search \
   --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
   --idempotency-key company-search-request-42 --json
 ```
 
-The version in the example is illustrative. A schema change raises it, so pass
-the value the `get` command reports.
-
-All three flags are required. Use a positive integer contract version, a JSON
-input object, and a nonblank delivery key with 1–255 header-safe ASCII characters.
+Both flags are required. Use a JSON input object and a nonblank delivery key
+with 1–255 header-safe ASCII characters.
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
 Reuse the same key and request after a timeout. A matching replay returns the
-original Run, even after a binding change. A changed capability, version or input
+original Run, even after a binding change. A changed capability or input
 with that key returns `idempotency_conflict` (409). Use a new key for a new request.
 Keys are isolated by organization, caller and start source.
 
@@ -38,7 +29,7 @@ The response is the existing Run detail. Read `status` as well as `outcome`:
 A duplicate does not start another execution. Read the Run with the commands below.
 
 Errors preserve the API code in JSON output: unknown ID (404), unavailable binding
-or stale version (409), missing scope (403), invalid input (422), oversized input
+(409), missing scope (403), invalid input (422), oversized input
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
 ## Start a run
@@ -63,7 +54,7 @@ first Run and starts no second execution; human output marks it `Duplicate`.
 The definition must be published, and it must be an agent or a workflow.
 `ac agentic definitions list` also returns drafts, disabled definitions and
 skills. Each of those returns 409. `ac agentic capabilities start` above starts
-a published product capability, and it takes a contract version.
+a published product capability and selects the active contract automatically.
 
 ## Read Runs
 
@@ -93,6 +84,12 @@ usage deltas and can be incomplete. Use durable usage records for billing.
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
 page. The default lists root Runs. Use `--all` to include child Runs.
 To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
+
+When `list` is filtered with `--capability company.search`, `people.search` or
+`signals.search`, its rows include `search_query`, normalized from the
+capability's input contract. The human table shows it in the
+`Definition / Search` column. It is null for unfiltered lists, non-search Runs
+and older Runs whose input did not retain the submitted query.
 
 `list` JSON and the human `Prospects` column carry `prospect_count`: how many
 prospects the Run last wrote. It is null on every list but a

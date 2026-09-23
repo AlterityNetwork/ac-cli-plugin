@@ -6,12 +6,15 @@ All workflow subcommands take `<workflow-id>` as their first positional argument
 
 ```bash
 ac workflows runs create <workflow-id> [--input '{"key":"value"}'] [--idempotency-key <key>]
-ac workflows runs list <workflow-id> [--limit 50] [--offset 0] [--include-archived]
+ac workflows runs list <workflow-id> [--limit 50] [--offset 0] [--include-archived | --archived-only]
 ac workflows runs archive <workflow-id> <run-id>... [--yes]
 ac workflows runs restore <workflow-id> <run-id>... [--yes]
 ac workflows runs get <workflow-id> <run-id>
 ac workflows runs logs <workflow-id> <run-id> [--limit 50] [--offset 0]
 ```
+
+`--include-archived` returns active and archived runs together. `--archived-only`
+returns only archived runs. The flags are mutually exclusive.
 
 ## Schedules
 
@@ -51,7 +54,7 @@ Cron format: standard 5-field (`minute hour dom month dow`). Common patterns:
 ## Presets
 
 ```bash
-ac workflows presets list <workflow-id>
+ac workflows presets list <workflow-id> [--limit 50] [--offset 0]
 ac workflows presets get <workflow-id> <preset-id>
 ac workflows presets create <workflow-id> --name "Daily Sync" \
   [--description "..."] [--config '{"key":"value"}']
@@ -62,6 +65,9 @@ ac workflows presets delete <workflow-id> <preset-id> [--yes]
 A preset holds the saved query; a schedule holds the cadence. Pass `--preset-id` to
 `schedules create` to bind them, which makes the pair a "saved search" and stamps the
 preset onto every run it fires. A preset may have at most one schedule.
+Preset list rows include whole-history, non-archived run totals for runs,
+companies, signals and people plus the latest run timestamp. These totals do
+not depend on which run-history page was read.
 
 ## CSV Parsing
 

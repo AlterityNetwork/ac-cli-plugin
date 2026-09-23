@@ -1175,6 +1175,7 @@ Creates a new workflow run. Returns 202 (accepted) with run ID and status.
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--include-archived` | flag | off | Include archived runs |
+| `--archived-only` | flag | off | Return only archived runs; mutually exclusive with `--include-archived` |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac workflows runs archive <workflow-id> <run-id>...`
@@ -1272,7 +1273,13 @@ Shows the next N upcoming run times for a cron expression without creating a sch
 #### `ac workflows presets list <workflow-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--limit` | int | Page size, 1 to 100 (default: 50) |
+| `--offset` | int | Zero-based row offset (default: 0) |
 | `--json` | flag | Raw JSON output |
+
+Returns an `items` page with `total`, `limit` and `offset`. Each item carries a
+`stats` object with `last_run_at`, `run_count`, `companies_total`,
+`signals_total` and `people_total` across all non-archived runs for that preset.
 
 #### `ac workflows presets get <workflow-id> <preset-id>`
 | Flag | Type | Description |
@@ -1586,6 +1593,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
 | `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
+| `--comped/--no-comped` | flag | no | Set or clear the comped flag. A comped organization is never billed, and `activate-billing` refuses it |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
@@ -1837,6 +1845,7 @@ Returns aggregate statistics about demo accounts.
 | `--products-services` | str | no | Products and services offered |
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--show-calendly/--no-show-calendly` | flag | no | Show Calendly widget |
+| `--comped` | flag | no | Mark the organization comped: the setup wizard has no card step and the organization is never billed |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin onboarding list`
@@ -2314,15 +2323,10 @@ Three capabilities hold a saved search: `signals.search`, `people.search` and
 works on. Each brief is read through the input contract of its own capability,
 so a Signals brief and a People brief have different shapes.
 
-`--contract-version` is the version the capability publishes **to your
-organization**, which `ac agentic capabilities get <id>` reads. It is not a
-constant: a tenant runs the binding its provisioning wrote.
-
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
-| `--contract-version` | int | yes | The version that capability publishes to your organization now |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--json` | flag | no | Raw saved-search detail |
@@ -2349,12 +2353,9 @@ read it.
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
 | `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
-| `--contract-version` | int | with `--brief` | The version the replacement brief was written under |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide `--name`, `--brief`, or both. `--contract-version` goes with `--brief`
-and only with it: a rename reads no schema. A stale write token returns exit
-code 5.
+Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
@@ -2367,16 +2368,14 @@ Deleting a saved search does not cancel a Run that already started.
 #### `ac agentic saved-searches start <saved-search-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--contract-version` | int | yes | The version the capability publishes to your organization now |
-| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
+| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief in a normal Run of the capability the row names.
 It does not create a Trigger or schedule.
 
-A start refuses a brief whose **stored** version is not the one you are serving:
-exit code 5 with `contract_version_stale`, naming both numbers. Record the brief
-again with `patch --brief --contract-version` to clear it.
+A start validates the stored brief against the active server contract. If a
+schema update made it incompatible, correct the fields reported by the API.
 
 #### `ac agentic saved-searches diff <saved-search-id>`
 | Flag | Type | Default | Description |
@@ -2534,6 +2533,21 @@ person to `prospect`, with the reason `Promoted from Sonar`. It moves a row at
 the `identified` stage, and a person that holds no stage. A qualified lead or a
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
+
+#### `ac agentic prospects delete <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
+Deletes one prospect with its people, its signals and its saved search links.
+It accepts every review state and changes no CRM row. A missing prospect
+returns exit code 3. With `--json` the answer is
+`{"ok": true, "id": "<prospect-id>", "action": "delete"}`.
+
+The delete keeps no record of the company. A later run that finds the same
+company writes a new prospect at `new`. Use `dismiss` to keep a company out of
+the review list.
 
 ### Agentic Conversations
 
@@ -3061,7 +3075,6 @@ Requires the `agentic-platform` API and CLI until cutover.
 
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
-| `--contract-version` | Positive integer | Yes | Select the published input contract. |
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
 | `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |

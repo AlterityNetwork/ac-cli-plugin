@@ -79,19 +79,36 @@ ac admin ai-usage by-model --start-date 2026-03-01 --json
 ## Admin: Onboard a customer
 
 ```bash
-# 1. Create the onboarding record
+# 1. Create the onboarding record. Add --comped for a free account: the
+#    customer's setup wizard then has no card step.
 ac admin onboarding create --email "newcustomer@example.com" \
   --first-name "Jane" --last-name "Smith" \
   --org-name "Acme Corp" --website-url "https://acme.com" --json
 
-# 2. Send the onboarding link
+# 2. Optional: create the subscription. Pick ONE of the two commands.
+#    A paid customer (created without --comped) gets a Stripe-mode row, and
+#    activate-billing charges the saved card:
+ac admin subscriptions create --org-id <org-id> --plan-id <plan-id> \
+  --billing-period monthly --started-at <YYYY-MM-DD>
+#    A comped customer (created with --comped) gets a manual, active,
+#    zero-price row. activate-billing refuses a comped organization, so
+#    activate it with `ac admin onboarding activate` instead:
+ac admin subscriptions create --org-id <org-id> --plan-id <plan-id> \
+  --billing-period monthly --started-at <YYYY-MM-DD> \
+  --billing-mode manual --status active --custom-price-cents 0
+#    To reverse a comped flag: ac admin orgs update <org-id> --no-comped
+
+# 3. Send the onboarding link
 ac admin onboarding send-link <org-id> --send-email
 
-# 3. Check status
+# 4. Check status. The detail carries has_card and link_used_at.
 ac admin onboarding get <org-id> --json
+ac admin onboarding list --status pending --json
 
-# 4. Activate when ready
+# 5. Activate when the customer is in pending. Access only:
 ac admin onboarding activate <org-id> --send-password-reset
+#    Access plus billing, when a Stripe-mode subscription exists:
+ac admin subscriptions activate-billing <subscription-id>
 ```
 
 ## Admin: Check queue health
