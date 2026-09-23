@@ -3113,3 +3113,16 @@ Reads product milestones across a root run and its children.
 | `--json` | Boolean | No | Print the progress summary or structured error. |
 
 The command reads `/api/v1/agentic/runs/{run_id}/progress`. Child run IDs return 422.
+
+
+#### `ac agentic runs span-detail <run-id> <span-id>`
+
+Reads the stored input and output of one span. Use the `run_id` attached to
+that span in a tree response.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--json` | Boolean | No | Print the raw input and output or a structured error. |
+
+The command reads `/api/v1/agentic/runs/{run_id}/spans/{span_id}`. A span outside
+the named run returns 404.
