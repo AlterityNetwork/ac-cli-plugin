@@ -64,6 +64,8 @@ ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
 ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs spans <run-id> --scope tree --json
+ac agentic runs span-detail <owning-run-id> <span-id> --json
 ```
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
@@ -84,6 +86,10 @@ usage deltas and can be incomplete. Use durable usage records for billing.
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
 page. The default lists root Runs. Use `--all` to include child Runs.
 To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
+
+The spans list omits tool arguments and results. `span-detail` reads the bounded,
+redacted input and output for one span. Use the span's `run_id` from the tree
+response as `<owning-run-id>`; a span from another run returns 404.
 
 When `list` is filtered with `--capability company.search`, `people.search` or
 `signals.search`, its rows include `search_query`, normalized from the
