@@ -13,6 +13,9 @@ ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> 
 ac agentic saved-searches delete <saved-search-id> [--yes]
 ac agentic saved-searches start <saved-search-id> --contract-version <version> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
+ac agentic saved-searches schedule get <saved-search-id>
+ac agentic saved-searches schedule set <saved-search-id> --cron "0 9 * * 1" [--timezone Europe/London]
+ac agentic saved-searches schedule clear <saved-search-id> [--yes]
 ```
 
 The brief must be a JSON object. It must contain a non-empty `icp` string or a
@@ -24,6 +27,12 @@ Values use OR within each list and AND between fields. The complete execution in
 Do not infer a country from free-text location or convert a title family into exact titles.
 `list` omits the brief. Use `get` when you
 need the full brief or the current `updated_at` write token.
+
+`schedule set` starts a Signals saved search on a five-field cron, read in the
+IANA zone you give (default `UTC`). Only a `signals.search` saved search takes a
+schedule. Any member who can start Signals may set one, and becomes its author.
+A search keeps one schedule, so `set` replaces the one it has. `list` shows each
+schedule. Deleting a saved search also stops its schedule.
 
 `patch` requires that token and at least one replacement field. A stale token
 returns exit code 5. `start` freezes the stored brief and current baseline in a

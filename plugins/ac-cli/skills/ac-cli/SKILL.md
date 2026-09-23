@@ -148,7 +148,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | User says | Correct command | Wrong guesses to avoid |
 |-----------|----------------|------------------------|
 | "start a run of an agentic definition (agent or workflow definition ID)" | `ac agentic runs start --definition <definition-id>` | `ac workflows runs create <workflow-id>` — a different runtime that takes a workflow ID, not an agentic definition ID |
-| "saved search" / "repeat this search" | `ac agentic saved-searches …` (name the product with `--capability`) | `ac platform agentic-saved-searches` · workflow schedules (a saved search starts Runs but creates no schedule) |
+| "saved search" / "repeat this search" | `ac agentic saved-searches …` (name the product with `--capability`) | `ac platform agentic-saved-searches` · workflow schedules (schedule a Signals saved search with `ac agentic saved-searches schedule set`, not a workflow schedule) |
 | "switch / change active organization to X" | `ac profiles set-organization X` | `ac env use` (envs are local/staging/production) · `ac admin orgs` (manages records) · `ac apps … --org-id` (per-app) |
 | "delete the 3 people IDs p-100, p-101, p-102" / any list of 2+ ids | `ac crm people bulk-delete --ids p-100,p-101,p-102` (single call, comma-separated) | NEVER loop `ac crm people delete <id>` per-id — even with `AC_YES=1`, this is wrong because (a) bulk-delete exists, (b) the loop is non-atomic |
 | "fetch these people IDs" / read multiple known person IDs | `ac crm people by-ids --ids p-100,p-101,p-102` (add `--include-deleted` when soft-deleted records are requested) | looping `ac crm people get <id>` — the batch read exists and preserves caller order |

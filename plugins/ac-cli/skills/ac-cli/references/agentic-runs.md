@@ -72,7 +72,14 @@ ac agentic runs list --json
 ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
+ac agentic runs list --capability signals.search --source trigger --json
 ```
+
+`--source` lists the Runs one entry point started: `front_door`, `trigger`,
+`api` or `workflow_step`. A schedule starts `trigger` Runs. On a
+`--capability signals.search` list, each Run also carries a `title`: the
+saved-search name, else the first sales-signal criterion, the ICP, or the
+target-company text. Every other list answers `title: null`.
 
 Run start, list and detail JSON include `capability_id` and `contract_version`.
 The values come from the published executor binding at admission. A later
