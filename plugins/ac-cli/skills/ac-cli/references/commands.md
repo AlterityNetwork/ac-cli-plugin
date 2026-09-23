@@ -3115,7 +3115,20 @@ Reads product milestones across a root run and its children.
 The command reads `/api/v1/agentic/runs/{run_id}/progress`. Child run IDs return 422.
 
 
-#### `ac agentic runs span-detail <run-id> <span-id>`
+#### `ac agentic runs spans <run-id>`
+
+Lists the spans of one run. `--scope tree` includes the root run and its child
+runs, even when the named run is a child.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--since` | ISO 8601 datetime | No | Read spans updated at or after this instant. |
+| `--cursor` | String | No | Continue a page; keep the same `--since` value. |
+| `--scope` | `run` or `tree` | No | Select this run or the full run tree (default: `run`). |
+| `--limit` | Integer | No | Page size from 1 to 100. |
+| `--json` | Boolean | No | Print the span page or a structured error. |
+
+#### `ac agentic runs span-detail <owning-run-id> <span-id>`
 
 Reads the stored input and output of one span. Use the `run_id` attached to
 that span in a tree response.
