@@ -5,7 +5,7 @@ These commands require the CLI and API from `agentic-platform` until cutover.
 ## Start a capability
 
 Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
-`people.enrich` or `signals.search`. The capability must be installed and active
+`people.enrich`, `people.signals` or `signals.search`. The capability must be installed and active
 for the current organization. Its published schema defines the input fields.
 
 ```bash
@@ -70,9 +70,9 @@ ac agentic runs span-detail <owning-run-id> <span-id> --json
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
 `api` or `workflow_step`. A schedule starts `trigger` Runs. On a
-`--capability signals.search` list, each Run also carries a `title`: the
-saved-search name, else the first sales-signal criterion, the ICP, or the
-target-company text. Every other list answers `title: null`.
+`--capability signals.search` or `--capability people.signals` list, each Run also
+carries a `title`: the saved-search name, else the first sales-signal criterion,
+the ICP, or the target-company text. Every other list answers `title: null`.
 
 Run start, list and detail JSON include `capability_id` and `contract_version`.
 The values come from the published executor binding at admission. A later
@@ -99,7 +99,8 @@ and older Runs whose input did not retain the submitted query.
 
 `list` JSON and the human `Prospects` column carry `prospect_count`: how many
 prospects the Run last wrote. It is null on every list but a
-`--capability signals.search` one, because only that list pays for the count.
+`--capability signals.search` or `--capability people.signals` one, because only
+those lists pay for the count.
 Zero is a Run that wrote no prospect, so do not read null as zero. A later Run
 that returns a company again claims the row, so the count of an older Run falls.
 Run detail always carries null.

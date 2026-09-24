@@ -90,6 +90,11 @@ finds the company writes a new prospect. Use `dismiss` to keep a company out.
 `counts` reads how many prospects each review state holds. Every state carries
 a number, and a state with no prospect reads 0.
 
+`get` prints a Company block for a company prospect and a Person block for a
+person prospect, which a `people.signals` Run writes. The person is the subject:
+a creator or a public figure with no company target. `list` shows the subject
+kind in `Subject` and the person's name in `Person`.
+
 `promote` is the one command that writes CRM. It resolves or creates the CRM
 company and each selected person, then sets the prospect to `promoted`. Repeat
 `--person` for each prospect person id, taken from `ac agentic prospects people`.
