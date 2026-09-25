@@ -32,6 +32,7 @@ ac agentic capabilities start signals.search \
   --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"}]}' \
   --idempotency-key signals-people-42 --json
 ```
+
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
