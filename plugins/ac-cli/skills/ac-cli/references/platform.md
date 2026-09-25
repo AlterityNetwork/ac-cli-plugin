@@ -90,11 +90,21 @@ finds the company writes a new prospect. Use `dismiss` to keep a company out.
 `counts` reads how many prospects each review state holds. Every state carries
 a number, and a state with no prospect reads 0.
 
-`promote` is the one command that writes CRM. It resolves or creates the CRM
-company and each selected person, then sets the prospect to `promoted`. Repeat
-`--person` for each prospect person id, taken from `ac agentic prospects people`.
-It asks before it writes; pass `--yes` to skip the question. A second promotion
-writes nothing and answers the same references.
+`get` prints a Company block for a company prospect and a Person block for a
+person prospect, which a `people.signals` Run writes. The person is the subject:
+a creator or a public figure with no company target. `list` shows the subject
+kind in `Subject` and the person's name in `Person`.
+
+`promote` is the one command that writes CRM. For a company prospect it
+resolves or creates the CRM company and each selected person, then sets the
+prospect to `promoted`. Repeat `--person` for each prospect person id, taken
+from `ac agentic prospects people`. For a person prospect there is no company:
+with no `--person` it promotes the subject person alone, `crm_company_id` is
+null, and `--list` adds the person to a person list. The CRM holds a person by
+an email or a LinkedIn URL; a person with neither is refused before any write,
+and the refusal names the missing identifier. It asks before it writes; pass
+`--yes` to skip the question. A second promotion writes nothing and answers the
+same references.
 
 A promotion also sets the `lifecycle_stage` of the company and of each promoted
 person to `prospect`. It moves a row at the `identified` stage, and a person
