@@ -502,7 +502,6 @@ Regenerate a pending communication's draft.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | List name |
-| `--member-type` | str | no | person, company, or mixed |
 | `--type` | str | no | static or dynamic |
 | `--description` | str | no | List description |
 | `--json` | flag | no | Output raw JSON |
@@ -513,14 +512,15 @@ Regenerate a pending communication's draft.
 | `--name` | str | New name |
 | `--description` | str | New description |
 | `--type` | str | static or dynamic |
-| `--member-type` | str | person, company, or mixed |
 | `--json` | flag | Output raw JSON |
 
 #### `ac crm lists members <list-id>`
+A list holds people and companies. Omit `--member-type` to read both kinds.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
+| `--member-type` | enum (`person`\|`company`) | (omit) | Read one kind of member. Omit it to read both kinds. The total counts the kind you read |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm lists lists-for-member`

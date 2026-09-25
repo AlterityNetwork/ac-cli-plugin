@@ -217,13 +217,13 @@
     },
     {
       "id": 14,
-      "prompt": "Create a static list called 'Q2 Targets' for people, then add person p-001 and person p-002 to it.",
+      "prompt": "Create a static list called 'Q2 Targets', then add person p-001 and person p-002 to it.",
       "expected_output": "lists create \u2192 2x add-member.",
       "assertions": [
         {
           "name": "creates_list",
           "type": "command_matches",
-          "text": "`ac crm lists create` with `--name .*Q2 Targets`, `--member-type person`, `--type static`"
+          "text": "`ac crm lists create` with `--name .*Q2 Targets` and `--type static`, and no `--member-type`"
         },
         {
           "name": "two_add_members",
