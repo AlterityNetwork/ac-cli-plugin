@@ -98,10 +98,15 @@ kind in `Subject` and the person's name in `Person`.
 `promote` is the one command that writes CRM. For a company prospect it
 resolves or creates the CRM company and each selected person, then sets the
 prospect to `promoted`. Repeat `--person` for each prospect person id, taken
-from `ac agentic prospects people`. For a person prospect there is no company:
-with no `--person` it promotes the subject person alone, `crm_company_id` is
-null, and `--list` adds the person to a person list. The CRM holds a person by
-an email or a LinkedIn URL; a person with neither is refused before any write,
+from `ac agentic prospects people`. For a person prospect, with no `--person`
+it promotes the subject person alone, and `--list` adds the person to a person
+list. When the person is linked to an employer, the promotion resolves or
+creates the CRM company of that employer, links the CRM person to it, and
+answers it as `crm_company_id`. A CRM person that already holds a company link
+keeps it. An employer the CRM cannot resolve to one company links no company,
+and `crm_company_id` is null. `get` and `people` print the linked employer as
+`Company`, and fall back to the employer text. The CRM holds a person by an
+email or a LinkedIn URL; a person with neither is refused before any write,
 and the refusal names the missing identifier. It asks before it writes; pass
 `--yes` to skip the question. A second promotion writes nothing and answers the
 same references.
