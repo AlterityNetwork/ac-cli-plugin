@@ -2533,7 +2533,7 @@ person ids from `ac agentic prospects people`, never CRM ids. An empty
 selection promotes the company alone, or the subject person of a person
 prospect. For a person prospect, `crm_company_id` is the CRM company of the
 employer the person is linked to, resolved or created by the promotion, or
-null when no employer resolves. A CRM person that already holds a company link
+null when no employer resolves to one company. A CRM person that already holds a company link
 keeps it. The answer carries `crm_company_id`, one `people` row for each
 selection, and `list_id`. A second promotion writes nothing and answers the
 same references. A selected person of a company prospect who already holds a
