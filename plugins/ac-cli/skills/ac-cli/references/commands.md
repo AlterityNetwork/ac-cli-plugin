@@ -520,7 +520,7 @@ A list holds people and companies. Omit `--member-type` to read both kinds.
 |------|------|---------|-------------|
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
-| `--member-type` | enum (`person`\|`company`) | both | Read one kind of member. The total counts that kind only |
+| `--member-type` | enum (`person`\|`company`) | (omit) | Read one kind of member. Omit it to read both kinds. The total counts the kind you read |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm lists lists-for-member`
