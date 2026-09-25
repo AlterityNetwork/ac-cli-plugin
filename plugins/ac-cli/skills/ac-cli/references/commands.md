@@ -1318,7 +1318,15 @@ Returns an `items` page with `total`, `limit` and `offset`. Each item carries a
 | `<file>` | str | yes | Path to CSV file (positional argument) |
 | `--json` | flag | no | Raw JSON output |
 
-Parses a CSV file into structured company data via multipart upload. File must have .csv extension.
+Parses a CSV file into structured company data via multipart upload. File must have .csv extension. A file that lists people (a first and last name, a full name, or an email beside a job title) is refused with a 400; use `csv-parse-people` for it.
+
+#### `ac workflows csv-parse-people <file>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `<file>` | str | yes | Path to a contacts CSV file (positional argument) |
+| `--json` | flag | no | Raw JSON output |
+
+Parses a contacts CSV into people rows via multipart upload. Every row comes back with its 1-based `row`, the `full_name` (joined from a first and last name when the file splits it), `email`, `linkedin_url`, `title`, `company_name` and `domain` (the domain column, else the website, else the work email host; a free-mail host is never a company). A file that lists companies is refused with a 400.
 
 ---
 

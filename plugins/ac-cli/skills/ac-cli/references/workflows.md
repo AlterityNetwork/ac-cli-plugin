@@ -72,8 +72,11 @@ not depend on which run-history page was read.
 ## CSV Parsing
 
 ```bash
-ac workflows csv-parse <file.csv>
+ac workflows csv-parse <file.csv>            # a list of companies
+ac workflows csv-parse-people <file.csv>     # a list of contacts
 ```
+
+Each parser refuses a file of the other kind, so a contacts export is never read as a company list.
 
 ## Discovered Companies (from workflow runs)
 
