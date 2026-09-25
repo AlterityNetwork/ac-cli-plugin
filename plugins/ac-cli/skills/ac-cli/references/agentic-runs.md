@@ -81,13 +81,17 @@ ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
 ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs list --capability signals.search --capability people.signals --json
 ac agentic runs spans <run-id> --scope tree --json
 ac agentic runs span-detail <owning-run-id> <span-id> --json
 ```
 
+`--capability` repeats. The Sonar history lists the `signals.search` and
+the `people.signals` Runs in one page, and the title of each.
+
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
-`api` or `workflow_step`. A schedule starts `trigger` Runs. On a
-`--capability signals.search` or `--capability people.signals` list, each Run also
+`api` or `workflow_step`. A schedule starts `trigger` Runs. On a list that
+names `signals.search`, `people.signals`, or both, each Run also
 carries a `title`: the saved-search name, else the first sales-signal criterion,
 the ICP, or the target-company text. Every other list answers `title: null`.
 
