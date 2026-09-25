@@ -91,7 +91,7 @@ the `people.signals` Runs in one page, and the title of each.
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
 `api` or `workflow_step`. A schedule starts `trigger` Runs. On a list that
-names only `signals.search` and `people.signals`, each Run also
+names `signals.search`, `people.signals`, or both, each Run also
 carries a `title`: the saved-search name, else the first sales-signal criterion,
 the ICP, or the target-company text. Every other list answers `title: null`.
 
