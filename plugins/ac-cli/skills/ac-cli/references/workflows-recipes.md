@@ -48,6 +48,22 @@ ac workflows run-companies list <workflow-id> --json
 ac workflows run-companies add-to-crm <workflow-id> --company-ids id1,id2
 ```
 
+## Signals: search for signals on a list of contacts
+
+```bash
+# 1. Parse the contacts CSV; each row carries a name, an email and the company domain
+ac workflows csv-parse-people contacts.csv --json
+
+# 2. Start a Signals search that names those people. A person needs a LinkedIn
+#    profile URL, or a full name with an email, a domain or a company name.
+ac agentic capabilities start signals.search \
+  --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"},{"linkedin_url":"https://www.linkedin.com/in/ada"}]}' \
+  --idempotency-key signals-contacts-42 --json
+
+# 3. Read the result: skipped rows and the outcome of each supplied person
+ac agentic runs get <run-id> --json | jq '.result | {skipped_companies, skipped_people, supplied_people}'
+```
+
 ## Workflows: Review and import discovered people
 
 ```bash

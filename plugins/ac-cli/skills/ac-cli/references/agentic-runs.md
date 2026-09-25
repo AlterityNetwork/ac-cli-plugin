@@ -16,6 +16,22 @@ ac agentic capabilities start company.search \
 
 Both flags are required. Use a JSON input object and a nonblank delivery key
 with 1–255 header-safe ASCII characters.
+
+A `signals.search` bounded set (`"source":"company_set"`) names companies, people
+or both. A company reference carries one of `intel_company_id`, `prospect_id`,
+`domain` or `linkedin_url`, with an optional `name`, or a `name` alone that the
+Run researches. A person carries `linkedin_url`, or `full_name` with `email`,
+`domain` or `company_name`, plus an optional `title`. The Run seeds each
+person's company from the domain, the work email host or the company name, and
+the result carries `skipped_companies`, `skipped_people` and one
+`supplied_people` outcome per person (`signal_recorded`, `no_signal`,
+`no_profile` or `employer_mismatch`).
+
+```bash
+ac agentic capabilities start signals.search \
+  --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"}]}' \
+  --idempotency-key signals-people-42 --json
+```
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
