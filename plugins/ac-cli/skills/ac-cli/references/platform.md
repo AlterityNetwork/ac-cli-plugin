@@ -51,9 +51,10 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--people-state <state>] [--signal-type <type>] [--search <text>] [--sort <order>] [--cursor <cursor>] [--limit 50]
 ac agentic prospects act <prospect-id>
 ac agentic prospects counts
+ac agentic prospects signal-types [--review-state new]
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
@@ -75,6 +76,11 @@ can change a promoted prospect.
 attached signal. Both put an ungraded prospect last. A cursor belongs to one
 sort, so keep `--sort` on every page of a walk. A cursor another sort wrote
 is refused with a 400, which is exit code 1.
+
+`--people-state`, `--signal-type` and `--search` filter on the server. A
+signal type matches any attached signal, and `signal-types` lists the types
+one review state holds, with a count each. Use those names: another name is
+refused with a 422.
 
 `dismiss-action` closes the suggested action card and stamps
 `suggested_action_dismissed_at`. It changes no review state, and a repeat call
