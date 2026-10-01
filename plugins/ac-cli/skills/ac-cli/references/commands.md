@@ -482,6 +482,13 @@ Reject a pending communication.
 #### `ac crm comms regenerate <communication-id>`
 Regenerate a pending communication's draft.
 
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--instruction` | str | no | Feedback for the new draft |
+| `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step |
+| `--json` | flag | no | Output raw JSON |
+
 ---
 
 ### Lists
@@ -715,6 +722,7 @@ and status, and top clicked links.
 | `--name` | str | yes | Sequence name |
 | `--description` | str | no | Sequence description |
 | `--writing-style-id` | str | no | Writing style to use for AI drafts |
+| `--draft-feedback` | str | no | Reviewer feedback that every draft applies. Pass `""` to clear it |
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
 | `--execution-mode` | str | no | Execution mode |
@@ -967,7 +975,9 @@ Approves and sends the draft.
 #### `ac envoy outbox regenerate <draft-id>`
 | Flag | Type | Description |
 |------|------|-------------|
-| `--instruction` | str | Additional instruction for AI regeneration |
+| `--instruction` | str | Feedback for the new draft |
+| `--apply-to-sequence` | flag | Also save the feedback on the sequence for every later draft |
+| `--scope` | `draft` \| `step` | `step` also regenerates every other waiting draft of the same step |
 | `--json` | flag | Raw JSON output |
 
 ---

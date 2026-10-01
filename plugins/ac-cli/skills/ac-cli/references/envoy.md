@@ -10,6 +10,7 @@ ac envoy sequences get <sequence-id>
 ac envoy sequences create --name "Q2 Outreach" [--description "..."] \
   [--writing-style-id <id>] [--playbook-id <id>] [--crm-list-id <id>]
 ac envoy sequences update <sequence-id> --name "Updated Name"
+ac envoy sequences update <sequence-id> --draft-feedback "Write in British English."
 ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
@@ -78,8 +79,11 @@ ac envoy outbox step-drafts --sequence-id <id> --step-id <id> [--limit 50]
 ac envoy outbox update-draft <draft-id> [--subject "New subject"] [--body "..."]
 ac envoy outbox approve <draft-id> [--subject "Override"] [--body "Override"]
 ac envoy outbox reject <draft-id> --action regenerate [--reason "Too formal"]
-ac envoy outbox regenerate <draft-id> [--instruction "Make it shorter"]
+ac envoy outbox regenerate <draft-id> [--instruction "Make it shorter"] \
+  [--apply-to-sequence] [--scope draft|step]
 ```
+
+`--apply-to-sequence` saves the instruction as draft feedback on the sequence. Every later draft of the sequence applies it, together with the writing style. `--scope step` also regenerates every other waiting draft of the same step, and discards any edits on those drafts.
 
 Reject `--action` values: `regenerate` (AI rewrites) · `remove_recipient` (drop from sequence) · `skip_send` (skip this draft, keep the recipient) · `manual_edit` (edit and resend later).
 

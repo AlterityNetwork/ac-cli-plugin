@@ -108,7 +108,8 @@ ac crm comms delete <communication-id> [--yes]
 ac crm comms pending-approvals [--sequence-id <id>] [--step-id <id>]
 ac crm comms approve <communication-id>
 ac crm comms reject <communication-id> --action skip_send [--reason "..."]
-ac crm comms regenerate <communication-id>
+ac crm comms regenerate <communication-id> [--instruction "..."] \
+  [--apply-to-sequence] [--scope draft|step]
 ```
 
 ## Lists
