@@ -2404,6 +2404,9 @@ exit code 5, and you start a new page walk.
 |------|------|---------|-------------|
 | `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
+| `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
 | `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
@@ -2419,6 +2422,16 @@ A cursor belongs to one sort, because the three sorts order the same rows
 three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
 it for you. A cursor another sort wrote is refused with a 400, which is exit
 code 1. Read `latest_signal_score` from `--json`; no column prints it.
+
+The three filters narrow the read on the server, so every page holds matches
+only. `--signal-type` matches any attached signal, not only the one the row
+names, and it accepts the `IntelSignalType` names alone: `funding_round`,
+`started_meta_ads`, `scaled_meta_ads`, `hired_growth_role`, `job_change`,
+`promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
+`new_tech_stack`, `market_expansion`, `thought_leadership`, `speaking_event`.
+Another name is refused with a 422. `--search` ignores case. The next-page
+hint repeats every filter, because a cursor names a position in one filtered
+list.
 
 `list` JSON and `get` JSON carry `top_person`: the attached person with the
 highest `persona_fit_score`, as a `prospect_people` row with its person
@@ -2469,6 +2482,16 @@ prospect returns 3.
 
 Counts the prospects in each review state, exactly. The body carries all four
 keys, and a state with no prospect reads 0.
+
+#### `ac agentic prospects signal-types`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--review-state` | str | `new` | The review state to count in |
+| `--json` | flag | off | Raw JSON output |
+
+Lists each signal type the prospects of one review state hold, with the number
+of prospects that hold it, the largest first. A prospect that holds signals of
+two types counts under both. A type that no prospect holds is not listed.
 
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
