@@ -487,7 +487,7 @@ Regenerate a pending communication's draft.
 | `--instruction` | str | no | Feedback for the new draft |
 | `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
 | `--apply-to-writing-style` | flag | no | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
-| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step, and discards any manual edits on those drafts |
 | `--json` | flag | no | Output raw JSON |
 
 ---
@@ -1007,7 +1007,7 @@ Approves and sends the draft.
 | `--instruction` | str | no | Feedback for the new draft |
 | `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
 | `--apply-to-writing-style` | flag | no | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
-| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step, and discards any manual edits on those drafts |
 | `--json` | flag | no | Raw JSON output |
 
 ---
