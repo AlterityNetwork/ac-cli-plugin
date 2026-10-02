@@ -82,9 +82,13 @@ ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
 ac agentic runs list --capability signals.search --source trigger --json
 ac agentic runs list --capability signals.search --capability people.signals --json
+ac agentic runs list --capability company.search --status succeeded --include-result --json
 ac agentic runs spans <run-id> --scope tree --json
 ac agentic runs span-detail <owning-run-id> <span-id> --json
 ```
+
+`--include-result` puts the frozen `result` of each Run on its row, so one
+list request answers the results of many Runs. Without it, `result` is null.
 
 `--capability` repeats. The Sonar history lists the `signals.search` and
 the `people.signals` Runs in one page, and the title of each.
