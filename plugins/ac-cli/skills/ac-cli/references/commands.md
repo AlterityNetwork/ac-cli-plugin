@@ -915,11 +915,27 @@ auto-confirms).
 | `--json` | flag | off | Raw JSON output |
 
 Returns `{recipient_id, steps, messages}`. `steps` lists every step of the
-sequence with its status for this recipient (`upcoming` when not started,
-`completed` for a delay that ended), `skip_reason` for a skipped step, the template,
-the AI instructions, and `awaiting_approval_count`: the drafts of the step that wait
+sequence with its `status` for this recipient, `skip_reason` for a skipped step, the
+template, the AI instructions, and `awaiting_approval_count`: the drafts of the step that wait
 for approval across all recipients. `messages` is the email thread in date order:
 the sent steps and the replies.
+
+Step `status` values:
+
+| Status | Meaning |
+|--------|---------|
+| `upcoming` | The step has not started for this recipient |
+| `pending` | The step is due and has not run |
+| `processing` | The step runs now |
+| `waiting_delay` | A delay step is in its delay period |
+| `draft_generated` | An email draft waits for approval |
+| `draft_approved` | The draft is approved and the send has not finished |
+| `sent` | The email is sent |
+| `awaiting_task` | A task step waits for its task |
+| `task_created` | The task of a task step is created |
+| `completed` | A delay step ended |
+| `skipped` | The step was skipped; `skip_reason` holds the reason |
+| `failed` | The step failed |
 
 #### `ac envoy recipients remove <sequence-id> <recipient-id>`
 | Flag | Type | Description |
@@ -986,13 +1002,13 @@ Approves and sends the draft.
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy outbox regenerate <draft-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--instruction` | str | Feedback for the new draft |
-| `--apply-to-sequence` | flag | Also save the feedback on the sequence for every later draft |
-| `--apply-to-writing-style` | flag | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
-| `--scope` | `draft` \| `step` | `step` also regenerates every other waiting draft of the same step |
-| `--json` | flag | Raw JSON output |
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--instruction` | str | no | Feedback for the new draft |
+| `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
+| `--apply-to-writing-style` | flag | no | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step |
+| `--json` | flag | no | Raw JSON output |
 
 ---
 
