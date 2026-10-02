@@ -2564,7 +2564,7 @@ employer the person is linked to, resolved or created by the promotion and
 moved to the Prospect stage when it was at Identified, or
 null when no employer resolves to one company. A CRM person that already holds a company link
 keeps it. The answer carries `crm_company_id`, one `people` row for each
-selection, and `list_id`. A second promotion writes nothing and answers the
+selection, one `named_people` row for each signal, and `list_id`. A second promotion writes nothing and answers the
 same references. A selected person of a company prospect who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
