@@ -151,12 +151,12 @@ selected organization.
 
 ```bash
 ac launchpad signal-preferences get
-ac launchpad signal-preferences set --sort-mode recent --score-threshold 50 --score-direction above
+ac launchpad signal-preferences set --sort-mode recent --score-threshold 5 --score-direction above
 ac launchpad signal-preferences set --group
 ac launchpad signal-preferences set --clear-threshold
 ```
 
-The threshold reads the prospect opportunity score on a 0-100 scale. `set` preserves unspecified preferences; use
+The threshold reads the 0-10 prospect score the launchpad rows show. `set` preserves unspecified preferences; use
 `--clear-threshold` to remove the score filter.
 
 ## Files (Images)

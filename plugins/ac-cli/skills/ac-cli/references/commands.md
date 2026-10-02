@@ -2657,7 +2657,7 @@ for raw JSON.
 |------|------|-------------|
 | `--sort-mode` | str | `hottest` or `recent` |
 | `--group` / `--no-group` | bool | Group the feed by saved search |
-| `--score-threshold` | int | Prospect `opportunity_score` cutoff from 0 to 100 |
+| `--score-threshold` | int | Prospect score cutoff from 0 to 10, as the launchpad rows show it |
 | `--clear-threshold` | flag | Remove the score filter |
 | `--score-direction` | str | `above` or `below` |
 | `--json` | flag | Raw JSON output |
