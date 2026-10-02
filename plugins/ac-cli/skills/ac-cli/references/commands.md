@@ -916,7 +916,8 @@ auto-confirms).
 
 Returns `{recipient_id, steps, messages}`. `steps` lists every step of the
 sequence with its status for this recipient (`upcoming` when not started), the
-template and the AI instructions. `messages` is the email thread in date order:
+template, the AI instructions, and `awaiting_approval_count`: the drafts of the step
+that wait for approval across all recipients. `messages` is the email thread in date order:
 the sent steps and the replies.
 
 #### `ac envoy recipients remove <sequence-id> <recipient-id>`
