@@ -1017,13 +1017,13 @@
     },
     {
       "id": 78,
-      "prompt": "Show companies above a lead score of 6 on my Launchpad and group them by saved search.",
-      "expected_output": "Uses `ac launchpad signal-preferences set --score-threshold 6 --score-direction above --group`.",
+      "prompt": "Show leads above a score of 60 on my Launchpad and group them by saved search.",
+      "expected_output": "Uses `ac launchpad signal-preferences set --score-threshold 60 --score-direction above --group`.",
       "assertions": [
         {
           "name": "launchpad_signal_preferences",
           "type": "command_matches",
-          "text": "`ac launchpad signal-preferences set` with `--score-threshold 6`, `--score-direction above`, and `--group`"
+          "text": "`ac launchpad signal-preferences set` with `--score-threshold 60`, `--score-direction above`, and `--group`"
         }
       ]
     },

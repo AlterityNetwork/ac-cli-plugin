@@ -51,7 +51,7 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--id <prospect> ...] [--people-state <state>] [--signal-type <type>] [--search <text>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--id <prospect> ...] [--people-state <state>] [--signal-type <type>] [--search <text>] [--saved-search-id <id>] [--min-score <0-100>] [--max-score <0-100>] [--sort <order>] [--cursor <cursor>] [--limit 50]
 ac agentic prospects act <prospect-id>
 ac agentic prospects counts
 ac agentic prospects signal-types [--review-state new]
@@ -151,7 +151,7 @@ selected organization.
 
 ```bash
 ac launchpad signal-preferences get
-ac launchpad signal-preferences set --sort-mode recent --score-threshold 5 --score-direction above
+ac launchpad signal-preferences set --sort-mode recent --score-threshold 50 --score-direction above
 ac launchpad signal-preferences set --group
 ac launchpad signal-preferences set --clear-threshold
 ```

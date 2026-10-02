@@ -2408,6 +2408,9 @@ exit code 5, and you start a new page walk.
 | `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
 | `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
+| `--saved-search-id` | str | None | Only prospects this saved search returned |
+| `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
+| `--max-score` | int | None | Highest `opportunity_score` to keep, 0 to 100 |
 | `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
@@ -2424,8 +2427,9 @@ three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
 it for you. A cursor another sort wrote is refused with a 400, which is exit
 code 1. Read `latest_signal_score` from `--json`; no column prints it.
 
-The three filters narrow the read on the server, so every page holds matches
-only. `--signal-type` matches any attached signal, not only the one the row
+The filters narrow the read on the server, so every page holds matches
+only. `--saved-search-id` keeps the prospects one saved search returned.
+`--min-score` and `--max-score` keep an inclusive `opportunity_score` band. `--signal-type` matches any attached signal, not only the one the row
 names, and it accepts the `IntelSignalType` names alone: `funding_round`,
 `started_meta_ads`, `scaled_meta_ads`, `hired_growth_role`, `job_change`,
 `promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
@@ -2653,7 +2657,7 @@ for raw JSON.
 |------|------|-------------|
 | `--sort-mode` | str | `hottest` or `recent` |
 | `--group` / `--no-group` | bool | Group the feed by saved search |
-| `--score-threshold` | int | Lead-score cutoff from 0 to 10 |
+| `--score-threshold` | int | Prospect `opportunity_score` cutoff from 0 to 100 |
 | `--clear-threshold` | flag | Remove the score filter |
 | `--score-direction` | str | `above` or `below` |
 | `--json` | flag | Raw JSON output |
