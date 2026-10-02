@@ -62,7 +62,7 @@ ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
 ac agentic prospects dismiss-action <prospect-id>
-ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
+ac agentic prospects promote <prospect-id> [--person <id>]... [--signal <signal-id>]... [--list <list-id>] [--yes]
 ac agentic prospects delete <prospect-id> [--yes]
 ```
 
