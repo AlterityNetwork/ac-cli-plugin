@@ -2429,7 +2429,8 @@ code 1. Read `latest_signal_score` from `--json`; no column prints it.
 
 The filters narrow the read on the server, so every page holds matches
 only. `--saved-search-id` keeps the prospects one saved search returned.
-`--min-score` and `--max-score` keep an inclusive `opportunity_score` band. `--signal-type` matches any attached signal, not only the one the row
+`--min-score` and `--max-score` keep an inclusive `opportunity_score` band.
+`--signal-type` matches any attached signal, not only the one the row
 names, and it accepts the `IntelSignalType` names alone: `funding_round`,
 `started_meta_ads`, `scaled_meta_ads`, `hired_growth_role`, `job_change`,
 `promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
