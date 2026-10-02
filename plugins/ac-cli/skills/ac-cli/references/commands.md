@@ -2428,6 +2428,13 @@ exit code 5, and you start a new page walk.
 |------|------|---------|-------------|
 | `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
+| `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
+| `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
+| `--saved-search-id` | str | None | Only prospects this saved search returned |
+| `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
+| `--max-score` | int | None | Highest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
 | `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
@@ -2443,6 +2450,18 @@ A cursor belongs to one sort, because the three sorts order the same rows
 three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
 it for you. A cursor another sort wrote is refused with a 400, which is exit
 code 1. Read `latest_signal_score` from `--json`; no column prints it.
+
+The filters narrow the read on the server, so every page holds matches
+only. `--saved-search-id` keeps the prospects one saved search returned.
+`--min-score` and `--max-score` keep an inclusive `opportunity_score` band.
+`--signal-type` matches any attached signal, not only the one the row
+names, and it accepts the `IntelSignalType` names alone: `funding_round`,
+`started_meta_ads`, `scaled_meta_ads`, `hired_growth_role`, `job_change`,
+`promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
+`new_tech_stack`, `market_expansion`, `thought_leadership`, `speaking_event`.
+Another name is refused with a 422. `--search` ignores case. The next-page
+hint repeats every filter, because a cursor names a position in one filtered
+list.
 
 `list` JSON and `get` JSON carry `top_person`: the attached person with the
 highest `persona_fit_score`, as a `prospect_people` row with its person
@@ -2493,6 +2512,16 @@ prospect returns 3.
 
 Counts the prospects in each review state, exactly. The body carries all four
 keys, and a state with no prospect reads 0.
+
+#### `ac agentic prospects signal-types`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--review-state` | str | `new` | The review state to count in |
+| `--json` | flag | off | Raw JSON output |
+
+Lists each signal type the prospects of one review state hold, with the number
+of prospects that hold it, the largest first. A prospect that holds signals of
+two types counts under both. A type that no prospect holds is not listed.
 
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
@@ -2545,6 +2574,7 @@ call keeps the first stamp, and a missing prospect returns exit code 3.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--person` | uuid | no | A prospect person id to promote. Repeat for each person. At most 25, and no repeats. |
+| `--signal` | uuid | no | A signal id of this company prospect whose named person joins CRM by name at the company. Repeat for each signal. `--person` and `--signal` together take at most 25. |
 | `--list` | uuid | no | A static CRM list. The company joins it, or the person of a person prospect. |
 | `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw JSON output |
@@ -2553,13 +2583,17 @@ call keeps the first stamp, and a missing prospect returns exit code 3.
 and do not accept `--yes` or a review-state body.
 
 `promote` is the one prospect command that writes CRM. Person ids are prospect
-person ids from `ac agentic prospects people`, never CRM ids. An empty
+person ids from `ac agentic prospects people`, never CRM ids. A signal id
+comes from `ac agentic prospects signals`. It names a person the research found
+no profile for, so the CRM person holds a name and a title and no email. The
+answer lists those people under `named_people`. An empty
 selection promotes the company alone, or the subject person of a person
 prospect. For a person prospect, `crm_company_id` is the CRM company of the
-employer the person is linked to, resolved or created by the promotion, or
+employer the person is linked to, resolved or created by the promotion and
+moved to the Prospect stage when it was at Identified, or
 null when no employer resolves to one company. A CRM person that already holds a company link
 keeps it. The answer carries `crm_company_id`, one `people` row for each
-selection, and `list_id`. A second promotion writes nothing and answers the
+selection, one `named_people` row for each signal, and `list_id`. A second promotion writes nothing and answers the
 same references. A selected person of a company prospect who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
@@ -2648,7 +2682,7 @@ for raw JSON.
 |------|------|-------------|
 | `--sort-mode` | str | `hottest` or `recent` |
 | `--group` / `--no-group` | bool | Group the feed by saved search |
-| `--score-threshold` | int | Lead-score cutoff from 0 to 10 |
+| `--score-threshold` | int | Prospect score cutoff from 0 to 10, as the launchpad rows show it |
 | `--clear-threshold` | flag | Remove the score filter |
 | `--score-direction` | str | `above` or `below` |
 | `--json` | flag | Raw JSON output |

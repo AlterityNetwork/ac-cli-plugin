@@ -51,9 +51,10 @@ Read the returned field errors with `--json`. Do not recreate the search or chan
 ## Agentic Prospect Review
 
 ```bash
-ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--sort <order>] [--cursor <cursor>] [--limit 50]
+ac agentic prospects list [--review-state <state>] [--last-seen-run-id <run>] [--id <prospect> ...] [--people-state <state>] [--signal-type <type>] [--search <text>] [--saved-search-id <id>] [--min-score <0-100>] [--max-score <0-100>] [--sort <order>] [--cursor <cursor>] [--limit 50]
 ac agentic prospects act <prospect-id>
 ac agentic prospects counts
+ac agentic prospects signal-types [--review-state new]
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
@@ -61,7 +62,7 @@ ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
 ac agentic prospects dismiss-action <prospect-id>
-ac agentic prospects promote <prospect-id> [--person <id>]... [--list <list-id>] [--yes]
+ac agentic prospects promote <prospect-id> [--person <id>]... [--signal <signal-id>]... [--list <list-id>] [--yes]
 ac agentic prospects delete <prospect-id> [--yes]
 ```
 
@@ -75,6 +76,13 @@ can change a promoted prospect.
 attached signal. Both put an ungraded prospect last. A cursor belongs to one
 sort, so keep `--sort` on every page of a walk. A cursor another sort wrote
 is refused with a 400, which is exit code 1.
+
+`--people-state`, `--signal-type`, `--search`, `--saved-search-id`,
+`--min-score` and `--max-score` filter on the server. A signal type matches
+any attached signal, and `signal-types` lists the types one review state
+holds, with a count each. Use those names: another name is refused with a
+422. `--min-score` and `--max-score` read `opportunity_score`, 0 to 100, and a
+prospect with no score drops out when either bound is set.
 
 `dismiss-action` closes the suggested action card and stamps
 `suggested_action_dismissed_at`. It changes no review state, and a repeat call
@@ -150,8 +158,9 @@ ac launchpad signal-preferences set --group
 ac launchpad signal-preferences set --clear-threshold
 ```
 
-Lead scores use a 0-10 scale. `set` preserves unspecified preferences; use
-`--clear-threshold` to remove the score filter.
+The threshold reads the 0-10 prospect score the launchpad rows show.
+`set` preserves unspecified preferences; use `--clear-threshold` to remove
+the score filter.
 
 ## Files (Images)
 
