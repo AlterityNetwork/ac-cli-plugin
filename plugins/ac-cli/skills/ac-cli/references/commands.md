@@ -2410,7 +2410,7 @@ exit code 5, and you start a new page walk.
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
 | `--saved-search-id` | str | None | Only prospects this saved search returned |
 | `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
-| `--max-score` | int | None | Highest `opportunity_score` to keep, 0 to 100 |
+| `--max-score` | int | None | Highest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
 | `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |

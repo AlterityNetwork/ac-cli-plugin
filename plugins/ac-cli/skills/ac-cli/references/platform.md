@@ -158,8 +158,9 @@ ac launchpad signal-preferences set --group
 ac launchpad signal-preferences set --clear-threshold
 ```
 
-The threshold reads the 0-10 prospect score the launchpad rows show. `set` preserves unspecified preferences; use
-`--clear-threshold` to remove the score filter.
+The threshold reads the 0-10 prospect score the launchpad rows show.
+`set` preserves unspecified preferences; use `--clear-threshold` to remove
+the score filter.
 
 ## Files (Images)
 
