@@ -61,6 +61,7 @@ ac envoy recipients add <sequence-id> --crm-list-id <list-id>
 ac envoy recipients add <sequence-id> --prospect-ids id1 --reenroll   # re-add previously-removed
 ac envoy recipients add <sequence-id> --source '{"type":"explicit","prospect_ids":["..."]}' # Advanced
 ac envoy recipients remove <sequence-id> <recipient-id> [--yes]
+ac envoy recipients history <sequence-id> <recipient-id>   # every step + the email thread
 ```
 
 `add` returns `{added, already_active, requires_confirmation}`. Re-adding an

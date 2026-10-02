@@ -909,6 +909,16 @@ One of `--prospect-ids`, `--crm-list-id`, or `--source` is required. Returns
 reactivated with `--reenroll` (or by confirming the prompt; `AC_YES=1`
 auto-confirms).
 
+#### `ac envoy recipients history <sequence-id> <recipient-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | off | Raw JSON output |
+
+Returns `{recipient_id, steps, messages}`. `steps` lists every step of the
+sequence with its status for this recipient (`upcoming` when not started), the
+template and the AI instructions. `messages` is the email thread in date order:
+the sent steps and the replies.
+
 #### `ac envoy recipients remove <sequence-id> <recipient-id>`
 | Flag | Type | Description |
 |------|------|-------------|
