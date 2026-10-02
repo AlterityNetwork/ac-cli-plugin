@@ -2545,6 +2545,7 @@ call keeps the first stamp, and a missing prospect returns exit code 3.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--person` | uuid | no | A prospect person id to promote. Repeat for each person. At most 25, and no repeats. |
+| `--signal` | uuid | no | A signal id of this company prospect whose named person joins CRM by name at the company. Repeat for each signal. `--person` and `--signal` together take at most 25. |
 | `--list` | uuid | no | A static CRM list. The company joins it, or the person of a person prospect. |
 | `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw JSON output |
@@ -2553,13 +2554,17 @@ call keeps the first stamp, and a missing prospect returns exit code 3.
 and do not accept `--yes` or a review-state body.
 
 `promote` is the one prospect command that writes CRM. Person ids are prospect
-person ids from `ac agentic prospects people`, never CRM ids. An empty
+person ids from `ac agentic prospects people`, never CRM ids. A signal id
+comes from `ac agentic prospects signals`. It names a person the research found
+no profile for, so the CRM person holds a name and a title and no email. The
+answer lists those people under `named_people`. An empty
 selection promotes the company alone, or the subject person of a person
 prospect. For a person prospect, `crm_company_id` is the CRM company of the
-employer the person is linked to, resolved or created by the promotion, or
+employer the person is linked to, resolved or created by the promotion and
+moved to the Prospect stage when it was at Identified, or
 null when no employer resolves to one company. A CRM person that already holds a company link
 keeps it. The answer carries `crm_company_id`, one `people` row for each
-selection, and `list_id`. A second promotion writes nothing and answers the
+selection, one `named_people` row for each signal, and `list_id`. A second promotion writes nothing and answers the
 same references. A selected person of a company prospect who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
