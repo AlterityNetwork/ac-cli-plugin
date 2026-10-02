@@ -156,7 +156,7 @@ ac launchpad signal-preferences set --group
 ac launchpad signal-preferences set --clear-threshold
 ```
 
-Lead scores use a 0-10 scale. `set` preserves unspecified preferences; use
+The threshold reads the prospect opportunity score on a 0-100 scale. `set` preserves unspecified preferences; use
 `--clear-threshold` to remove the score filter.
 
 ## Files (Images)
