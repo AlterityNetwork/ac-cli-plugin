@@ -2404,6 +2404,7 @@ exit code 5, and you start a new page walk.
 |------|------|---------|-------------|
 | `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
 | `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
 | `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
