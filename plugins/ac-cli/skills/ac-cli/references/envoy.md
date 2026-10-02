@@ -80,10 +80,10 @@ ac envoy outbox update-draft <draft-id> [--subject "New subject"] [--body "..."]
 ac envoy outbox approve <draft-id> [--subject "Override"] [--body "Override"]
 ac envoy outbox reject <draft-id> --action regenerate [--reason "Too formal"]
 ac envoy outbox regenerate <draft-id> [--instruction "Make it shorter"] \
-  [--apply-to-sequence] [--scope draft|step]
+  [--apply-to-sequence] [--apply-to-writing-style] [--scope draft|step]
 ```
 
-`--apply-to-sequence` saves the instruction as draft feedback on the sequence. Every later draft of the sequence applies it, together with the writing style. `--scope step` also regenerates every other waiting draft of the same step, and discards any edits on those drafts.
+`--apply-to-sequence` saves the instruction as draft feedback on the sequence. Every later draft of the sequence applies it, together with the writing style. `--apply-to-writing-style` rewrites your writing style for the sequence with the instruction first, so the new drafts follow it. `--scope step` also regenerates every other waiting draft of the same step, and discards any edits on those drafts.
 
 Reject `--action` values: `regenerate` (AI rewrites) · `remove_recipient` (drop from sequence) · `skip_send` (skip this draft, keep the recipient) · `manual_edit` (edit and resend later).
 
