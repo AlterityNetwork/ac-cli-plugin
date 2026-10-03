@@ -6,6 +6,7 @@ For full flag tables see `commands.md` (Platform section).
 
 ```bash
 ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
 ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches get <saved-search-id>
@@ -18,8 +19,11 @@ ac agentic saved-searches schedule set <saved-search-id> --cron "0 9 * * 1" [--t
 ac agentic saved-searches schedule clear <saved-search-id> [--yes]
 ```
 
-The brief must be a JSON object. It must contain a non-empty `icp` string or a
-non-empty `company_criteria` array. It also requires a `persona` object.
+The brief must be a JSON object in the selected capability's input shape.
+For `people.signals`, save the complete input with a nested `brief.icp` and
+optional `signal_recency` and `brief.persona`. For `signals.search`, the
+saved brief must contain a non-empty `icp` string or a non-empty
+`company_criteria` array. It also requires a `persona` object.
 Use `titles`, `departments`, `seniority` and `country_codes` lists. Supply at least one list.
 Each list contains 1 to 20 unique values. Omit unused lists; do not send null or empty lists.
 Text values contain 1 to 1,000 characters. Country codes use uppercase ISO alpha-2 values.

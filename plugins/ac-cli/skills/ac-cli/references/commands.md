@@ -2366,15 +2366,15 @@ Same flags as `create` (all optional).
 
 ### Agentic Saved Searches
 
-Three capabilities hold a saved search: `signals.search`, `people.search` and
-`company.search`. An enrich capability holds none, because it takes the rows it
+Four capabilities hold a saved search: `signals.search`, `people.signals`,
+`people.search` and `company.search`. An enrich capability holds none, because it takes the rows it
 works on. Each brief is read through the input contract of its own capability,
 so a Signals brief and a People brief have different shapes.
 
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
+| `--capability` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--json` | flag | no | Raw saved-search detail |
