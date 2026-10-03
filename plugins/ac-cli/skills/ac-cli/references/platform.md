@@ -22,7 +22,8 @@ ac agentic saved-searches schedule clear <saved-search-id> [--yes]
 
 The brief must be a JSON object in the selected capability's input shape.
 For `people.signals`, save the complete input with a nested `brief.icp` and
-optional `signal_recency` and `brief.persona`. For `signals.search`, the
+optional `signal_recency` (`"1w"`, `"1m"`, `"3m"`, `"6m"`, `"12m"`, or `"24m"`)
+and `brief.persona`. For `signals.search`, the
 saved brief must contain a non-empty `icp` string or a non-empty
 `company_criteria` array. It also requires a `persona` object.
 Use `titles`, `departments`, `seniority` and `country_codes` lists. Supply at least one list.

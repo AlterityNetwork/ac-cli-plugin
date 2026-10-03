@@ -2387,8 +2387,9 @@ so a Signals brief and a People brief have different shapes.
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-A list read returns the selected capabilities' rows in one ordered page. List rows omit `brief`; use `get` to
-read it.
+A list read returns the selected capabilities' rows in one ordered page. With
+multiple capabilities, the table shows a Type column in place of the last run
+ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`
 | Flag | Type | Description |
