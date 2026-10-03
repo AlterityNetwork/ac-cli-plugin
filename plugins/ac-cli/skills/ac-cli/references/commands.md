@@ -2446,7 +2446,7 @@ exit code 5, and you start a new page walk.
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
 | `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
 | `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
-| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `product_launch` or `paid_campaign_launch` |
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
 | `--saved-search-id` | str | None | Only prospects this saved search returned |
 | `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
