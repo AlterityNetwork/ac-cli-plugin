@@ -2382,12 +2382,12 @@ so a Signals brief and a People brief have different shapes.
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--capability` | str | required | Which product's saved searches to list |
+| `--capability` | str, repeatable | required | Products whose saved searches to list together (up to four) |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-A list read returns one capability's rows. List rows omit `brief`; use `get` to
+A list read returns the selected capabilities' rows in one ordered page. List rows omit `brief`; use `get` to
 read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`

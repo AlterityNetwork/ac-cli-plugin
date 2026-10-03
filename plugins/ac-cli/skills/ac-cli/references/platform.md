@@ -9,6 +9,7 @@ ac agentic saved-searches create --capability signals.search --name "UK fintech"
 ac agentic saved-searches create --capability people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
 ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
+ac agentic saved-searches list --capability signals.search --capability people.signals
 ac agentic saved-searches get <saved-search-id>
 ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
 ac agentic saved-searches delete <saved-search-id> [--yes]
