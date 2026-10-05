@@ -510,7 +510,7 @@ Regenerate a pending communication's draft.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | List name |
-| `--type` | str | no | static or dynamic |
+| `--type` | str | no | static only. The API rejects `dynamic` with 400 |
 | `--description` | str | no | List description |
 | `--json` | flag | no | Output raw JSON |
 
@@ -519,8 +519,11 @@ Regenerate a pending communication's draft.
 |------|------|-------------|
 | `--name` | str | New name |
 | `--description` | str | New description |
-| `--type` | str | static or dynamic |
+| `--clear-description` | flag | Remove the description. Do not use it with `--description` |
+| `--type` | str | static only. The API rejects `dynamic` with 400 |
 | `--json` | flag | Output raw JSON |
+
+A list that does not exist returns 404. A blank `--name` returns 422.
 
 #### `ac crm lists members <list-id>`
 A list holds people and companies. Omit `--member-type` to read both kinds.
@@ -529,6 +532,8 @@ A list holds people and companies. Omit `--member-type` to read both kinds.
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--member-type` | enum (`person`\|`company`) | (omit) | Read one kind of member. Omit it to read both kinds. The total counts the kind you read |
+| `--include-person-details` | flag | off | Add the person row to each member |
+| `--include-company-details` | flag | off | Add the company row to each member. With `--member-type person`, it is the employer |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm lists lists-for-member`
@@ -548,10 +553,11 @@ API: `GET /api/v1/crm/members/{member_type}/{member_id}/lists`. Response is a ba
 | `--company-id` | str | Add a company |
 | `--json` | flag | Output raw JSON |
 
-One of `--person-id` or `--company-id` is required.
+One of `--person-id` or `--company-id` is required. A member already on the
+list returns 409.
 
 #### `ac crm lists remove-member <list-id>`
-Same flags as `add-member`.
+Same flags as `add-member`, plus `--yes` / `-y` to skip the confirmation.
 
 #### `ac crm lists add-members <list-id>`
 Bulk-add members with server-side dedup; ids already on the list are
@@ -562,6 +568,9 @@ reported as duplicates, not errors.
 | `--member-type` | enum (`person`\|`company`) | yes | Type of members to add |
 | `--ids` | str | yes | Comma-separated member IDs |
 | `--json` | flag | no | Output raw JSON |
+
+Each id must be a UUID of a live person or company in this org. One unknown id
+fails the whole call with 404, and more than 5000 ids fail with 422.
 
 API: `POST /api/v1/crm/lists/{list_id}/members/bulk-add`. Single atomic call.
 Always prefer over looping `add-member`.
