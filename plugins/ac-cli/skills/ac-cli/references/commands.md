@@ -510,7 +510,7 @@ Regenerate a pending communication's draft.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | List name |
-| `--type` | str | no | static or dynamic |
+| `--type` | str | no | static only. The API rejects `dynamic` with 400 |
 | `--description` | str | no | List description |
 | `--json` | flag | no | Output raw JSON |
 
