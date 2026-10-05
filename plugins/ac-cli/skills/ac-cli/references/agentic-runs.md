@@ -33,6 +33,21 @@ ac agentic capabilities start signals.search \
   --idempotency-key signals-people-42 --json
 ```
 
+For a person event, start `people.signals`. Discovery is the default. To
+research a known people list, use `"source":"people_set"` with 1–10 people;
+the Run excludes people outside that list. `brief.employer_criteria` optionally
+describes the person's current employer, `brief.persona` refines the person's
+role and location, and `brief.persona_description` describes the people.
+Optional `signal_recency` accepts `"1w"`, `"1m"`,
+`"3m"`, `"6m"`, `"12m"`, or `"24m"` (default `"3m"`). The person with the
+signal is the resulting contact.
+
+```bash
+ac agentic capabilities start people.signals \
+  --input '{"source":"people_set","people":[{"full_name":"Ada Lovelace","email":"ada@example.com"}],"brief":{"icp":"Started a marketing leadership role","employer_criteria":"B2B SaaS companies"},"signal_recency":"1m"}' \
+  --idempotency-key people-signals-42 --json
+```
+
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 

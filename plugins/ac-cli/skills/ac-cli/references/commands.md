@@ -2375,15 +2375,15 @@ Same flags as `create` (all optional).
 
 ### Agentic Saved Searches
 
-Three capabilities hold a saved search: `signals.search`, `people.search` and
-`company.search`. An enrich capability holds none, because it takes the rows it
+Four capabilities hold a saved search: `signals.search`, `people.signals`,
+`people.search` and `company.search`. An enrich capability holds none, because it takes the rows it
 works on. Each brief is read through the input contract of its own capability,
 so a Signals brief and a People brief have different shapes.
 
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
+| `--capability` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--json` | flag | no | Raw saved-search detail |
@@ -2391,13 +2391,14 @@ so a Signals brief and a People brief have different shapes.
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--capability` | str | required | Which product's saved searches to list |
+| `--capability` | str, repeatable | required | Products whose saved searches to list together (up to four) |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-A list read returns one capability's rows. List rows omit `brief`; use `get` to
-read it.
+A list read returns the selected capabilities' rows in one ordered page. With
+multiple capabilities, the table shows a Type column in place of the last run
+ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`
 | Flag | Type | Description |
@@ -2455,7 +2456,7 @@ exit code 5, and you start a new page walk.
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
 | `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
 | `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
-| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `funding_round` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `product_launch` or `paid_campaign_launch` |
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
 | `--saved-search-id` | str | None | Only prospects this saved search returned |
 | `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |

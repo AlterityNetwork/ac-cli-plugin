@@ -6,8 +6,10 @@ For full flag tables see `commands.md` (Platform section).
 
 ```bash
 ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
 ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
+ac agentic saved-searches list --capability signals.search --capability people.signals
 ac agentic saved-searches get <saved-search-id>
 ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}']
 ac agentic saved-searches delete <saved-search-id> [--yes]
@@ -18,8 +20,14 @@ ac agentic saved-searches schedule set <saved-search-id> --cron "0 9 * * 1" [--t
 ac agentic saved-searches schedule clear <saved-search-id> [--yes]
 ```
 
-The brief must be a JSON object. It must contain a non-empty `icp` string or a
-non-empty `company_criteria` array. It also requires a `persona` object.
+The brief must be a JSON object in the selected capability's input shape.
+For `people.signals`, save the complete input with a nested `brief.icp` and
+optional `signal_recency` (`"1w"`, `"1m"`, `"3m"`, `"6m"`, `"12m"`, or `"24m"`),
+`brief.persona`, `brief.persona_description`, and `brief.employer_criteria`.
+For a known people list, include `"source":"people_set"` and 1–10 `people`
+references. For `signals.search`, the
+saved brief must contain a non-empty `icp` string or a non-empty
+`company_criteria` array. It also requires a `persona` object.
 Use `titles`, `departments`, `seniority` and `country_codes` lists. Supply at least one list.
 Each list contains 1 to 20 unique values. Omit unused lists; do not send null or empty lists.
 Text values contain 1 to 1,000 characters. Country codes use uppercase ISO alpha-2 values.
