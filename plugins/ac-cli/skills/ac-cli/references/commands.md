@@ -2770,6 +2770,30 @@ flags is required.
 Publishes the given text, or the stored draft when no text is given. Records who
 published and when, and writes a platform activity event.
 
+#### `ac settings dossier get`
+
+Prints the company part of Memory, what the apps know about the active
+organization, as Markdown. `--user` adds the part about you. The agents read
+the company part only. The empty fields go to stderr, each with the Settings
+page that fills it. A guest gets exit code 4.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--user` | flag | Add the section about you: profile, email signature, default writing style |
+| `--json` | flag | Full JSON record: the sections, `markdown`, `company_markdown`, `user_markdown`, `gaps`, `offers_total`, `documents_total` |
+
+#### `ac settings dossier pdf`
+
+Saves Memory as a PDF file. With no `--output`, the file takes the server name,
+for example `memory-northwind-studio-2026-10-06.pdf`, in the current folder. A
+guest gets exit code 4 and no file is written.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--output`, `-o` | path | Where to save the PDF; missing folders are created |
+| `--user` | flag | Add the section about you: profile, email signature, default writing style |
+| `--json` | flag | Print `{"path": ..., "bytes": ...}` |
+
 ---
 
 ### Files (Images)
