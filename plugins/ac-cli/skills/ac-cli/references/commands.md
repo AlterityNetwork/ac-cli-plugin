@@ -2772,9 +2772,10 @@ published and when, and writes a platform activity event.
 
 #### `ac settings dossier get`
 
-Prints Memory, what the apps know about the active organization and about
-you, as Markdown. The agents read the company part. The empty fields go to
-stderr, each with the Settings page that fills it. A guest gets exit code 4.
+Prints the company part of Memory, what the apps know about the active
+organization, as Markdown. `--user` adds the part about you. The agents read
+the company part only. The empty fields go to stderr, each with the Settings
+page that fills it. A guest gets exit code 4.
 
 | Flag | Type | Description |
 |------|------|-------------|
