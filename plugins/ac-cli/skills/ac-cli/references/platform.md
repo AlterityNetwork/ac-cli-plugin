@@ -143,8 +143,7 @@ must be between 1 and 365 days.
 
 ## Settings
 
-The copilot approval framework and the Company dossier of the active
-organization.
+The copilot approval framework and Memory of the active organization.
 
 ```bash
 ac settings framework get
@@ -158,9 +157,10 @@ ac settings framework publish --content-file ./framework.md
 publishes the stored draft. Run `ac whoami` first: the commands act on the
 selected organization.
 
-The Company dossier is the one document of organization context that the LLM
-features read. It holds the Company profile, the services, the ideal customer
-profiles, the offers, and the title and summary of each active document.
+Memory is what the apps know about the organization and about you. The company
+part holds the Company profile, the services, the ideal customer profiles, the
+offers, and the title and summary of each active document. The personal part
+holds your profile, email signature and default writing style.
 
 ```bash
 ac settings dossier get                  # Markdown to stdout, empty fields to stderr

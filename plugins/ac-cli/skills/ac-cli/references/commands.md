@@ -2772,14 +2772,14 @@ published and when, and writes a platform activity event.
 
 #### `ac settings dossier get`
 
-Prints the Company dossier of the active organization as Markdown. The LLM
-features read the same dossier. The empty fields go to stderr, each with the
-Settings page that fills it. A guest gets exit code 4.
+Prints Memory, what the apps know about the active organization and about
+you, as Markdown. The agents read the company part. The empty fields go to
+stderr, each with the Settings page that fills it. A guest gets exit code 4.
 
 | Flag | Type | Description |
 |------|------|-------------|
 | `--user` | flag | Add the section about you: profile, email signature, default writing style |
-| `--json` | flag | Full JSON record: the sections, `markdown`, `gaps`, `offers_total`, `documents_total` |
+| `--json` | flag | Full JSON record: the sections, `markdown`, `company_markdown`, `user_markdown`, `gaps`, `offers_total`, `documents_total` |
 
 ---
 
