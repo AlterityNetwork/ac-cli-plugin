@@ -2655,12 +2655,14 @@ the review list.
 |------|------|---------|-------------|
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
+| `--draft-capability` | str | None | List the draft conversations of one capability (`signals.search`, `people.signals`). Without it the list holds ordinary chats only. |
 | `--json` | flag | off | Raw page JSON |
 
 #### `ac agentic conversations create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--title` | str | no | Optional title |
+| `--draft-capability` | str | no | Open a draft conversation for this capability. Repeatable. Its turns write a search for a form and start no run. The API takes `signals.search` and `people.signals`. |
 | `--json` | flag | no | Raw conversation detail |
 
 #### `ac agentic conversations messages <conversation-id>`
@@ -2675,6 +2677,7 @@ the review list.
 |------|------|----------|-------------|
 | `--entity-ref` | str | no | A row the message is about, as `kind:id` (`crm.company:<uuid>`). Repeatable, 10 rows at most. Each one enters the conversation entity scope, so the turn resolves "this company" and a later message needs no ref for the same row. |
 | `--idempotency-key` | str | no | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--draft` | str | no | The form state of a draft conversation, as JSON with `capability_id` and an object `input`. The reply carries the drafted search in `draft`. The API refuses a draft over 65,536 bytes with 413. |
 | `--json` | flag | no | Raw message detail |
 
 The CLI does not read the live conversation stream. After `send`, run
