@@ -2781,6 +2781,18 @@ stderr, each with the Settings page that fills it. A guest gets exit code 4.
 | `--user` | flag | Add the section about you: profile, email signature, default writing style |
 | `--json` | flag | Full JSON record: the sections, `markdown`, `company_markdown`, `user_markdown`, `gaps`, `offers_total`, `documents_total` |
 
+#### `ac settings dossier pdf`
+
+Saves Memory as a PDF file. With no `--output`, the file takes the server name,
+for example `memory-northwind-studio-2026-10-06.pdf`, in the current folder. A
+guest gets exit code 4 and no file is written.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--output`, `-o` | path | Where to save the PDF; missing folders are created |
+| `--user` | flag | Add the section about you: profile, email signature, default writing style |
+| `--json` | flag | Print `{"path": ..., "bytes": ...}` |
+
 ---
 
 ### Files (Images)

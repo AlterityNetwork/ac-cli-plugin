@@ -167,6 +167,7 @@ ac settings dossier get                  # Markdown to stdout, empty fields to s
 ac settings dossier get --user           # add your profile, signature and writing style
 ac settings dossier get --json           # the full record, with gaps and totals
 ac settings dossier get > ./dossier.md
+ac settings dossier pdf --user -o ./memory.pdf   # Memory as a PDF file
 ```
 
 ## Launchpad
