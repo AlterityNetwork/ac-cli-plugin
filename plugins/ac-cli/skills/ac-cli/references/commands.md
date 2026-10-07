@@ -2456,7 +2456,7 @@ exit code 5, and you start a new page walk.
 | `--last-seen-run-id` | str | None | Only prospects last written by this Run |
 | `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
 | `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
-| `--signal-type` | str | None | Only prospects that hold one signal of this type, such as `product_launch` or `paid_campaign_launch` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, including older stored types such as `tech_stack` and `agency_review` |
 | `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
 | `--saved-search-id` | str | None | Only prospects this saved search returned |
 | `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
@@ -2481,16 +2481,18 @@ The filters narrow the read on the server, so every page holds matches
 only. `--saved-search-id` keeps the prospects one saved search returned.
 `--min-score` and `--max-score` keep an inclusive `opportunity_score` band.
 `--signal-type` matches any attached signal, not only the one the row
-names, and it accepts the `IntelSignalType` names alone: `funding_round`,
+names. It accepts current `IntelSignalType` names such as `funding_round`,
 `acquisition`, `started_meta_ads`, `scaled_meta_ads`, `paid_campaign_launch`,
 `hired_growth_role`, `new_marketing_leader`, `layoff`, `job_change`,
 `promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
 `product_launch`, `new_tech_stack`, `market_expansion`,
 `strategic_partnership`, `thought_leadership`, `speaking_event`,
-`marketing_initiative_announcement`.
-Another name is refused with a 422. `--search` ignores case. The next-page
-hint repeats every filter, because a cursor names a position in one filtered
-list.
+`marketing_initiative_announcement` and `other`. Older stored types from the
+CRM signal vocabulary, including `tech_stack`, plus `agency_review` and
+`leadership_change`, also work. Run `signal-types` to see which ones the review
+state holds. An unknown name is refused with a 422. `--search` ignores case.
+The next-page hint repeats every filter, because a cursor names a position in
+one filtered list.
 
 `list` JSON and `get` JSON carry `top_person`: the attached person with the
 highest `persona_fit_score`, as a `prospect_people` row with its person
