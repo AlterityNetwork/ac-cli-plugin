@@ -88,8 +88,9 @@ is refused with a 400, which is exit code 1.
 `--people-state`, `--signal-type`, `--search`, `--saved-search-id`,
 `--min-score` and `--max-score` filter on the server. A signal type matches
 any attached signal, and `signal-types` lists the types one review state
-holds, with a count each. Use those names: another name is refused with a
-422. `--min-score` and `--max-score` read `opportunity_score`, 0 to 100, and a
+holds, with a count each. This includes current intel types and older stored
+types such as `tech_stack` and `agency_review`. Use those names: another name
+is refused with a 422. `--min-score` and `--max-score` read `opportunity_score`, 0 to 100, and a
 prospect with no score drops out when either bound is set.
 
 `dismiss-action` closes the suggested action card and stamps
