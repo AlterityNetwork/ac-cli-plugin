@@ -239,11 +239,13 @@ ac nylas validate-signature --signature "<p>Best regards</p>"
 ## Agentic Conversations
 
 ```bash
-ac agentic conversations list [--cursor <cursor>] [--limit 50]
-ac agentic conversations create [--title "Project Discussion"]
+ac agentic conversations list [--cursor <cursor>] [--limit 50] \
+  [--draft-capability <capability-id>]
+ac agentic conversations create [--title "Project Discussion"] \
+  [--draft-capability <capability-id>]...
 ac agentic conversations messages <conversation-id> [--cursor <cursor>] [--limit 50]
 ac agentic conversations send <conversation-id> "What's on my plate today?" \
-  [--entity-ref <kind>:<id>] [--idempotency-key <key>]
+  [--entity-ref <kind>:<id>] [--idempotency-key <key>] [--draft '<json>']
 ```
 
 The CLI sends one message and returns immediately. Read the answer with
@@ -263,6 +265,26 @@ ac agentic conversations send <conversation-id> "Enrich this company." \
 
 Name one row when you mean one row. Two rows of one kind make "this company"
 ambiguous, and the platform asks which one instead of guessing.
+
+### Draft conversations
+
+A draft conversation writes a search for a form and starts no run. The Sonar
+search page opens one for `signals.search` and `people.signals`, the only two
+capabilities a draft takes. `list` without `--draft-capability` reads ordinary
+chats only, so a draft conversation never appears in the chat list.
+
+```bash
+ac agentic conversations create --title Sonar \
+  --draft-capability signals.search --draft-capability people.signals
+ac agentic conversations send <conversation-id> "UK fintechs that raised a Series B" \
+  --draft '{"capability_id": "signals.search", "input": {"source": "discovery"}}'
+ac agentic conversations messages <conversation-id> --json
+```
+
+`--draft` is the form state at send time, and it may be incomplete. The reply
+carries the drafted search in `draft`: a `capability_id` and the product
+`input`. Start it with `ac agentic capabilities start`. The draft keeps the
+companies and people the form already lists, and the chat never adds a row.
 
 ## Resources (Knowledge Base)
 
