@@ -85,7 +85,10 @@ first Run and starts no second execution; human output marks it `Duplicate`.
 
 The definition must be published, and it must be an agent or a workflow.
 `ac agentic definitions list` also returns drafts, disabled definitions and
-skills. Each of those returns 409. `ac agentic capabilities start` above starts
+skills. Each of those returns 409. An archived definition is hidden from the
+list unless you pass `--include-archived`; `ac agentic definitions archive <id>`
+hides one and disables it, and `ac agentic definitions unarchive <id>` brings it
+back, still disabled. `ac agentic capabilities start` above starts
 a published product capability and selects the active contract automatically.
 
 ## Read Runs
