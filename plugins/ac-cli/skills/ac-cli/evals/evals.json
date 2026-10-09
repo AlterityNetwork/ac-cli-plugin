@@ -1262,6 +1262,23 @@
           "text": "`ac settings memory add .*--applies-to email`"
         }
       ]
+    },
+    {
+      "id": 92,
+      "prompt": "What has the app learned from my edits to email drafts?",
+      "expected_output": "Checks the active organization with `ac whoami`, then lists the proposed memory suggestions with `ac settings memory suggestions list`. It does not use `ac settings memory list`, which lists only the lines the user already keeps.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the suggestions read"
+        },
+        {
+          "name": "suggestions_list",
+          "type": "command_matches",
+          "text": "`ac settings memory suggestions list`"
+        }
+      ]
     }
   ]
 }

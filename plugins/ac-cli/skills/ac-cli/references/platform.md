@@ -186,6 +186,22 @@ ac settings memory edit <line-id> --text "Sign off as Marc C" # --text, --applie
 ac settings memory remove <line-id> --yes
 ```
 
+Memory suggestions are lines that the app learns from your edits to email
+drafts. A suggestion shows how many emails and how many people the edit came
+from. Accept one to add it as an `email` memory line; the 50-line cap applies,
+so an accept at the cap gets exit code 1 (HTTP 400). A dismissed suggestion
+does not come back. A suggestion that is no longer proposed gets exit code 5
+(HTTP 409).
+
+```bash
+ac settings memory suggestions list                       # id, text, "N emails / M people"
+ac settings memory suggestions list --json                # {data, total}; each has examples [{before, after}]
+ac settings memory suggestions refresh                    # "Read N emails. M new suggestions."
+ac settings memory suggestions accept <id>                # keep the suggested text
+ac settings memory suggestions accept <id> --text "Sign off as Marc"
+ac settings memory suggestions dismiss <id> --yes
+```
+
 ## Launchpad
 
 ```bash

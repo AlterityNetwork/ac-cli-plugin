@@ -2842,6 +2842,47 @@ Removes one of your memory lines. A line that is not yours gets exit code 3.
 | `--yes`, `-y` | flag | Skip the confirmation (or set `AC_YES=1`) |
 | `--json` | flag | Print `{"ok": true, "id": ..., "action": "remove"}` |
 
+#### `ac settings memory suggestions list`
+
+Lists the proposed memory suggestions: lines that the app learns from your
+edits to email drafts. The table shows the ID, the text, and "N emails / M
+people". Only `--json` shows the example edits.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | `{"data": [...], "total": N}`; each suggestion has `id`, `text`, `evidence_count`, `recipient_count`, `examples` (`[{"before", "after"}]`), `created_at` |
+
+#### `ac settings memory suggestions refresh`
+
+Reads your recent email edits again and proposes new suggestions. Prints
+"Read N emails. M new suggestions."
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Print `{"emails_read": N, "proposed": M}` |
+
+#### `ac settings memory suggestions accept SUGGESTION_ID`
+
+Accepts a suggestion and adds it as a memory line for the email writer. At the
+memory cap, or with bad text, the command gets exit code 1 (HTTP 400). An
+unknown suggestion gets exit code 3. A suggestion that is not proposed gets
+exit code 5 (HTTP 409).
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--text` | str | Save this text instead of the suggested text |
+| `--json` | flag | Print the new memory line |
+
+#### `ac settings memory suggestions dismiss SUGGESTION_ID`
+
+Dismisses a suggestion. A dismissed suggestion does not come back. An unknown
+suggestion gets exit code 3. A suggestion that is not proposed gets exit code 5.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip the confirmation (or set `AC_YES=1`) |
+| `--json` | flag | Print `{"ok": true, "id": ..., "action": "dismiss"}` |
+
 ---
 
 ### Files (Images)
