@@ -2630,8 +2630,10 @@ different CRM company link returns `409` and names that person; deselect that
 person and retry.
 
 A promotion sets the `lifecycle_stage` of the company and of each promoted
-person to `prospect`, with the reason `Promoted from Signals`. It moves a row at
-the `identified` stage, and a person that holds no stage. A qualified lead or a
+person to `prospect`, with a reason. A row promoted now reads
+`Promoted from Signals`. A row promoted before the rename keeps
+`Promoted from Sonar`, so match both when you filter on the reason. It moves a
+row at the `identified` stage, and a person that holds no stage. A qualified lead or a
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
 
