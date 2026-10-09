@@ -163,6 +163,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
 | "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Envoy inbox — different surfaces |
+| "remember that I …" / "add to my memory" / "my standing instructions" | `ac settings memory add --text "…"` (`--applies-to email` for the email writer only); `list` / `edit` / `remove` | `ac settings dossier …` (a read-only summary of what the apps know, not your own memory lines) |
 | "web chat conversation" / "AI chat thread" (user-facing) | `ac agentic conversations …` | `ac chat …` was removed; admin chat triage no longer exists |
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |

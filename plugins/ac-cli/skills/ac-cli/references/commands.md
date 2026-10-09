@@ -2799,6 +2799,49 @@ guest gets exit code 4 and no file is written.
 | `--user` | flag | Add the section about you: profile, email signature, default writing style |
 | `--json` | flag | Print `{"path": ..., "bytes": ...}` |
 
+#### `ac settings memory list`
+
+Lists your memory lines in the active organization, oldest first. A memory line
+is one standing instruction that you write for the apps. The email writer reads
+the `all` and `email` lines. The chat reads the `all` lines. No user reads the
+lines of another user.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | `{"data": [...], "total": N, "max_lines": N}`; each line has `id`, `text`, `applies_to`, `source` (`user` or `learned`), `created_at`, `updated_at` |
+
+#### `ac settings memory add`
+
+Adds a memory line. One user keeps at most `max_lines` lines (50); one more
+gets exit code 1 (HTTP 400).
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--text` | str | yes | One line of 1 to 1000 characters |
+| `--applies-to` | `all` \| `email` | no | `all` (default): every app reads the line. `email`: only the email writer reads it |
+| `--json` | flag | no | Print the new line |
+
+#### `ac settings memory edit LINE_ID`
+
+Changes the text or the apps of one of your memory lines. Give at least one of
+`--text` and `--applies-to`; with neither, the command exits 2 before any call.
+A line that is not yours gets exit code 3.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--text` | str | One line of 1 to 1000 characters |
+| `--applies-to` | `all` \| `email` | The apps that read the line |
+| `--json` | flag | Print the changed line |
+
+#### `ac settings memory remove LINE_ID`
+
+Removes one of your memory lines. A line that is not yours gets exit code 3.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip the confirmation (or set `AC_YES=1`) |
+| `--json` | flag | Print `{"ok": true, "id": ..., "action": "remove"}` |
+
 ---
 
 ### Files (Images)

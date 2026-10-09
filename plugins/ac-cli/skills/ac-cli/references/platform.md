@@ -171,6 +171,21 @@ ac settings dossier get > ./dossier.md
 ac settings dossier pdf --user -o ./memory.pdf   # Memory as a PDF file
 ```
 
+Memory lines are your own standing instructions for the apps, for example
+"Sign off as Marc". Each line belongs to you in the active organization. No
+other user reads or changes it. The email writer reads the `all` and `email`
+lines. The chat reads the `all` lines. One user keeps at most 50 lines; a
+51st `add` gets exit code 1 (HTTP 400).
+
+```bash
+ac settings memory list                                       # table, oldest first
+ac settings memory list --json                                # {data, total, max_lines}
+ac settings memory add --text "Sign off as Marc"              # --applies-to defaults to all
+ac settings memory add --text "Use UK spelling" --applies-to email
+ac settings memory edit <line-id> --text "Sign off as Marc C" # --text, --applies-to or both
+ac settings memory remove <line-id> --yes
+```
+
 ## Launchpad
 
 ```bash

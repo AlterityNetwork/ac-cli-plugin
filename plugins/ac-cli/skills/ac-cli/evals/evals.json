@@ -1245,6 +1245,23 @@
           "text": "`ac settings dossier get --user`"
         }
       ]
+    },
+    {
+      "id": 91,
+      "prompt": "Remember that I always sign off my emails as Marc. Only the email writer needs this.",
+      "expected_output": "Checks the active organization with `ac whoami`, then adds a personal memory line with `ac settings memory add --text \"...\" --applies-to email`. It does not use `ac settings dossier`, which only reads.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the memory write"
+        },
+        {
+          "name": "memory_add_email",
+          "type": "command_matches",
+          "text": "`ac settings memory add .*--applies-to email`"
+        }
+      ]
     }
   ]
 }
