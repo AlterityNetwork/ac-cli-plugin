@@ -2821,7 +2821,7 @@ gets exit code 1 (HTTP 400).
 | `--applies-to` | `all` \| `email` | no | `all` (default): every app reads the line. `email`: only the email writer reads it |
 | `--json` | flag | no | Print the new line |
 
-#### `ac settings memory edit LINE_ID`
+#### `ac settings memory edit <line-id>`
 
 Changes the text or the apps of one of your memory lines. Give at least one of
 `--text` and `--applies-to`; with neither, the command exits 2 before any call.
@@ -2833,7 +2833,7 @@ A line that is not yours gets exit code 3.
 | `--applies-to` | `all` \| `email` | The apps that read the line |
 | `--json` | flag | Print the changed line |
 
-#### `ac settings memory remove LINE_ID`
+#### `ac settings memory remove <line-id>`
 
 Removes one of your memory lines. A line that is not yours gets exit code 3.
 
@@ -2861,7 +2861,7 @@ Reads your recent email edits again and proposes new suggestions. Prints
 |------|------|-------------|
 | `--json` | flag | Print `{"emails_read": N, "proposed": M}` |
 
-#### `ac settings memory suggestions accept SUGGESTION_ID`
+#### `ac settings memory suggestions accept <suggestion-id>`
 
 Accepts a suggestion and adds it as a memory line for the email writer. At the
 memory cap, or with bad text, the command gets exit code 1 (HTTP 400). An
@@ -2873,7 +2873,7 @@ exit code 5 (HTTP 409).
 | `--text` | str | Save this text instead of the suggested text |
 | `--json` | flag | Print the new memory line |
 
-#### `ac settings memory suggestions dismiss SUGGESTION_ID`
+#### `ac settings memory suggestions dismiss <suggestion-id>`
 
 Dismisses a suggestion. A dismissed suggestion does not come back. An unknown
 suggestion gets exit code 3. A suggestion that is not proposed gets exit code 5.
