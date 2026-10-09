@@ -15,7 +15,7 @@ ac crm engagement-dashboard --period 60
 ac crm engagement-dashboard --json | jq '{open_rate, click_rate, reply_rate}'
 ```
 
-## Envoy: Manage inbox
+## Outreach: Manage inbox
 
 ```bash
 ac envoy inbox list --status open --json

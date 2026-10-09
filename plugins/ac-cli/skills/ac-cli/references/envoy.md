@@ -1,6 +1,6 @@
-# Envoy (Outreach) Quick Reference
+# Outreach (`ac envoy`) Quick Reference
 
-For full flag tables see `commands.md` (Envoy section).
+For full flag tables see `commands.md` (Outreach section).
 
 ## Sequences
 
