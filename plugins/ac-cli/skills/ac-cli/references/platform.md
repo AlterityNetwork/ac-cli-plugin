@@ -171,6 +171,37 @@ ac settings dossier get > ./dossier.md
 ac settings dossier pdf --user -o ./memory.pdf   # Memory as a PDF file
 ```
 
+Memory lines are your own standing instructions for the apps, for example
+"Sign off as Marc". Each line belongs to you in the active organization. No
+other user reads or changes it. The email writer reads the `all` and `email`
+lines. The chat reads the `all` lines. One user keeps at most 50 lines; a
+51st `add` gets exit code 1 (HTTP 400).
+
+```bash
+ac settings memory list                                       # table, oldest first
+ac settings memory list --json                                # {data, total, max_lines}
+ac settings memory add --text "Sign off as Marc"              # --applies-to defaults to all
+ac settings memory add --text "Use UK spelling" --applies-to email
+ac settings memory edit <line-id> --text "Sign off as Marc C" # --text, --applies-to or both
+ac settings memory remove <line-id> --yes
+```
+
+Memory suggestions are lines that the app learns from your edits to email
+drafts. A suggestion shows how many emails and how many people the edit came
+from. Accept one to add it as an `email` memory line; the 50-line cap applies,
+so an accept at the cap gets exit code 1 (HTTP 400). A dismissed suggestion
+does not come back. A suggestion that is no longer proposed gets exit code 5
+(HTTP 409).
+
+```bash
+ac settings memory suggestions list                       # id, text, "N emails / M people"
+ac settings memory suggestions list --json                # {data, total}; each has examples [{before, after}]
+ac settings memory suggestions refresh                    # "Read N emails. M new suggestions."
+ac settings memory suggestions accept <id>                # keep the suggested text
+ac settings memory suggestions accept <id> --text "Sign off as Marc"
+ac settings memory suggestions dismiss <id> --yes
+```
+
 ## Launchpad
 
 ```bash
