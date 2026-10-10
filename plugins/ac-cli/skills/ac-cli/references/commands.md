@@ -78,7 +78,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 | `--limit` | int | 100 | Max results to return |
 | `--offset` | int | 0 | Skip this many results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar (legacy)/Headhunter (legacy)) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--lead-score-min` | int | -- | Minimum lead score (1-10); returns companies with `lead_score >= value`. Omit to include all companies |
 | `--signal-type` | str | -- | Companies with at least one live signal of this type (e.g. `hiring`, `funding`) |
@@ -173,7 +173,7 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar (legacy)/Headhunter (legacy)) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--json` | flag | off | Output raw JSON |
 
