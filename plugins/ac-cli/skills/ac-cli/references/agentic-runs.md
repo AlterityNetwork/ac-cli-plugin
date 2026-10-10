@@ -108,7 +108,7 @@ ac agentic runs span-detail <owning-run-id> <span-id> --json
 `--include-result` puts the frozen `result` of each Run on its row, so one
 list request answers the results of many Runs. Without it, `result` is null.
 
-`--capability` repeats. The Sonar history lists the `signals.search` and
+`--capability` repeats. The Signals history lists the `signals.search` and
 the `people.signals` Runs in one page, and the title of each.
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,

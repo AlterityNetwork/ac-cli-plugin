@@ -48,7 +48,7 @@ The previous suite asserted on the description Claude wrote in chat. That is fra
 ## Coverage targets
 
 The suite should hit:
-- Every domain (CRM, Envoy, Workflows, Admin, Platform, Auth/Env)
+- Every domain (CRM, Outreach, Workflows, Admin, Platform, Auth/Env)
 - Both setup steps (install + auth) at least once
 - Every dry-run pattern listed in `SKILL.md` (cron preview, import preview, company-match preview)
 - Auth recovery (401 → re-login)

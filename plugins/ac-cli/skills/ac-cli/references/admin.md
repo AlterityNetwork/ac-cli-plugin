@@ -159,7 +159,7 @@ ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-2
 ac admin platform-activity user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
 
-## Searches (Sonar + Headhunter)
+## Searches: Sonar (legacy) and Headhunter (legacy)
 
 Cross-org analytics. Responses are PII-scrubbed: people rows omit names, emails, LinkedIn URLs, avatars, free-text summaries; only role, country, quality scores remain. `trigger_data` on runs is sanitized the same way.
 

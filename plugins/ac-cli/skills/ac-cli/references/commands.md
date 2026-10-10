@@ -18,7 +18,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Import](#import)
    - [Search & Dashboard](#search--dashboard)
    - [Engagement Dashboard](#engagement-dashboard)
-2. [Envoy (Outreach)](#envoy-outreach)
+2. [Outreach (`ac envoy`)](#outreach-ac-envoy)
    - [Sequences](#sequences)
    - [Campaigns](#campaigns)
    - [Steps](#steps)
@@ -78,7 +78,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 | `--limit` | int | 100 | Max results to return |
 | `--offset` | int | 0 | Skip this many results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--lead-score-min` | int | -- | Minimum lead score (1-10); returns companies with `lead_score >= value`. Omit to include all companies |
 | `--signal-type` | str | -- | Companies with at least one live signal of this type (e.g. `hiring`, `funding`) |
@@ -113,7 +113,7 @@ Same optional flags as `create`. Only provided fields are updated.
 |------|------|-------------|
 | `--lead-score` | int (0-10) | Manual lead score override |
 | `--lead-reason` | str | Reason for the lead score |
-| `--reset-lead-score-to-auto` | flag | Clear the manual score lock so Sonar can update it |
+| `--reset-lead-score-to-auto` | flag | Clear the manual score lock so automatic scoring can update it |
 | `--linkedin-url` | str | LinkedIn company page |
 | `--clear-linkedin-url` | flag | Set `linkedin_url` to null. Mutually exclusive with `--linkedin-url` |
 
@@ -151,7 +151,7 @@ soft delete to them and the response reports `deleted_people_count`.
 | `--note` | str | no | Optional free-text note. Saved as a `crm_activities` row (`type=note`, `source_app=manual`) per company. |
 | `--json` | flag | no | Output raw JSON |
 
-Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per company. Backs the Sonar / HH Actioned button (ENG-912). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per company. Backs the Actioned button in Sonar (legacy) and Company Search. Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly. This command is the explicit version.
 
 #### `ac crm companies enrich <url>`
 | Flag | Type | Required | Description |
@@ -173,7 +173,7 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--json` | flag | off | Output raw JSON |
 
@@ -241,7 +241,7 @@ Bulk upserts people from a JSON file. The file must contain a JSON array of pers
 | `--note` | str | no | Optional free-text note. Saved as a CRM activity per person. |
 | `--json` | flag | no | Output raw JSON |
 
-Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per person. Backs the Headhunter Mark done button (ENG-1127). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per person. Backs the Mark done button in Headhunter (legacy) and People Search. Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly. This command is the explicit version.
 
 ---
 
@@ -711,7 +711,7 @@ and status, and top clicked links.
 
 ---
 
-## Envoy (Outreach)
+## Outreach (`ac envoy`)
 
 ### Sequences
 
@@ -1464,7 +1464,7 @@ Previews company matches for the specified people. Shows match source, type, and
 | `--query` / `-q` | str | no | Search query (default: empty) |
 | `--json` | flag | no | Raw JSON output |
 
-Searches CRM and Sonar companies by name.
+Searches CRM and Sonar (legacy) companies by name.
 
 #### `ac workflows run-people add-to-crm <workflow-id>`
 | Flag | Type | Required | Description |
@@ -2110,7 +2110,7 @@ Returns current onboarding settings.
 
 ---
 
-### Searches (Sonar + Headhunter)
+### Searches: Sonar (legacy) and Headhunter (legacy)
 
 Cross-org search analytics for super admins. **PII is stripped from every response**: people rows omit `full_name`, `email`, `linkedin_url`, `avatar_url`, `summary`, `experience_history`, and city-level location; only role, country, skills, and quality scores remain. `trigger_data` on runs is recursively sanitized to drop any keys matching name/email/phone/linkedin patterns. The raw `output_data` blob is never returned.
 
@@ -2146,7 +2146,7 @@ Returns total runs, completed/failed counts, success rate, total companies/peopl
 |------|------|-------------|
 | `--json` | flag | Raw JSON output (includes `snapshot_definition`) |
 
-Returns one workflow run with org/user/source context, sanitized trigger_data, status, duration, and discovered company/people counts. Raises `404` (exit 3) if the run does not exist or is not a Sonar/Headhunter run.
+Returns one workflow run with org/user/source context, sanitized trigger_data, status, duration, and discovered company/people counts. Raises `404` (exit 3) if the run does not exist or is not a Sonar (legacy) or Headhunter (legacy) run.
 
 #### `ac admin searches companies`
 | Flag | Type | Default | Description |
@@ -2169,7 +2169,7 @@ Returns firmographics, lead score, sales signals, country, and discovery timing.
 |------|------|---------|-------------|
 | `--start-date` | str | 30d ago | Start date (ISO format) |
 | `--end-date` | str | today | End date (ISO format) |
-| `--source` | str | headhunter | Sonar produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
+| `--source` | str | headhunter | Sonar (legacy) produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
 | `--org-id` | list[str] | None | Org filter (repeatable) |
 | `--user-id` | list[str] | None | User filter (repeatable) |
 | `--limit` | int | 25 | Results per page (max 100) |
@@ -2630,8 +2630,10 @@ different CRM company link returns `409` and names that person; deselect that
 person and retry.
 
 A promotion sets the `lifecycle_stage` of the company and of each promoted
-person to `prospect`, with the reason `Promoted from Sonar`. It moves a row at
-the `identified` stage, and a person that holds no stage. A qualified lead or a
+person to `prospect`, with a reason. A row promoted now reads
+`Promoted from Signals`. A row promoted before the rename keeps
+`Promoted from Sonar`, so match both when you filter on the reason. It moves a
+row at the `identified` stage, and a person that holds no stage. A qualified lead or a
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
 
@@ -2698,7 +2700,7 @@ positional argument. There is no `--message` flag and no single-conversation
 | `--period-days` | int | 30 | Reporting window from 1 to 365 days |
 | `--json` | flag | off | Raw JSON output |
 
-Shows Sonar, Headhunter, Envoy, CRM, and account-activity output for the active
+Shows Sonar (legacy), Headhunter (legacy), Outreach, CRM, and account-activity output for the active
 organization.
 
 ---

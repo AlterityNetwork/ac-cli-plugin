@@ -299,13 +299,13 @@ ambiguous, and the platform asks which one instead of guessing.
 
 ### Draft conversations
 
-A draft conversation writes a search for a form and starts no run. The Sonar
+A draft conversation writes a search for a form and starts no run. The Signals
 search page opens one for `signals.search` and `people.signals`, the only two
 capabilities a draft takes. `list` without `--draft-capability` reads ordinary
 chats only, so a draft conversation never appears in the chat list.
 
 ```bash
-ac agentic conversations create --title Sonar \
+ac agentic conversations create --title Signals \
   --draft-capability signals.search --draft-capability people.signals
 ac agentic conversations send <conversation-id> "UK fintechs that raised a Series B" \
   --draft '{"capability_id": "signals.search", "input": {"source": "discovery"}}'

@@ -3,11 +3,11 @@ name: ac-cli
 description: >
   AgencyCore platform via `ac` CLI: CRM (companies, contacts, deals, pipelines,
   activities, follow-ups, communications, lists, imports, engagement); outreach
-  automation (Envoy sequences, campaigns, recipients, outbox drafts, inbox
+  automation (Outreach sequences, campaigns, recipients, outbox drafts, inbox
   replies, signals, battlecards, playbooks, cold emails); workflows (runs,
   schedules, cron, presets, CSV, discovered companies/people); admin (users,
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
-  usage, cross-org Sonar/Headhunter searches, legal docs, subscriptions);
+  usage, cross-org Sonar (legacy)/Headhunter (legacy) searches, legal docs, subscriptions);
   platform (file/image upload, knowledge base PDF resources, apps,
   agentic saved searches, prospect review, web chat conversations, writing styles, Nylas email, profiles,
   environment switching). Use when user mentions "ac"/"AgencyCore", any record
@@ -16,7 +16,7 @@ description: >
   check queue health, onboard a customer, or script AgencyCore with JSON+jq.
 when_to_use: >
   Fires on: "ac"/"AgencyCore"; CRM verbs on companies/contacts/deals/activities;
-  "draft/approve/reject email", "cold email"; "sequence", "Envoy", "playbook",
+  "draft/approve/reject email", "cold email"; "sequence", "Envoy", "Outreach", "playbook",
   "battlecard", "signal"; "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
@@ -118,7 +118,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Domain | Covers | Reference |
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
-| Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
+| Outreach (`ac envoy`) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
@@ -162,7 +162,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "move people from list A to list B" | `ac crm lists bulk-move-members A --target-list-id B --member-type person --ids p1,p2` | composing `add-members` + `bulk-remove-members` (the move command is one call and reports duplicates) |
 | "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
-| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Envoy inbox — different surfaces |
+| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Outreach inbox (`ac envoy inbox`): different surfaces |
 | "remember that I …" / "add to my memory" / "my standing instructions" | `ac settings memory add --text "…"` (`--applies-to email` for the email writer only); `list` / `edit` / `remove` | `ac settings dossier …` (a read-only summary of what the apps know, not your own memory lines) |
 | "what has the app learned from my edits" / "memory suggestions" | `ac settings memory suggestions list`; `accept <id>` (`--text` to change it) / `dismiss <id> --yes`; `refresh` reads the recent edits again | `ac settings memory list` (only the lines you already keep) |
 | "web chat conversation" / "AI chat thread" (user-facing) | `ac agentic conversations …` | `ac chat …` was removed; admin chat triage no longer exists |
@@ -349,7 +349,7 @@ ac crm import preview --file contacts.json
 ac crm import commit --preview-id <id-from-preview>
 ```
 
-### Envoy: Launch a sequence
+### Outreach: Launch a sequence
 
 ```bash
 # 1. Create
@@ -371,7 +371,7 @@ ac envoy recipients add <sequence-id> --prospect-ids id1,id2,id3
 ac envoy sequences launch <sequence-id> --workflow-id <workflow-id>
 ```
 
-### Envoy: Review and approve drafts
+### Outreach: Review and approve drafts
 
 ```bash
 ac envoy outbox pending --json
