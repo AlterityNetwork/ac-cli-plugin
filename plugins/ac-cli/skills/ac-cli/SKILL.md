@@ -16,7 +16,7 @@ description: >
   check queue health, onboard a customer, or script AgencyCore with JSON+jq.
 when_to_use: >
   Fires on: "ac"/"AgencyCore"; CRM verbs on companies/contacts/deals/activities;
-  "draft/approve/reject email", "cold email"; "sequence", "Outreach", "playbook",
+  "draft/approve/reject email", "cold email"; "sequence", "Envoy", "Outreach", "playbook",
   "battlecard", "signal"; "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
