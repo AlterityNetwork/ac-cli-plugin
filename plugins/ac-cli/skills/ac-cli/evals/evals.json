@@ -1279,6 +1279,23 @@
           "text": "`ac settings memory suggestions list`"
         }
       ]
+    },
+    {
+      "id": 93,
+      "prompt": "Org subscription sub-55 is awaiting activation and has no card on file. Email the account owner a link to add a card.",
+      "expected_output": "Checks auth with `ac whoami`, then runs `ac admin subscriptions send-card-link sub-55 --email` to email the owner a Stripe-hosted card setup link. It does not run `activate-billing`, which would fail with no card.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the admin mutation"
+        },
+        {
+          "name": "send_card_link_command",
+          "type": "command_matches",
+          "text": "`ac admin subscriptions send-card-link sub-55 --email`"
+        }
+      ]
     }
   ]
 }
