@@ -2315,6 +2315,15 @@ Emails the account owner the hosted invoice link for an overdue payment and reco
 #### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
 One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
 
+#### `ac admin subscriptions send-card-link <subscription-id> [--email] [--yes]`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--email` | flag | no | Email the link to the account owner (asks for confirmation) |
+| `--yes` / `-y` | flag | no | Skip the confirmation for `--email` |
+| `--json` | flag | no | Return `url`, `expires_at`, `email_sent` and `sent_to` as raw JSON |
+
+Creates a 24 hour link to a Stripe-hosted page where the customer saves a card, for an org that has no card on file. The customer does not sign in. Each call creates a new link. `url` is empty when the email went out. Refuses a `manual` subscription and a comped org (400). Once `subscriptions get` shows Card On File as true, run `activate-billing`. If the email fails, the link is printed for copying.
+
 #### `ac admin subscriptions link <subscription-id> [--yes]`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

@@ -241,6 +241,17 @@ ac admin subscriptions delete <subscription-id> [--yes]
 # org then appears under `worklists` stuck.
 ac admin subscriptions activate-billing <subscription-id> [--yes]
 
+# Card setup link: Activate charges a saved card, and it now refuses to grant
+# access when the org has none. For an org awaiting activation with no card,
+# create a link to a Stripe-hosted page where the customer saves a card. The
+# customer does not sign in. The link is valid for 24 hours, and each call
+# creates a new one. Without --email it prints the link to copy. With --email
+# it emails the account owner and prints the link only if the email failed.
+# `subscriptions get` shows Card On File and Card Last 4 once it is saved
+# (`list --json` carries has_card too); then run activate-billing. Refuses
+# manual subscriptions and comped orgs.
+ac admin subscriptions send-card-link <subscription-id> [--email] [--yes]
+
 # Link an EXISTING Stripe subscription to this local row. Distinct from
 # activate-billing: linking never creates a Stripe object and never charges. It
 # adopts the live Stripe status and stamps our ids into the Stripe metadata.
