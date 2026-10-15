@@ -2395,7 +2395,15 @@ so a Signals brief and a People brief have different shapes.
 | `--capability` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
+| `--watch-list-id` | str | no | CRM list of companies to watch. Sent only when given. |
 | `--json` | flag | no | Raw saved-search detail |
+
+Only a `signals.search` saved search can watch a list. A saved search with a
+`watch_list_id` watches the company members of one CRM list. Each Run reads 10
+of those companies, in rotation, and finds no new company. Its brief needs an
+`icp` and no `company_criteria`. The API refuses a bad list with exit code 2 and
+one of the codes `watch_list_not_supported`, `watch_list_not_found` or
+`watch_list_empty`. `get` shows the list as `Watch list`.
 
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
@@ -2420,9 +2428,14 @@ ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
 | `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
+| `--watch-list-id` | str | no | Replacement CRM list of companies to watch |
+| `--clear-watch-list-id` | flag | no | Stop watching the list. Sends `watch_list_id: null`. |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide `--name`, `--brief`, or both. A stale write token returns exit code 5.
+Provide at least one of `--name`, `--brief`, `--watch-list-id` and
+`--clear-watch-list-id`. Do not use `--watch-list-id` with
+`--clear-watch-list-id`; the CLI refuses the pair before any request. A stale
+write token returns exit code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
