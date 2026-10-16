@@ -2400,7 +2400,7 @@ so a Signals brief and a People brief have different shapes.
 
 Only a `signals.search` saved search can watch a list. A saved search with a
 `watch_list_id` watches the company members of one CRM list. Each Run reads 10
-of those companies, in rotation, and finds no new company. Its brief needs an
+of those companies, in rotation, and does not discover companies outside the list. Its brief needs an
 `icp` and no `company_criteria`. The API refuses a bad list with exit code 2 and
 one of the codes `watch_list_not_supported`, `watch_list_not_found` or
 `watch_list_empty`. `get` shows the list as `Watch list`.
