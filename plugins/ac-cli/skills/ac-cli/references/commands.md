@@ -2399,11 +2399,11 @@ so a Signals brief and a People brief have different shapes.
 | `--json` | flag | no | Raw saved-search detail |
 
 Only a `signals.search` saved search can watch a list. A saved search with a
-`watch_list_id` watches the company members of one CRM list. Each Run reads 10
-of those companies, in rotation, and does not discover companies outside the list. Its brief needs an
+`watch_list_id` watches the company members of one CRM list, up to 50. Each Run
+checks every company on the list and does not discover companies outside the list. Its brief needs an
 `icp` and no `company_criteria`. The API refuses a bad list with exit code 2 and
-one of the codes `watch_list_not_supported`, `watch_list_not_found` or
-`watch_list_empty`. `get` shows the list as `Watch list`.
+one of the codes `watch_list_not_supported`, `watch_list_not_found`,
+`watch_list_empty` or `watch_list_too_large`. `get` shows the list as `Watch list`.
 
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
