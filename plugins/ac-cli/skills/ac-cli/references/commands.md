@@ -735,7 +735,6 @@ and status, and top clicked links.
 | `--draft-feedback` | str | no | Reviewer feedback that every draft applies. Pass `""` to clear it |
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
-| `--execution-mode` | str | no | Execution mode |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy sequences update <sequence-id>`
