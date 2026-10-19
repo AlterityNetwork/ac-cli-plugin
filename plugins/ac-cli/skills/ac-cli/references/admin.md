@@ -40,7 +40,7 @@ ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan ente
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
-ac admin orgs add-user <org-id> --email <email> --first-name <first> --last-name <last> [--role member] [--job-title <title>] [--no-send-email]   # creates the user, skips org onboarding; org must be active
+ac admin orgs add-user <org-id> --email <email> --first-name <first> --last-name <last> [--role member] [--job-title <title>] [--send-email/--no-send-email]   # creates the user, skips org onboarding; org must be active
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
