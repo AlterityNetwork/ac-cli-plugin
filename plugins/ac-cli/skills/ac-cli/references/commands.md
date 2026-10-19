@@ -1672,6 +1672,19 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--role` | str | no | Member role (e.g. admin, member) |
 | `--json` | flag | no | Raw JSON output |
 
+#### `ac admin orgs add-user <org-id>`
+Creates a new user and adds them to an organization that is active and not suspended. The user skips the organization onboarding. Exit code 5 means a user with the email already exists: use `add-member` instead.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--email` | str | yes | Email of the new user |
+| `--first-name` | str | yes | First name |
+| `--last-name` | str | yes | Last name |
+| `--role` | str | no | `admin`, `member` (default) or `guest`. Use `transfer-ownership` for an owner |
+| `--job-title` | str | no | Job title |
+| `--send-email / --no-send-email` | flag | no | Email a set-password link (default on). If it is not sent, run `ac admin users reset-password <user-id>` |
+| `--json` | flag | no | Raw JSON output |
+
 #### `ac admin orgs update-member <org-id> <user-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
