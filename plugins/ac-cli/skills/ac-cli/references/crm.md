@@ -107,7 +107,7 @@ ac crm comms delete <communication-id> [--yes]
 
 # Scheduled send (status scheduled -> sending -> sent, or failed)
 ac crm comms list --folder scheduled          # your scheduled emails, send-time order
-ac crm comms schedule <communication-id> --at 2030-01-07T09:00:00+01:00
+ac crm comms schedule <communication-id> --at 2030-01-07T09:00:00+00:00
 ac crm comms unschedule <communication-id>    # back to Drafts
 ac crm comms send-now <communication-id>      # scheduled or failed email
 
