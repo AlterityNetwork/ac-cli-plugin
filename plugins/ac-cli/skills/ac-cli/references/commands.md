@@ -369,9 +369,24 @@ All flags from `create` are optional. Only provided fields are updated.
 | `--type` | str | -- | Filter by type (email, etc.) |
 | `--direction` | str | -- | Filter by direction (inbound, outbound) |
 | `--status` | str | -- | Filter by status |
+| `--folder` | choice | -- | `inbox`, `sent`, `drafts`, `archived`, `scheduled`. Overrides `--direction` and `--status`. `scheduled` lists your own scheduled emails in send-time order |
 | `--limit` | int | 20 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
+
+#### `ac crm comms schedule <communication-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--at` | str | yes | Send time, ISO 8601 with a UTC offset. At least 2 minutes and at most 12 months from now |
+| `--json` | flag | no | Output raw JSON |
+
+Schedules a draft, changes the time of a scheduled email, or schedules a failed email again. A time with no offset is refused. Only the user who wrote the email can schedule it.
+
+#### `ac crm comms unschedule <communication-id>`
+Cancels a scheduled or failed email and returns it to Drafts. The owner, or an org owner or admin, can cancel it. Returns 409 once the send started.
+
+#### `ac crm comms send-now <communication-id>`
+Sends a scheduled or failed email immediately. Owner only. Returns 409 once the send started.
 
 #### `ac crm comms thread <thread-id>`
 Shows all messages in a conversation thread.

@@ -1296,6 +1296,28 @@
           "text": "`ac admin subscriptions send-card-link sub-55 --email`"
         }
       ]
+    },
+    {
+      "id": 94,
+      "prompt": "Schedule draft email comm-77 to go out on 7 January 2030 at 09:00 London time.",
+      "expected_output": "Checks auth with `ac whoami`, then runs `ac crm comms schedule comm-77 --at 2030-01-07T09:00:00Z` (London is on GMT in January, so the offset is +00:00 or Z). It does not send the email now.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the schedule"
+        },
+        {
+          "name": "schedule_command",
+          "type": "command_matches",
+          "text": "`ac crm comms schedule comm-77 --at 2030-01-07T09:00:00(Z|\\+00:00)`"
+        },
+        {
+          "name": "does_not_send_now",
+          "type": "command_forbidden",
+          "text": "`ac crm comms send-now` or `ac nylas send`"
+        }
+      ]
     }
   ]
 }
