@@ -1410,6 +1410,18 @@
           "text": "`ac agentic outreach enrollments evaluate e-31`"
         }
       ]
+    },
+    {
+      "id": 101,
+      "prompt": "Is Jane enrolled in agentic Outreach campaign c-41? Show her state and what Outreach decided last.",
+      "expected_output": "Runs `ac agentic outreach enrollments list --campaign-id c-41 --search Jane`, and reads the state and the last decision from the row.",
+      "assertions": [
+        {
+          "name": "searches the campaign",
+          "type": "command_matches",
+          "text": "`ac agentic outreach enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
+        }
+      ]
     }
   ]
 }

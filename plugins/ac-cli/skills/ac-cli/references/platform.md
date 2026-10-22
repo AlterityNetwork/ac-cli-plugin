@@ -144,9 +144,9 @@ ac agentic outreach campaigns update <campaign-id> [same options; pass none to a
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
-ac agentic outreach enrollments list --campaign-id <campaign-id> [--state active|awaiting_approval|needs_contact_data|ended] [--limit 100]
+ac agentic outreach enrollments list --campaign-id <campaign-id> [--state active|awaiting_approval|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
-ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
+ac agentic outreach enrollments timeline <enrollment-id> [--limit 50] [--order desc|asc]
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic outreach enrollments exit <enrollment-id> [--yes]
 ac agentic outreach organization status|resume
@@ -170,9 +170,21 @@ exit code 5 (`already_enrolled`), and the message names that campaign. A
 campaign holds at most 200 live enrollments (`campaign_full`). A prospect
 person that is already in the CRM enrolls as the CRM person.
 
-`enrollments timeline` lists what happened to one enrollment, newest first:
-the start, each decision with its outcome and reviewer note, the thread emails,
-the CRM activities, and the end. It is the left column of the review card.
+`campaigns list` and `campaigns get` show the live enrollments against the cap
+(`People 140/200`) and the count per state: active, awaiting a draft review,
+needing an email, and ended.
+
+`enrollments list` shows one page of a campaign, newest first. Each row names
+the person, the email of the person row, the state and the last decision
+(action and outcome). `--search` keeps the people whose name holds the text,
+in any case. The title shows the rows and the total, for example `2-2 of 3`.
+When more rows wait, the command prints the `--offset` of the next page.
+
+`enrollments timeline` lists what happened to one enrollment: the start, each
+decision with its outcome and reviewer note, the thread emails (a reply shows
+as an `inbound` email), the CRM activities, and the end. It is newest first by
+default, the left column of the review card. `--order asc` lists it oldest
+first, as the enrollment drawer shows it.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM
