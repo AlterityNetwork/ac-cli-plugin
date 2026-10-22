@@ -201,7 +201,7 @@ member gets exit code 4.
 ## Agentic Outreach Drafts
 
 ```bash
-ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50]
+ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50] [--offset 0]
 ac agentic outreach drafts get <draft-id>
 ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
 ac agentic outreach drafts approve <draft-id> --version <n> --content-hash <hash>
@@ -211,6 +211,12 @@ ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note
 These commands review the emails that an agentic Outreach campaign drafted.
 They are not the legacy `ac envoy outbox` drafts. The draft ID is the decision
 ID that `list` prints.
+
+`list` prints one page: each draft names the person, the campaign and when its
+approval expires. The title shows the rows against the total, and a last line
+prints the next `--offset` while more drafts wait. Only the table output has
+that line: with `--json`, compute the next offset as `offset + length(data)`
+while `has_more` is true.
 
 `get` prints the draft text, the enrollment `version` and the `content_hash`.
 `approve` must send both values back. Save your edits first, then approve with

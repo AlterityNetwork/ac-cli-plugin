@@ -2824,10 +2824,20 @@ member). A repeated `stop` keeps the first stop time.
 |------|------|---------|-------------|
 | `--campaign-id` | str | None | Only the drafts of this campaign |
 | `--limit` | int | 50 | How many drafts, 1 to 100 |
-| `--json` | flag | off | Raw `{"items": [...]}` JSON |
+| `--offset` | int | 0 | How many drafts to skip first |
+| `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
 Lists the drafts that wait for review, newest first. The first column is the
-draft ID, which is the decision ID every other command takes.
+draft ID, which is the decision ID every other command takes. Each row adds
+`person_name`, `campaign_name`, `campaign_status` (JSON only, not a column) and
+`expires_at`. The list
+holds `proposed` drafts and `approved` drafts that wait for the send; the
+`outcome` field tells them apart. `expires_at` is when the pending approval
+expires, and it is null for an approved draft. Columns: Draft ID, Person
+(`person_name`, or the address when the person is gone), Subject (`subject`), Outcome
+(`outcome`), Campaign (`campaign_name`), Expires (`expires_at`). The title reads "Outreach drafts
+<from>-<to> of <total>". In table output a last line prints the next `--offset` while
+`has_more` is true. With `--json`, the next offset is `offset` plus the length of `data`.
 
 #### `ac agentic outreach drafts get <draft-id>`
 | Flag | Type | Required | Description |
