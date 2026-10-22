@@ -1318,6 +1318,47 @@
           "text": "`ac crm comms send-now` or `ac nylas send`"
         }
       ]
+    },
+    {
+      "id": 95,
+      "prompt": "Show me the agentic Outreach email draft d-77 and approve it as it is.",
+      "expected_output": "Reads the draft with `ac agentic outreach drafts get d-77`, then approves it with `ac agentic outreach drafts approve d-77 --version <n> --content-hash <hash>` using the version and content hash that `get` printed. It does not use `ac agentic approvals` or `ac envoy outbox approve`.",
+      "assertions": [
+        {
+          "name": "reads_the_draft",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts get d-77`"
+        },
+        {
+          "name": "approves_with_version_and_hash",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts approve d-77 .*--version .*--content-hash`"
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "prompt": "The agentic Outreach draft d-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
+      "expected_output": "Saves the new body with `ac agentic outreach drafts save d-78 --body ...`, then approves with the `--version` and `--content-hash` that the save printed, not the ones from before the save.",
+      "assertions": [
+        {
+          "name": "save_then_approve",
+          "type": "command_sequence",
+          "text": "`ac agentic outreach drafts save d-78 .*--body` then `ac agentic outreach drafts approve d-78 .*--version .*--content-hash`"
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "prompt": "Reject the agentic Outreach draft d-79 and take the person out of the campaign. Note: wrong contact.",
+      "expected_output": "Runs `ac agentic outreach drafts reject d-79 --mode exit --note \"wrong contact\" --yes` (or answers the confirmation).",
+      "assertions": [
+        {
+          "name": "reject_exit",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts reject d-79 .*--mode exit`"
+        }
+      ]
     }
   ]
 }
