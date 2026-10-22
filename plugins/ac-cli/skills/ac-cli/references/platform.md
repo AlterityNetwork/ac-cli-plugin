@@ -214,7 +214,9 @@ ID that `list` prints.
 
 `list` prints one page: each draft names the person, the campaign and when its
 approval expires. The title shows the rows against the total, and a last line
-prints the next `--offset` while more drafts wait.
+prints the next `--offset` while more drafts wait. Only the table output has
+that line: with `--json`, compute the next offset as `offset + length(data)`
+while `has_more` is true.
 
 `get` prints the draft text, the enrollment `version` and the `content_hash`.
 `approve` must send both values back. Save your edits first, then approve with
