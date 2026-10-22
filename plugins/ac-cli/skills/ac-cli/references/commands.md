@@ -18,7 +18,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Import](#import)
    - [Search & Dashboard](#search--dashboard)
    - [Engagement Dashboard](#engagement-dashboard)
-2. [Envoy (Outreach)](#envoy-outreach)
+2. [Outreach (`ac envoy`)](#outreach-ac-envoy)
    - [Sequences](#sequences)
    - [Campaigns](#campaigns)
    - [Steps](#steps)
@@ -78,7 +78,7 @@ For domain-scoped quick references (just the common commands per domain), see:
 | `--limit` | int | 100 | Max results to return |
 | `--offset` | int | 0 | Skip this many results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--lead-score-min` | int | -- | Minimum lead score (1-10); returns companies with `lead_score >= value`. Omit to include all companies |
 | `--signal-type` | str | -- | Companies with at least one live signal of this type (e.g. `hiring`, `funding`) |
@@ -113,7 +113,7 @@ Same optional flags as `create`. Only provided fields are updated.
 |------|------|-------------|
 | `--lead-score` | int (0-10) | Manual lead score override |
 | `--lead-reason` | str | Reason for the lead score |
-| `--reset-lead-score-to-auto` | flag | Clear the manual score lock so Sonar can update it |
+| `--reset-lead-score-to-auto` | flag | Clear the manual score lock so automatic scoring can update it |
 | `--linkedin-url` | str | LinkedIn company page |
 | `--clear-linkedin-url` | flag | Set `linkedin_url` to null. Mutually exclusive with `--linkedin-url` |
 
@@ -151,7 +151,7 @@ soft delete to them and the response reports `deleted_people_count`.
 | `--note` | str | no | Optional free-text note. Saved as a `crm_activities` row (`type=note`, `source_app=manual`) per company. |
 | `--json` | flag | no | Output raw JSON |
 
-Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per company. Backs the Sonar / HH Actioned button (ENG-912). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per company. Backs the Actioned button in Sonar (legacy) and Company Search. Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly. This command is the explicit version.
 
 #### `ac crm companies enrich <url>`
 | Flag | Type | Required | Description |
@@ -173,7 +173,7 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--approved` / `--unapproved` | flag | -- | Filter by approval state (human-vetted vs not yet approved) |
-| `--added-by-type` | str | -- | Filter by who added: `user` (manual/CSV) or `agent` (Sonar/Headhunter) |
+| `--added-by-type` | str | -- | Filter by who added: `agent` matches rows that the legacy Sonar and Headhunter apps added, the only writers of agent provenance. `user` matches every other row: manual, CSV, and rows that Signals, Company Search or People Search added |
 | `--added-by-user` | str | -- | Filter to records added by a specific user ID |
 | `--json` | flag | off | Output raw JSON |
 
@@ -181,6 +181,13 @@ Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` i
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Output raw JSON |
+
+#### `ac crm people by-ids`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--ids` | str | yes | Comma-separated person IDs, up to 200 |
+| `--include-deleted` | flag | no | Include soft-deleted people in the results |
+| `--json` | flag | no | Output raw JSON |
 
 #### `ac crm people create`
 | Flag | Type | Required | Description |
@@ -234,7 +241,7 @@ Bulk upserts people from a JSON file. The file must contain a JSON array of pers
 | `--note` | str | no | Optional free-text note. Saved as a CRM activity per person. |
 | `--json` | flag | no | Output raw JSON |
 
-Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per person. Backs the Headhunter Mark done button (ENG-1127). Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly — this command is the explicit version.
+Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a note activity per person. Backs the Mark done button in Headhunter (legacy) and People Search. Any of {note, manual outbound comm, list-add, sequence-enrol} also stamps `approved_*` implicitly. This command is the explicit version.
 
 ---
 
@@ -362,9 +369,24 @@ All flags from `create` are optional. Only provided fields are updated.
 | `--type` | str | -- | Filter by type (email, etc.) |
 | `--direction` | str | -- | Filter by direction (inbound, outbound) |
 | `--status` | str | -- | Filter by status |
+| `--folder` | choice | -- | `inbox`, `sent`, `drafts`, `archived`, `scheduled`. Overrides `--direction` and `--status`. `scheduled` lists your own scheduled emails in send-time order |
 | `--limit` | int | 20 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Output raw JSON |
+
+#### `ac crm comms schedule <communication-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--at` | str | yes | Send time, ISO 8601 with a UTC offset. At least 2 minutes and at most 12 months from now |
+| `--json` | flag | no | Output raw JSON |
+
+Schedules a draft, changes the time of a scheduled email, or schedules a failed email again. A time with no offset is refused. Only the user who wrote the email can schedule it.
+
+#### `ac crm comms unschedule <communication-id>`
+Cancels a scheduled or failed email and returns it to Drafts. The owner, or an org owner or admin, can cancel it. Returns 409 once the send started.
+
+#### `ac crm comms send-now <communication-id>`
+Sends a scheduled or failed email immediately. Owner only. Returns 409 once the send started.
 
 #### `ac crm comms thread <thread-id>`
 Shows all messages in a conversation thread.
@@ -475,6 +497,14 @@ Reject a pending communication.
 #### `ac crm comms regenerate <communication-id>`
 Regenerate a pending communication's draft.
 
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--instruction` | str | no | Feedback for the new draft |
+| `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
+| `--apply-to-writing-style` | flag | no | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step, and discards any manual edits on those drafts |
+| `--json` | flag | no | Output raw JSON |
+
 ---
 
 ### Lists
@@ -495,8 +525,7 @@ Regenerate a pending communication's draft.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | List name |
-| `--member-type` | str | no | person, company, or mixed |
-| `--type` | str | no | static or dynamic |
+| `--type` | str | no | static only. The API rejects `dynamic` with 400 |
 | `--description` | str | no | List description |
 | `--json` | flag | no | Output raw JSON |
 
@@ -505,15 +534,21 @@ Regenerate a pending communication's draft.
 |------|------|-------------|
 | `--name` | str | New name |
 | `--description` | str | New description |
-| `--type` | str | static or dynamic |
-| `--member-type` | str | person, company, or mixed |
+| `--clear-description` | flag | Remove the description. Do not use it with `--description` |
+| `--type` | str | static only. The API rejects `dynamic` with 400 |
 | `--json` | flag | Output raw JSON |
 
+A list that does not exist returns 404. A blank `--name` returns 422.
+
 #### `ac crm lists members <list-id>`
+A list holds people and companies. Omit `--member-type` to read both kinds.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--limit` | int | 100 | Max results |
 | `--offset` | int | 0 | Skip results |
+| `--member-type` | enum (`person`\|`company`) | (omit) | Read one kind of member. Omit it to read both kinds. The total counts the kind you read |
+| `--include-person-details` | flag | off | Add the person row to each member |
+| `--include-company-details` | flag | off | Add the company row to each member. With `--member-type person`, it is the employer |
 | `--json` | flag | off | Output raw JSON |
 
 #### `ac crm lists lists-for-member`
@@ -533,10 +568,11 @@ API: `GET /api/v1/crm/members/{member_type}/{member_id}/lists`. Response is a ba
 | `--company-id` | str | Add a company |
 | `--json` | flag | Output raw JSON |
 
-One of `--person-id` or `--company-id` is required.
+One of `--person-id` or `--company-id` is required. A member already on the
+list returns 409.
 
 #### `ac crm lists remove-member <list-id>`
-Same flags as `add-member`.
+Same flags as `add-member`, plus `--yes` / `-y` to skip the confirmation.
 
 #### `ac crm lists add-members <list-id>`
 Bulk-add members with server-side dedup; ids already on the list are
@@ -547,6 +583,9 @@ reported as duplicates, not errors.
 | `--member-type` | enum (`person`\|`company`) | yes | Type of members to add |
 | `--ids` | str | yes | Comma-separated member IDs |
 | `--json` | flag | no | Output raw JSON |
+
+Each id must be a UUID of a live person or company in this org. One unknown id
+fails the whole call with 404, and more than 5000 ids fail with 422.
 
 API: `POST /api/v1/crm/lists/{list_id}/members/bulk-add`. Single atomic call.
 Always prefer over looping `add-member`.
@@ -687,7 +726,7 @@ and status, and top clicked links.
 
 ---
 
-## Envoy (Outreach)
+## Outreach (`ac envoy`)
 
 ### Sequences
 
@@ -708,9 +747,9 @@ and status, and top clicked links.
 | `--name` | str | yes | Sequence name |
 | `--description` | str | no | Sequence description |
 | `--writing-style-id` | str | no | Writing style to use for AI drafts |
+| `--draft-feedback` | str | no | Reviewer feedback that every draft applies. Pass `""` to clear it |
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
-| `--execution-mode` | str | no | Execution mode |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy sequences update <sequence-id>`
@@ -893,6 +932,34 @@ One of `--prospect-ids`, `--crm-list-id`, or `--source` is required. Returns
 reactivated with `--reenroll` (or by confirming the prompt; `AC_YES=1`
 auto-confirms).
 
+#### `ac envoy recipients history <sequence-id> <recipient-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | off | Raw JSON output |
+
+Returns `{recipient_id, steps, messages}`. `steps` lists every step of the
+sequence with its `status` for this recipient, `skip_reason` for a skipped step, the
+template, the AI instructions, and `awaiting_approval_count`: the drafts of the step that wait
+for approval across all recipients. `messages` is the email thread in date order:
+the sent steps and the replies.
+
+Step `status` values:
+
+| Status | Meaning |
+|--------|---------|
+| `upcoming` | The step has not started for this recipient |
+| `pending` | The step is due and has not run |
+| `processing` | The step runs now |
+| `waiting_delay` | A delay step is in its delay period |
+| `draft_generated` | An email draft waits for approval |
+| `draft_approved` | The draft is approved and the send has not finished |
+| `sent` | The email is sent |
+| `awaiting_task` | A task step waits for its task |
+| `task_created` | The task of a task step is created |
+| `completed` | A delay step ended |
+| `skipped` | The step was skipped; `skip_reason` holds the reason |
+| `failed` | The step failed |
+
 #### `ac envoy recipients remove <sequence-id> <recipient-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -958,10 +1025,13 @@ Approves and sends the draft.
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy outbox regenerate <draft-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--instruction` | str | Additional instruction for AI regeneration |
-| `--json` | flag | Raw JSON output |
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--instruction` | str | no | Feedback for the new draft |
+| `--apply-to-sequence` | flag | no | Also save the feedback on the sequence for every later draft |
+| `--apply-to-writing-style` | flag | no | Also rewrite your writing style for this sequence with the feedback, before the drafts regenerate. You must own the style |
+| `--scope` | `draft` \| `step` | no | `step` also regenerates every other waiting draft of the same step, and discards any manual edits on those drafts |
+| `--json` | flag | no | Raw JSON output |
 
 ---
 
@@ -1168,6 +1238,7 @@ Creates a new workflow run. Returns 202 (accepted) with run ID and status.
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
 | `--include-archived` | flag | off | Include archived runs |
+| `--archived-only` | flag | off | Return only archived runs; mutually exclusive with `--include-archived` |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac workflows runs archive <workflow-id> <run-id>...`
@@ -1265,7 +1336,13 @@ Shows the next N upcoming run times for a cron expression without creating a sch
 #### `ac workflows presets list <workflow-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--limit` | int | Page size, 1 to 100 (default: 50) |
+| `--offset` | int | Zero-based row offset (default: 0) |
 | `--json` | flag | Raw JSON output |
+
+Returns an `items` page with `total`, `limit` and `offset`. Each item carries a
+`stats` object with `last_run_at`, `run_count`, `companies_total`,
+`signals_total` and `people_total` across all non-archived runs for that preset.
 
 #### `ac workflows presets get <workflow-id> <preset-id>`
 | Flag | Type | Description |
@@ -1304,7 +1381,15 @@ Shows the next N upcoming run times for a cron expression without creating a sch
 | `<file>` | str | yes | Path to CSV file (positional argument) |
 | `--json` | flag | no | Raw JSON output |
 
-Parses a CSV file into structured company data via multipart upload. File must have .csv extension.
+Parses a CSV file into structured company data via multipart upload. File must have .csv extension. A file that lists people (a first and last name, a full name, or an email beside a job title) is refused with a 400; use `csv-parse-people` for it.
+
+#### `ac workflows csv-parse-people <file>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `<file>` | str | yes | Path to a contacts CSV file (positional argument) |
+| `--json` | flag | no | Raw JSON output |
+
+Parses a contacts CSV into people rows via multipart upload. Every row comes back with its 1-based `row`, the `full_name` (joined from a first and last name when the file splits it), `email`, `linkedin_url`, `title`, `company_name` and `domain` (the domain column, else the website, else the work email host; a free-mail host is never a company). A file that lists companies is refused with a 400.
 
 ---
 
@@ -1393,7 +1478,7 @@ Previews company matches for the specified people. Shows match source, type, and
 | `--query` / `-q` | str | no | Search query (default: empty) |
 | `--json` | flag | no | Raw JSON output |
 
-Searches CRM and Sonar companies by name.
+Searches CRM and Sonar (legacy) companies by name.
 
 #### `ac workflows run-people add-to-crm <workflow-id>`
 | Flag | Type | Required | Description |
@@ -1579,6 +1664,7 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 | `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
 | `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
+| `--comped/--no-comped` | flag | no | Set or clear the comped flag. A comped organization is never billed, and `activate-billing` refuses it |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
@@ -1830,6 +1916,7 @@ Returns aggregate statistics about demo accounts.
 | `--products-services` | str | no | Products and services offered |
 | `--calendly-url` | str | no | Calendly scheduling URL |
 | `--show-calendly/--no-show-calendly` | flag | no | Show Calendly widget |
+| `--comped` | flag | no | Mark the organization comped: the setup wizard has no card step and the organization is never billed |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin onboarding list`
@@ -2037,7 +2124,7 @@ Returns current onboarding settings.
 
 ---
 
-### Searches (Sonar + Headhunter)
+### Searches: Sonar (legacy) and Headhunter (legacy)
 
 Cross-org search analytics for super admins. **PII is stripped from every response**: people rows omit `full_name`, `email`, `linkedin_url`, `avatar_url`, `summary`, `experience_history`, and city-level location; only role, country, skills, and quality scores remain. `trigger_data` on runs is recursively sanitized to drop any keys matching name/email/phone/linkedin patterns. The raw `output_data` blob is never returned.
 
@@ -2073,7 +2160,7 @@ Returns total runs, completed/failed counts, success rate, total companies/peopl
 |------|------|-------------|
 | `--json` | flag | Raw JSON output (includes `snapshot_definition`) |
 
-Returns one workflow run with org/user/source context, sanitized trigger_data, status, duration, and discovered company/people counts. Raises `404` (exit 3) if the run does not exist or is not a Sonar/Headhunter run.
+Returns one workflow run with org/user/source context, sanitized trigger_data, status, duration, and discovered company/people counts. Raises `404` (exit 3) if the run does not exist or is not a Sonar (legacy) or Headhunter (legacy) run.
 
 #### `ac admin searches companies`
 | Flag | Type | Default | Description |
@@ -2096,7 +2183,7 @@ Returns firmographics, lead score, sales signals, country, and discovery timing.
 |------|------|---------|-------------|
 | `--start-date` | str | 30d ago | Start date (ISO format) |
 | `--end-date` | str | today | End date (ISO format) |
-| `--source` | str | headhunter | Sonar produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
+| `--source` | str | headhunter | Sonar (legacy) produces no people, so the default is `headhunter`. Pass `both` to include sonar (returns headhunter rows only). `sonar` returns empty. |
 | `--org-id` | list[str] | None | Org filter (repeatable) |
 | `--user-id` | list[str] | None | User filter (repeatable) |
 | `--limit` | int | 25 | Results per page (max 100) |
@@ -2242,6 +2329,15 @@ Emails the account owner the hosted invoice link for an overdue payment and reco
 #### `ac admin subscriptions activate-billing <subscription-id> [--yes]`
 One action grants the org account access AND starts billing off-session (charges the first period now). On success the subscription is `active`; if the charge needs authentication it stays `incomplete` and the customer is emailed the hosted payment link. `--json` returns the updated subscription.
 
+#### `ac admin subscriptions send-card-link <subscription-id> [--email] [--yes]`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--email` | flag | no | Email the link to the account owner (asks for confirmation) |
+| `--yes` / `-y` | flag | no | Skip the confirmation for `--email` |
+| `--json` | flag | no | Return `url`, `expires_at`, `email_sent` and `sent_to` as raw JSON |
+
+Creates a 24 hour link to a Stripe-hosted page where the customer saves a card, for an org that has no card on file. The customer does not sign in. Each call creates a new link. `url` is empty when the email went out. Refuses a `manual` subscription and a comped org (400). Once `subscriptions get` shows Card On File as true, run `activate-billing`. If the email fails, the link is printed for copying.
+
 #### `ac admin subscriptions link <subscription-id> [--yes]`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -2302,34 +2398,38 @@ Same flags as `create` (all optional).
 
 ### Agentic Saved Searches
 
-Three capabilities hold a saved search: `signals.search`, `people.search` and
-`company.search`. An enrich capability holds none, because it takes the rows it
+Four capabilities hold a saved search: `signals.search`, `people.signals`,
+`people.search` and `company.search`. An enrich capability holds none, because it takes the rows it
 works on. Each brief is read through the input contract of its own capability,
 so a Signals brief and a People brief have different shapes.
-
-`--contract-version` is the version the capability publishes **to your
-organization**, which `ac agentic capabilities get <id>` reads. It is not a
-constant: a tenant runs the binding its provisioning wrote.
 
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--capability` | str | yes | `signals.search`, `people.search` or `company.search` |
-| `--contract-version` | int | yes | The version that capability publishes to your organization now |
+| `--capability` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
+| `--watch-list-id` | str | no | CRM list of companies to watch. Sent only when given. |
 | `--json` | flag | no | Raw saved-search detail |
+
+Only a `signals.search` saved search can watch a list. A saved search with a
+`watch_list_id` watches the company members of one CRM list, up to 50. Each Run
+checks every company on the list and does not discover companies outside the list. Its brief needs an
+`icp` and no `company_criteria`. The API refuses a bad list with exit code 2 and
+one of the codes `watch_list_not_supported`, `watch_list_not_found`,
+`watch_list_empty` or `watch_list_too_large`. `get` shows the list as `Watch list`.
 
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--capability` | str | required | Which product's saved searches to list |
+| `--capability` | str, repeatable | required | Products whose saved searches to list together (up to four) |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-A list read returns one capability's rows. List rows omit `brief`; use `get` to
-read it.
+A list read returns the selected capabilities' rows in one ordered page. With
+multiple capabilities, the table shows a Type column in place of the last run
+ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`
 | Flag | Type | Description |
@@ -2342,12 +2442,14 @@ read it.
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
 | `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
-| `--contract-version` | int | with `--brief` | The version the replacement brief was written under |
+| `--watch-list-id` | str | no | Replacement CRM list of companies to watch |
+| `--clear-watch-list-id` | flag | no | Stop watching the list. Sends `watch_list_id: null`. |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide `--name`, `--brief`, or both. `--contract-version` goes with `--brief`
-and only with it: a rename reads no schema. A stale write token returns exit
-code 5.
+Provide at least one of `--name`, `--brief`, `--watch-list-id` and
+`--clear-watch-list-id`. Do not use `--watch-list-id` with
+`--clear-watch-list-id`; the CLI refuses the pair before any request. A stale
+write token returns exit code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
@@ -2360,16 +2462,14 @@ Deleting a saved search does not cancel a Run that already started.
 #### `ac agentic saved-searches start <saved-search-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--contract-version` | int | yes | The version the capability publishes to your organization now |
-| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search and contract version. |
+| `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search. |
 | `--json` | flag | no | Raw Run start result |
 
 Start freezes the saved brief in a normal Run of the capability the row names.
 It does not create a Trigger or schedule.
 
-A start refuses a brief whose **stored** version is not the one you are serving:
-exit code 5 with `contract_version_stale`, naming both numbers. Record the brief
-again with `patch --brief --contract-version` to clear it.
+A start validates the stored brief against the active server contract. If a
+schema update made it incompatible, correct the fields reported by the API.
 
 #### `ac agentic saved-searches diff <saved-search-id>`
 | Flag | Type | Default | Description |
@@ -2388,10 +2488,107 @@ exit code 5, and you start a new page walk.
 #### `ac agentic prospects list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--review-state` | str | new | `new`, `watching`, `dismissed`, or `promoted` |
+| `--review-state` | str | None | `new`, `watching`, `dismissed`, or `promoted`. The default reads every one. |
+| `--last-seen-run-id` | str | None | Only prospects last written by this Run |
+| `--id` | str (repeatable) | None | Only this prospect. Repeat for each one, up to 100. |
+| `--people-state` | str | None | `found`, `pending`, or `no_matching_people` |
+| `--signal-type` | str | None | Only prospects that hold one signal of this type, including older stored types such as `tech_stack` and `agency_review` |
+| `--search` | str | None | Text in the company, person, or employer name or domain, 100 characters at most |
+| `--saved-search-id` | str | None | Only prospects this saved search returned |
+| `--min-score` | int | None | Lowest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
+| `--max-score` | int | None | Highest `opportunity_score` to keep, 0 to 100. An ungraded prospect drops out. |
+| `--sort` | str | `discovered` | `score`, `signal_strength`, or `discovered` |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
+
+`--sort` picks the order. `discovered` reads `first_seen_at`, the date this
+organization first saw the company. `score` reads `opportunity_score`.
+`signal_strength` reads `latest_signal_score`, which is the score of the most
+recently attached signal, not the highest one. Both scores put an ungraded
+prospect last, then break a tie on the creation time.
+
+A cursor belongs to one sort, because the three sorts order the same rows
+three ways. Keep `--sort` on every page of a walk; the next-page hint repeats
+it for you. A cursor another sort wrote is refused with a 400, which is exit
+code 1. Read `latest_signal_score` from `--json`; no column prints it.
+
+The filters narrow the read on the server, so every page holds matches
+only. `--saved-search-id` keeps the prospects one saved search returned.
+`--min-score` and `--max-score` keep an inclusive `opportunity_score` band.
+`--signal-type` matches any attached signal, not only the one the row
+names. It accepts current `IntelSignalType` names such as `funding_round`,
+`acquisition`, `started_meta_ads`, `scaled_meta_ads`, `paid_campaign_launch`,
+`hired_growth_role`, `new_marketing_leader`, `layoff`, `job_change`,
+`promotion`, `executive_change`, `tenure_milestone`, `rebrand_or_relaunch`,
+`product_launch`, `new_tech_stack`, `market_expansion`,
+`strategic_partnership`, `thought_leadership`, `speaking_event`,
+`marketing_initiative_announcement` and `other`. Older stored types from the
+CRM signal vocabulary, including `tech_stack`, plus `agency_review` and
+`leadership_change`, also work. Run `signal-types` to see which ones the review
+state holds. An unknown name is refused with a 422. `--search` ignores case.
+The next-page hint repeats every filter, because a cursor names a position in
+one filtered list.
+
+`list` JSON and `get` JSON carry `top_person`: the attached person with the
+highest `persona_fit_score`, as a `prospect_people` row with its person
+projection, or null when the prospect has no people.
+A prospect in `people_state` `pending` that already holds people will also
+have a `top_person`.
+The human table adds a `Top person` column and `get` adds a `Top person` row.
+Read `persona_fit_score` from `--json`; no column prints it.
+
+`list` JSON and `get` JSON also carry `suggested_action`: the next action the
+user should take on this prospect, or null when no Run scored the prospect. It
+holds `kind`, `args`, `rationale` and `timing`. Each kind maps to a command the
+product already runs, and `args` differs by kind:
+
+| `kind` | what it does | `args` |
+|---|---|---|
+| `create_task` | `ac crm activities create --type task` | `title`, `due_in_days` 0 to 90, optional `person_id` |
+| `promote` | `ac agentic prospects promote` | none |
+| `watch` | `ac agentic prospects watch` | `until`, the trigger |
+| `dismiss` | `ac agentic prospects dismiss` | `reason` |
+
+The human table adds an `Action` column with the kind, and `get` adds a
+`Suggested action` row reading the kind and the argument that names the move.
+`recommended_action` still holds the same move as one free-text sentence.
+
+`list` JSON and `get` JSON also carry `suggested_action_dismissed_at`: the time
+the user closed the suggested action card, or null while the card is open. The
+stamp does not clear `suggested_action`, so `act` still performs the move.
+`get` adds an `Action dismissed` row, and the row is blank for an open card.
+
+#### `ac agentic prospects act <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Performs the stored `suggested_action` and returns `{prospect, result}`, where
+`result` is `{kind, task_id}`. `task_id` is set for `create_task` and null for
+every other kind. `create_task` promotes the prospect first when it holds no
+CRM company, because a task hangs on a CRM company; it promotes the person the
+action names, or the best matched attached person when it names none. A
+prospect that carries no `suggested_action` returns exit code 5, and a missing
+prospect returns 3.
+
+#### `ac agentic prospects counts`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Counts the prospects in each review state, exactly. The body carries all four
+keys, and a state with no prospect reads 0.
+
+#### `ac agentic prospects signal-types`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--review-state` | str | `new` | The review state to count in |
+| `--json` | flag | off | Raw JSON output |
+
+Lists each signal type the prospects of one review state hold, with the number
+of prospects that hold it, the largest first. A prospect that holds signals of
+two types counts under both. A type that no prospect holds is not listed.
 
 #### `ac agentic prospects get <prospect-id>`
 | Flag | Type | Description |
@@ -2422,11 +2619,30 @@ exit code 5, and you start a new page walk.
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac agentic prospects restore <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Returns one watched or dismissed prospect to `new` and answers the durable
+detail. A prospect already at `new` exits 0 and writes nothing. A promoted
+prospect returns exit code 5, because promotion wrote CRM rows.
+
+#### `ac agentic prospects dismiss-action <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Closes the suggested action card and returns the durable prospect detail. It
+stamps `suggested_action_dismissed_at` and changes no review state. A repeat
+call keeps the first stamp, and a missing prospect returns exit code 3.
+
 #### `ac agentic prospects promote <prospect-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--person` | uuid | no | A prospect person id to promote. Repeat for each person. At most 25, and no repeats. |
-| `--list` | uuid | no | A static CRM list. The company joins it. |
+| `--signal` | uuid | no | A signal id of this company prospect whose named person joins CRM by name at the company. Repeat for each signal. `--person` and `--signal` together take at most 25. |
+| `--list` | uuid | no | A static CRM list. The company joins it, or the person of a person prospect. |
 | `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw JSON output |
 
@@ -2434,12 +2650,43 @@ exit code 5, and you start a new page walk.
 and do not accept `--yes` or a review-state body.
 
 `promote` is the one prospect command that writes CRM. Person ids are prospect
-person ids from `ac agentic prospects people`, never CRM ids. An empty
-selection promotes the company alone. The answer carries `crm_company_id`, one
-`people` row for each selection, and `list_id`. A second promotion writes
-nothing and answers the same references. A selected person who already holds a
+person ids from `ac agentic prospects people`, never CRM ids. A signal id
+comes from `ac agentic prospects signals`. It names a person the research found
+no profile for, so the CRM person holds a name and a title and no email. The
+answer lists those people under `named_people`. An empty
+selection promotes the company alone, or the subject person of a person
+prospect. For a person prospect, `crm_company_id` is the CRM company of the
+employer the person is linked to, resolved or created by the promotion and
+moved to the Prospect stage when it was at Identified, or
+null when no employer resolves to one company. A CRM person that already holds a company link
+keeps it. The answer carries `crm_company_id`, one `people` row for each
+selection, one `named_people` row for each signal, and `list_id`. A second promotion writes nothing and answers the
+same references. A selected person of a company prospect who already holds a
 different CRM company link returns `409` and names that person; deselect that
 person and retry.
+
+A promotion sets the `lifecycle_stage` of the company and of each promoted
+person to `prospect`, with a reason. A row promoted now reads
+`Promoted from Signals`. A row promoted before the rename keeps
+`Promoted from Sonar`, so match both when you filter on the reason. It moves a
+row at the `identified` stage, and a person that holds no stage. A qualified lead or a
+customer keeps the stage it holds. Only a person can hold no stage, because a
+company always holds one.
+
+#### `ac agentic prospects delete <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
+Deletes one prospect with its people, its signals and its saved search links.
+It accepts every review state and changes no CRM row. A missing prospect
+returns exit code 3. With `--json` the answer is
+`{"ok": true, "id": "<prospect-id>", "action": "delete"}`.
+
+The delete keeps no record of the company. A later run that finds the same
+company writes a new prospect at `new`. Use `dismiss` to keep a company out of
+the review list.
 
 ### Agentic Conversations
 
@@ -2448,12 +2695,14 @@ person and retry.
 |------|------|---------|-------------|
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
+| `--draft-capability` | str | None | List the draft conversations of one capability (`signals.search`, `people.signals`). Without it the list holds ordinary chats only. |
 | `--json` | flag | off | Raw page JSON |
 
 #### `ac agentic conversations create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--title` | str | no | Optional title |
+| `--draft-capability` | str | no | Open a draft conversation for this capability. Repeatable. Its turns write a search for a form and start no run. The API takes `signals.search` and `people.signals`. |
 | `--json` | flag | no | Raw conversation detail |
 
 #### `ac agentic conversations messages <conversation-id>`
@@ -2468,6 +2717,7 @@ person and retry.
 |------|------|----------|-------------|
 | `--entity-ref` | str | no | A row the message is about, as `kind:id` (`crm.company:<uuid>`). Repeatable, 10 rows at most. Each one enters the conversation entity scope, so the turn resolves "this company" and a later message needs no ref for the same row. |
 | `--idempotency-key` | str | no | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--draft` | str | no | The form state of a draft conversation, as JSON with `capability_id` and an object `input`. The reply carries the drafted search in `draft`. The API refuses a draft over 65,536 bytes with 413. |
 | `--json` | flag | no | Raw message detail |
 
 The CLI does not read the live conversation stream. After `send`, run
@@ -2486,7 +2736,7 @@ positional argument. There is no `--message` flag and no single-conversation
 | `--period-days` | int | 30 | Reporting window from 1 to 365 days |
 | `--json` | flag | off | Raw JSON output |
 
-Shows Sonar, Headhunter, Envoy, CRM, and account-activity output for the active
+Shows Sonar (legacy), Headhunter (legacy), Outreach, CRM, and account-activity output for the active
 organization.
 
 ---
@@ -2504,7 +2754,7 @@ for raw JSON.
 |------|------|-------------|
 | `--sort-mode` | str | `hottest` or `recent` |
 | `--group` / `--no-group` | bool | Group the feed by saved search |
-| `--score-threshold` | int | Lead-score cutoff from 0 to 10 |
+| `--score-threshold` | int | Prospect score cutoff from 0 to 10, as the launchpad rows show it |
 | `--clear-threshold` | flag | Remove the score filter |
 | `--score-direction` | str | `above` or `below` |
 | `--json` | flag | Raw JSON output |
@@ -2562,6 +2812,114 @@ flags is required.
 
 Publishes the given text, or the stored draft when no text is given. Records who
 published and when, and writes a platform activity event.
+
+#### `ac settings dossier get`
+
+Prints the company part of Memory, what the apps know about the active
+organization, as Markdown. `--user` adds the part about you. The agents read
+the company part only. The empty fields go to stderr, each with the Settings
+page that fills it. A guest gets exit code 4.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--user` | flag | Add the section about you: profile, email signature, default writing style |
+| `--json` | flag | Full JSON record: the sections, `markdown`, `company_markdown`, `user_markdown`, `gaps`, `offers_total`, `documents_total` |
+
+#### `ac settings dossier pdf`
+
+Saves Memory as a PDF file. With no `--output`, the file takes the server name,
+for example `memory-northwind-studio-2026-10-06.pdf`, in the current folder. A
+guest gets exit code 4 and no file is written.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--output`, `-o` | path | Where to save the PDF; missing folders are created |
+| `--user` | flag | Add the section about you: profile, email signature, default writing style |
+| `--json` | flag | Print `{"path": ..., "bytes": ...}` |
+
+#### `ac settings memory list`
+
+Lists your memory lines in the active organization, oldest first. A memory line
+is one standing instruction that you write for the apps. The email writer reads
+the `all` and `email` lines. The chat reads the `all` lines. No user reads the
+lines of another user.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | `{"data": [...], "total": N, "max_lines": N}`; each line has `id`, `text`, `applies_to`, `source` (`user` or `learned`), `created_at`, `updated_at` |
+
+#### `ac settings memory add`
+
+Adds a memory line. One user keeps at most `max_lines` lines (50); one more
+gets exit code 1 (HTTP 400).
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--text` | str | yes | One line of 1 to 1000 characters |
+| `--applies-to` | `all` \| `email` | no | `all` (default): every app reads the line. `email`: only the email writer reads it |
+| `--json` | flag | no | Print the new line |
+
+#### `ac settings memory edit <line-id>`
+
+Changes the text or the apps of one of your memory lines. Give at least one of
+`--text` and `--applies-to`; with neither, the command exits 2 before any call.
+A line that is not yours gets exit code 3.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--text` | str | One line of 1 to 1000 characters |
+| `--applies-to` | `all` \| `email` | The apps that read the line |
+| `--json` | flag | Print the changed line |
+
+#### `ac settings memory remove <line-id>`
+
+Removes one of your memory lines. A line that is not yours gets exit code 3.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip the confirmation (or set `AC_YES=1`) |
+| `--json` | flag | Print `{"ok": true, "id": ..., "action": "remove"}` |
+
+#### `ac settings memory suggestions list`
+
+Lists the proposed memory suggestions: lines that the app learns from your
+edits to email drafts. The table shows the ID, the text, and "N emails / M
+people". Only `--json` shows the example edits.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | `{"data": [...], "total": N}`; each suggestion has `id`, `text`, `evidence_count`, `recipient_count`, `examples` (`[{"before", "after"}]`), `created_at` |
+
+#### `ac settings memory suggestions refresh`
+
+Reads your recent email edits again and proposes new suggestions. Prints
+"Read N emails. M new suggestions."
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Print `{"emails_read": N, "proposed": M}` |
+
+#### `ac settings memory suggestions accept <suggestion-id>`
+
+Accepts a suggestion and adds it as a memory line for the email writer. At the
+memory cap, or with bad text, the command gets exit code 1 (HTTP 400). An
+unknown suggestion gets exit code 3. A suggestion that is not proposed gets
+exit code 5 (HTTP 409).
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--text` | str | Save this text instead of the suggested text |
+| `--json` | flag | Print the new memory line |
+
+#### `ac settings memory suggestions dismiss <suggestion-id>`
+
+Dismisses a suggestion. A dismissed suggestion does not come back. An unknown
+suggestion gets exit code 3. A suggestion that is not proposed gets exit code 5.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes`, `-y` | flag | Skip the confirmation (or set `AC_YES=1`) |
+| `--json` | flag | Print `{"ok": true, "id": ..., "action": "dismiss"}` |
 
 ---
 
@@ -2974,7 +3332,6 @@ Requires the `agentic-platform` API and CLI until cutover.
 
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
-| `--contract-version` | Positive integer | Yes | Select the published input contract. |
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
 | `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
@@ -3002,3 +3359,40 @@ The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
 409. A start names the Run, the definition and the status. A duplicate key names
 the Run that key already started and its status, and starts no second execution.
 See `agentic-runs.md` for the worked example.
+
+
+#### `ac agentic runs progress <run-id>`
+
+Reads product milestones across a root run and its children.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--json` | Boolean | No | Print the progress summary or structured error. |
+
+The command reads `/api/v1/agentic/runs/{run_id}/progress`. Child run IDs return 422.
+
+
+#### `ac agentic runs spans <run-id>`
+
+Lists the spans of one run. `--scope tree` includes the root run and its child
+runs, even when the named run is a child.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--since` | ISO 8601 datetime | No | Read spans updated at or after this instant. |
+| `--cursor` | String | No | Continue a page; keep the same `--since` value. |
+| `--scope` | `run` or `tree` | No | Select this run or the full run tree (default: `run`). |
+| `--limit` | Integer | No | Page size from 1 to 100. |
+| `--json` | Boolean | No | Print the span page or a structured error. |
+
+#### `ac agentic runs span-detail <owning-run-id> <span-id>`
+
+Reads the stored input and output of one span. Use the `run_id` attached to
+that span in a tree response.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--json` | Boolean | No | Print the raw input and output or a structured error. |
+
+The command reads `/api/v1/agentic/runs/{run_id}/spans/{span_id}`. A span outside
+the named run returns 404.

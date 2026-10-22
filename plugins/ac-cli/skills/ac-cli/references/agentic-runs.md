@@ -5,31 +5,54 @@ These commands require the CLI and API from `agentic-platform` until cutover.
 ## Start a capability
 
 Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
-`people.enrich` or `signals.search`. The capability must be installed and active
+`people.enrich`, `people.signals` or `signals.search`. The capability must be installed and active
 for the current organization. Its published schema defines the input fields.
 
-⚠️ **Read the contract version before you start.** Each capability publishes its
-own version, and the versions differ. A start that names another version answers
-`contract_version_conflict` (409). `ac agentic capabilities get <id> --json`
-reports the served value in `contract_version`.
-
 ```bash
-ac agentic capabilities get company.search --json   # reports contract_version
-ac agentic capabilities start company.search --contract-version 3 \
+ac agentic capabilities start company.search \
   --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
   --idempotency-key company-search-request-42 --json
 ```
 
-The version in the example is illustrative. A schema change raises it, so pass
-the value the `get` command reports.
+Both flags are required. Use a JSON input object and a nonblank delivery key
+with 1–255 header-safe ASCII characters.
 
-All three flags are required. Use a positive integer contract version, a JSON
-input object, and a nonblank delivery key with 1–255 header-safe ASCII characters.
+A `signals.search` bounded set (`"source":"company_set"`) names companies, people
+or both. A company reference carries one of `intel_company_id`, `prospect_id`,
+`domain` or `linkedin_url`, with an optional `name`, or a `name` alone that the
+Run researches. A person carries `linkedin_url`, or `full_name` with `email`,
+`domain` or `company_name`, plus an optional `title`. The Run seeds each
+person's company from the domain, the work email host or the company name, and
+the result carries `skipped_companies`, `skipped_people` and one
+`supplied_people` outcome per person (`signal_recorded`, `no_signal`,
+`no_profile` or `employer_mismatch`).
+
+```bash
+ac agentic capabilities start signals.search \
+  --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"}]}' \
+  --idempotency-key signals-people-42 --json
+```
+
+For a person event, start `people.signals`. Discovery is the default. To
+research a known people list, use `"source":"people_set"` with 1–10 people;
+the Run excludes people outside that list. `brief.employer_criteria` optionally
+describes the person's current employer, `brief.persona` refines the person's
+role and location, and `brief.persona_description` describes the people.
+Optional `signal_recency` accepts `"1w"`, `"1m"`,
+`"3m"`, `"6m"`, `"12m"`, or `"24m"` (default `"3m"`). The person with the
+signal is the resulting contact.
+
+```bash
+ac agentic capabilities start people.signals \
+  --input '{"source":"people_set","people":[{"full_name":"Ada Lovelace","email":"ada@example.com"}],"brief":{"icp":"Started a marketing leadership role","employer_criteria":"B2B SaaS companies"},"signal_recency":"1m"}' \
+  --idempotency-key people-signals-42 --json
+```
+
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
 Reuse the same key and request after a timeout. A matching replay returns the
-original Run, even after a binding change. A changed capability, version or input
+original Run, even after a binding change. A changed capability or input
 with that key returns `idempotency_conflict` (409). Use a new key for a new request.
 Keys are isolated by organization, caller and start source.
 
@@ -38,7 +61,7 @@ The response is the existing Run detail. Read `status` as well as `outcome`:
 A duplicate does not start another execution. Read the Run with the commands below.
 
 Errors preserve the API code in JSON output: unknown ID (404), unavailable binding
-or stale version (409), missing scope (403), invalid input (422), oversized input
+(409), missing scope (403), invalid input (422), oversized input
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
 ## Start a run
@@ -62,8 +85,11 @@ first Run and starts no second execution; human output marks it `Duplicate`.
 
 The definition must be published, and it must be an agent or a workflow.
 `ac agentic definitions list` also returns drafts, disabled definitions and
-skills. Each of those returns 409. `ac agentic capabilities start` above starts
-a published product capability, and it takes a contract version.
+skills. Each of those returns 409. An archived definition is hidden from the
+list unless you pass `--include-archived`; `ac agentic definitions archive <id>`
+hides one and disables it, and `ac agentic definitions unarchive <id>` brings it
+back, still disabled. `ac agentic capabilities start` above starts
+a published product capability and selects the active contract automatically.
 
 ## Read Runs
 
@@ -72,7 +98,24 @@ ac agentic runs list --json
 ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
+ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs list --capability signals.search --capability people.signals --json
+ac agentic runs list --capability company.search --status succeeded --include-result --json
+ac agentic runs spans <run-id> --scope tree --json
+ac agentic runs span-detail <owning-run-id> <span-id> --json
 ```
+
+`--include-result` puts the frozen `result` of each Run on its row, so one
+list request answers the results of many Runs. Without it, `result` is null.
+
+`--capability` repeats. The Signals history lists the `signals.search` and
+the `people.signals` Runs in one page, and the title of each.
+
+`--source` lists the Runs one entry point started: `front_door`, `trigger`,
+`api` or `workflow_step`. A schedule starts `trigger` Runs. On a list that
+names `signals.search`, `people.signals`, or both, each Run also
+carries a `title`: the saved-search name, else the first sales-signal criterion,
+the ICP, or the target-company text. Every other list answers `title: null`.
 
 Run start, list and detail JSON include `capability_id` and `contract_version`.
 The values come from the published executor binding at admission. A later
@@ -86,3 +129,35 @@ usage deltas and can be incomplete. Use durable usage records for billing.
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
 page. The default lists root Runs. Use `--all` to include child Runs.
 To read another page, pass `next_cursor` to `--cursor` even when you use `--all`.
+
+The spans list omits tool arguments and results. `span-detail` reads the bounded,
+redacted input and output for one span. Use the span's `run_id` from the tree
+response as `<owning-run-id>`; a span from another run returns 404.
+
+When `list` is filtered with `--capability company.search`, `people.search` or
+`signals.search`, its rows include `search_query`, normalized from the
+capability's input contract. The human table shows it in the
+`Definition / Search` column. It is null for unfiltered lists, non-search Runs
+and older Runs whose input did not retain the submitted query.
+
+`list` JSON and the human `Prospects` column carry `prospect_count`: how many
+prospects the Run last wrote. It is null on every list but a
+`--capability signals.search` or `--capability people.signals` one, because only
+those lists pay for the count.
+Zero is a Run that wrote no prospect, so do not read null as zero. A later Run
+that returns a company again claims the row, so the count of an older Run falls.
+Run detail always carries null.
+
+
+### Product progress
+
+`ac agentic runs progress <run-id> --json` reads a bounded summary of observed
+product milestones across a root run and its child agents. It supports Signals,
+Company and People Search. Pass a root run ID; a child ID returns 422.
+
+The response contains `run_id`, `status` and `stages`. Each stage has a stable
+`id`, readable `name` and `description`, `status`, `started_at`, `updated_at`
+and `incomplete`. An incomplete stage does not establish completion. An empty
+stage list does not mean the run has stopped; read the run status.
+
+The progress response includes up to six agent and tool activity entries per active stage. Each entry has a name, kind and status. `activity_incomplete` marks a limited view; tool arguments and outputs are omitted.

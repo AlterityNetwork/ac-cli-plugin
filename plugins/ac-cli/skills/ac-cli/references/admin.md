@@ -36,7 +36,7 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
 ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json]
+ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json] [--comped/--no-comped]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
@@ -109,7 +109,7 @@ ac admin onboarding create --email user@example.com --first-name "Jane" \
   --last-name "Smith" --org-name "Acme Corp" [--website-url "https://acme.com"] \
   [--country US] [--timezone "America/New_York"] [--locale en] [--currency USD] \
   [--job-title "CEO"] [--bio "..."] [--linkedin "https://..."] \
-  [--contact-email "alt@example.com"] [--calendly-url "https://..."]
+  [--contact-email "alt@example.com"] [--calendly-url "https://..."] [--comped]
 ac admin onboarding list [--status pending] [--query "acme"] [--page 1] [--page-size 25]
 ac admin onboarding get <org-id>
 ac admin onboarding delete <org-id>
@@ -159,7 +159,7 @@ ac admin platform-activity users [--start-date 2026-01-01] [--end-date 2026-03-2
 ac admin platform-activity user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ```
 
-## Searches (Sonar + Headhunter)
+## Searches: Sonar (legacy) and Headhunter (legacy)
 
 Cross-org analytics. Responses are PII-scrubbed: people rows omit names, emails, LinkedIn URLs, avatars, free-text summaries; only role, country, quality scores remain. `trigger_data` on runs is sanitized the same way.
 
@@ -240,6 +240,17 @@ ac admin subscriptions delete <subscription-id> [--yes]
 # it stays incomplete and the customer is emailed the hosted payment link; the
 # org then appears under `worklists` stuck.
 ac admin subscriptions activate-billing <subscription-id> [--yes]
+
+# Card setup link: Activate charges a saved card, and it now refuses to grant
+# access when the org has none. For an org awaiting activation with no card,
+# create a link to a Stripe-hosted page where the customer saves a card. The
+# customer does not sign in. The link is valid for 24 hours, and each call
+# creates a new one. Without --email it prints the link to copy. With --email
+# it emails the account owner and prints the link only if the email failed.
+# `subscriptions get` shows Card On File and Card Last 4 once it is saved
+# (`list --json` carries has_card too); then run activate-billing. Refuses
+# manual subscriptions and comped orgs.
+ac admin subscriptions send-card-link <subscription-id> [--email] [--yes]
 
 # Link an EXISTING Stripe subscription to this local row. Distinct from
 # activate-billing: linking never creates a Stripe object and never charges. It

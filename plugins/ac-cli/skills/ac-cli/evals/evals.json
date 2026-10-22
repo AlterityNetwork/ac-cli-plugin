@@ -217,13 +217,13 @@
     },
     {
       "id": 14,
-      "prompt": "Create a static list called 'Q2 Targets' for people, then add person p-001 and person p-002 to it.",
+      "prompt": "Create a static list called 'Q2 Targets', then add person p-001 and person p-002 to it.",
       "expected_output": "lists create \u2192 2x add-member.",
       "assertions": [
         {
           "name": "creates_list",
           "type": "command_matches",
-          "text": "`ac crm lists create` with `--name .*Q2 Targets`, `--member-type person`, `--type static`"
+          "text": "`ac crm lists create` with `--name .*Q2 Targets` and `--type static`, and no `--member-type`"
         },
         {
           "name": "two_add_members",
@@ -622,7 +622,7 @@
     },
     {
       "id": 44,
-      "prompt": "How many failed Sonar searches did each org have in the last 7 days? Pipe through jq for grouping.",
+      "prompt": "How many failed Sonar (legacy) searches did each org have in the last 7 days? Pipe through jq for grouping.",
       "expected_output": "Uses `ac admin searches runs --source sonar --status failed --start-date <7d-ago> --all` and pipes via jq for group_by org.",
       "assertions": [
         {
@@ -918,7 +918,7 @@
     },
     {
       "id": 69,
-      "prompt": "Show the Envoy dashboard with overall outreach stats.",
+      "prompt": "Show the Outreach dashboard with overall outreach stats.",
       "expected_output": "Runs `ac envoy dashboard`.",
       "assertions": [
         {
@@ -930,7 +930,7 @@
     },
     {
       "id": 70,
-      "prompt": "List my Envoy campaigns.",
+      "prompt": "List my Outreach campaigns.",
       "expected_output": "Runs `ac envoy campaigns list`.",
       "assertions": [
         {
@@ -966,7 +966,7 @@
     },
     {
       "id": 73,
-      "prompt": "Sonar found a bunch of companies and they auto-landed in our CRM. Mark companies c1, c2, and c3 as human-approved, then show me the companies still waiting for approval.",
+      "prompt": "Sonar (legacy) found a bunch of companies and they auto-landed in our CRM. Mark companies c1, c2, and c3 as human-approved, then show me the companies still waiting for approval.",
       "expected_output": "Bulk-approve via `ac crm companies approve --ids c1,c2,c3`, then list unapproved with `ac crm companies list --unapproved`.",
       "assertions": [
         {
@@ -1017,7 +1017,7 @@
     },
     {
       "id": 78,
-      "prompt": "Show companies above a lead score of 6 on my Launchpad and group them by saved search.",
+      "prompt": "Show leads above a score of 6 on my Launchpad and group them by saved search.",
       "expected_output": "Uses `ac launchpad signal-preferences set --score-threshold 6 --score-direction above --group`.",
       "assertions": [
         {
@@ -1085,30 +1085,25 @@
     },
     {
       "id": 82,
-      "prompt": "Create an agentic saved search for Signals Search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}. Signals Search publishes contract version 3.",
-      "expected_output": "Creates the saved search with the exact agentic command, naming the capability, the contract version, the name, and the brief.",
+      "prompt": "Create an agentic saved search for Signals Search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}.",
+      "expected_output": "Creates the saved search with the exact agentic command, naming the capability, the name, and the brief.",
       "assertions": [
         {
           "name": "creates_saved_search",
           "type": "command_matches",
-          "text": "`ac agentic saved-searches create .*--capability [\"']?signals\\.search[\"']?.*--contract-version 3.*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
+          "text": "`ac agentic saved-searches create .*--capability [\"']?signals\\.search[\"']?.*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
         }
       ]
     },
     {
       "id": 83,
-      "prompt": "Start AgencyCore company.search contract version 1 for supplied domain example.com. Use the exact input {\"sources\":[\"supplied\"],\"companies\":[{\"kind\":\"domain\",\"value\":\"example.com\"}]}, delivery key company-search-request-42, and JSON output. Use the stable capability command, not an executor UUID.",
-      "expected_output": "Starts company.search with the exact supplied input, explicit version, delivery key and JSON output.",
+      "prompt": "Start AgencyCore company.search for supplied domain example.com. Use the exact input {\"sources\":[\"supplied\"],\"companies\":[{\"kind\":\"domain\",\"value\":\"example.com\"}]}, delivery key company-search-request-42, and JSON output. Use the stable capability command, not an executor UUID.",
+      "expected_output": "Starts company.search with the exact supplied input, delivery key and JSON output.",
       "assertions": [
         {
           "name": "starts_stable_capability",
           "type": "command_matches",
           "text": "`ac agentic capabilities start company.search`"
-        },
-        {
-          "name": "version",
-          "type": "command_matches",
-          "text": "`--contract-version 1`"
         },
         {
           "name": "input",
@@ -1185,6 +1180,142 @@
           "name": "targeting_only_command",
           "type": "command_matches",
           "text": "`ac settings targeting set` includes `--profiles-file /tmp/icps.json`"
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "prompt": "Fetch CRM people p1 and p2 in one request, including soft-deleted records, and return JSON.",
+      "expected_output": "Uses the CRM people bulk-read command with both IDs, --include-deleted, and --json.",
+      "assertions": [
+        {
+          "name": "people_by_ids_command",
+          "type": "command_matches",
+          "text": "`ac crm people by-ids` includes `--ids p1,p2`"
+        },
+        {
+          "name": "people_by_ids_include_deleted",
+          "type": "command_matches",
+          "text": "The `ac crm people by-ids` command includes `--include-deleted`"
+        },
+        {
+          "name": "people_by_ids_json",
+          "type": "command_matches",
+          "text": "The `ac crm people by-ids` command includes `--json`"
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "prompt": "Show the current Signals search progress, including its child agents, for root run 11111111-1111-4111-8111-111111111111.",
+      "expected_output": "Reads the bounded product progress summary with ac agentic runs progress and reports observed milestones and run status.",
+      "assertions": [
+        {
+          "name": "reads_product_progress",
+          "type": "command_matches",
+          "text": "`ac agentic runs progress 11111111-1111-4111-8111-111111111111 --json`"
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "prompt": "Show the input and output recorded for span 33333333-3333-4333-8333-333333333333 in run 11111111-1111-4111-8111-111111111111.",
+      "expected_output": "Reads the single span's bounded input and output with ac agentic runs span-detail.",
+      "assertions": [
+        {
+          "name": "reads_span_payload",
+          "type": "command_matches",
+          "text": "`ac agentic runs span-detail 11111111-1111-4111-8111-111111111111 33333333-3333-4333-8333-333333333333 --json`"
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "prompt": "Save the company dossier that the AI features read, with my own profile included, to ./dossier.md.",
+      "expected_output": "Checks the active organization with `ac whoami`, then writes the Markdown with `ac settings dossier get --user > ./dossier.md`.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the dossier read"
+        },
+        {
+          "name": "dossier_with_user",
+          "type": "command_matches",
+          "text": "`ac settings dossier get --user`"
+        }
+      ]
+    },
+    {
+      "id": 91,
+      "prompt": "Remember that I always sign off my emails as Marc. Only the email writer needs this.",
+      "expected_output": "Checks the active organization with `ac whoami`, then adds a personal memory line with `ac settings memory add --text \"...\" --applies-to email`. It does not use `ac settings dossier`, which only reads.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the memory write"
+        },
+        {
+          "name": "memory_add_email",
+          "type": "command_matches",
+          "text": "`ac settings memory add .*--applies-to email`"
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "prompt": "What has the app learned from my edits to email drafts?",
+      "expected_output": "Checks the active organization with `ac whoami`, then lists the proposed memory suggestions with `ac settings memory suggestions list`. It does not use `ac settings memory list`, which lists only the lines the user already keeps.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the suggestions read"
+        },
+        {
+          "name": "suggestions_list",
+          "type": "command_matches",
+          "text": "`ac settings memory suggestions list`"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "prompt": "Org subscription sub-55 is awaiting activation and has no card on file. Email the account owner a link to add a card.",
+      "expected_output": "Checks auth with `ac whoami`, then runs `ac admin subscriptions send-card-link sub-55 --email` to email the owner a Stripe-hosted card setup link. It does not run `activate-billing`, which would fail with no card.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the admin mutation"
+        },
+        {
+          "name": "send_card_link_command",
+          "type": "command_matches",
+          "text": "`ac admin subscriptions send-card-link sub-55 --email`"
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "prompt": "Schedule draft email comm-77 to go out on 7 January 2030 at 09:00 London time.",
+      "expected_output": "Checks auth with `ac whoami`, then runs `ac crm comms schedule comm-77 --at 2030-01-07T09:00:00Z` (London is on GMT in January, so the offset is +00:00 or Z). It does not send the email now.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the schedule"
+        },
+        {
+          "name": "schedule_command",
+          "type": "command_matches",
+          "text": "`ac crm comms schedule comm-77 --at 2030-01-07T09:00:00(Z|\\+00:00)`"
+        },
+        {
+          "name": "does_not_send_now",
+          "type": "command_forbidden",
+          "text": "`ac crm comms send-now` or `ac nylas send`"
         }
       ]
     }

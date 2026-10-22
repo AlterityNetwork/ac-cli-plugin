@@ -3,11 +3,11 @@ name: ac-cli
 description: >
   AgencyCore platform via `ac` CLI: CRM (companies, contacts, deals, pipelines,
   activities, follow-ups, communications, lists, imports, engagement); outreach
-  automation (Envoy sequences, campaigns, recipients, outbox drafts, inbox
+  automation (Outreach sequences, campaigns, recipients, outbox drafts, inbox
   replies, signals, battlecards, playbooks, cold emails); workflows (runs,
   schedules, cron, presets, CSV, discovered companies/people); admin (users,
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
-  usage, cross-org Sonar/Headhunter searches, legal docs, subscriptions);
+  usage, cross-org Sonar (legacy)/Headhunter (legacy) searches, legal docs, subscriptions);
   platform (file/image upload, knowledge base PDF resources, apps,
   agentic saved searches, prospect review, web chat conversations, writing styles, Nylas email, profiles,
   environment switching). Use when user mentions "ac"/"AgencyCore", any record
@@ -16,7 +16,7 @@ description: >
   check queue health, onboard a customer, or script AgencyCore with JSON+jq.
 when_to_use: >
   Fires on: "ac"/"AgencyCore"; CRM verbs on companies/contacts/deals/activities;
-  "draft/approve/reject email", "cold email"; "sequence", "Envoy", "playbook",
+  "draft/approve/reject email", "cold email"; "sequence", "Envoy", "Outreach", "playbook",
   "battlecard", "signal"; "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
@@ -118,7 +118,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Domain | Covers | Reference |
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
-| Envoy (Outreach) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
+| Outreach (`ac envoy`) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
@@ -126,14 +126,16 @@ For the command list of a domain, **read the matching reference file** before co
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For capability input and retry rules, read `references/agentic-runs.md`. Use
-`ac agentic capabilities start <id> --contract-version <integer> --input '<JSON>' --idempotency-key <key> --json`.
-All three value flags are required. Preserve the user's delivery key on a retry.
+`ac agentic capabilities start <id> --input '<JSON>' --idempotency-key <key> --json`.
+Both value flags are required. Preserve the user's delivery key on a retry.
 Start a published definition with
 `ac agentic runs start --definition <definition-id> --input '<JSON>' --json`.
 Only `--definition` is required. The CLI mints the delivery key when
 `--idempotency-key` is absent. A draft definition returns 409.
 Read a Run with `ac agentic runs get <run-id> --json`. Read its children with
 `ac agentic runs list --parent <run-id> --json`.
+For search progress across child agents, use
+`ac agentic runs progress <root-run-id> --json`.
 
 For exhaustive flag tables see [`references/commands.md`](references/commands.md). For multi-step recipes beyond the 6 in this file, see [`references/workflows-recipes.md`](references/workflows-recipes.md).
 
@@ -146,9 +148,10 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | User says | Correct command | Wrong guesses to avoid |
 |-----------|----------------|------------------------|
 | "start a run of an agentic definition (agent or workflow definition ID)" | `ac agentic runs start --definition <definition-id>` | `ac workflows runs create <workflow-id>` — a different runtime that takes a workflow ID, not an agentic definition ID |
-| "saved search" / "repeat this search" | `ac agentic saved-searches …` (name the product with `--capability`) | `ac platform agentic-saved-searches` · workflow schedules (a saved search starts Runs but creates no schedule) |
+| "saved search" / "repeat this search" | `ac agentic saved-searches …` (name the product with `--capability`) | `ac platform agentic-saved-searches` · workflow schedules (schedule a Signals saved search with `ac agentic saved-searches schedule set`, not a workflow schedule) |
 | "switch / change active organization to X" | `ac profiles set-organization X` | `ac env use` (envs are local/staging/production) · `ac admin orgs` (manages records) · `ac apps … --org-id` (per-app) |
 | "delete the 3 people IDs p-100, p-101, p-102" / any list of 2+ ids | `ac crm people bulk-delete --ids p-100,p-101,p-102` (single call, comma-separated) | NEVER loop `ac crm people delete <id>` per-id — even with `AC_YES=1`, this is wrong because (a) bulk-delete exists, (b) the loop is non-atomic |
+| "fetch these people IDs" / read multiple known person IDs | `ac crm people by-ids --ids p-100,p-101,p-102` (add `--include-deleted` when soft-deleted records are requested) | looping `ac crm people get <id>` — the batch read exists and preserves caller order |
 | "JSON file of people, bulk upsert / import" | `ac crm people bulk-upsert --file <path>` | `ac crm import preview --file <path>` is for the CSV-style CRM import flow; for a JSON file of people use `bulk-upsert` |
 | "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
 | "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
@@ -159,7 +162,9 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "move people from list A to list B" | `ac crm lists bulk-move-members A --target-list-id B --member-type person --ids p1,p2` | composing `add-members` + `bulk-remove-members` (the move command is one call and reports duplicates) |
 | "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
-| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Envoy inbox — different surfaces |
+| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference) | `ac chat …` / Outreach inbox (`ac envoy inbox`): different surfaces |
+| "remember that I …" / "add to my memory" / "my standing instructions" | `ac settings memory add --text "…"` (`--applies-to email` for the email writer only); `list` / `edit` / `remove` | `ac settings dossier …` (a read-only summary of what the apps know, not your own memory lines) |
+| "what has the app learned from my edits" / "memory suggestions" | `ac settings memory suggestions list`; `accept <id>` (`--text` to change it) / `dismiss <id> --yes`; `refresh` reads the recent edits again | `ac settings memory list` (only the lines you already keep) |
 | "web chat conversation" / "AI chat thread" (user-facing) | `ac agentic conversations …` | `ac chat …` was removed; admin chat triage no longer exists |
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
@@ -344,7 +349,7 @@ ac crm import preview --file contacts.json
 ac crm import commit --preview-id <id-from-preview>
 ```
 
-### Envoy: Launch a sequence
+### Outreach: Launch a sequence
 
 ```bash
 # 1. Create
@@ -366,7 +371,7 @@ ac envoy recipients add <sequence-id> --prospect-ids id1,id2,id3
 ac envoy sequences launch <sequence-id> --workflow-id <workflow-id>
 ```
 
-### Envoy: Review and approve drafts
+### Outreach: Review and approve drafts
 
 ```bash
 ac envoy outbox pending --json

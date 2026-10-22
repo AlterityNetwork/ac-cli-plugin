@@ -33,6 +33,7 @@ ac crm companies enrich <url> [--provider hunter|explorium]   # provider-agnosti
 ac crm people list [--company-id <id>] [--company-ids id1,id2] [--limit 100] \
   [--approved | --unapproved] [--added-by-type user|agent] [--added-by-user <user-id>]
 ac crm people get <person-id>
+ac crm people by-ids --ids id1,id2 [--include-deleted]
 ac crm people create [--email jane@acme.com] --full-name "Jane Smith" \
   [--current-title "VP Sales"] [--company-id <id>] [--tags "decision-maker"]
 ac crm people update <person-id> --current-title "CRO"
@@ -46,9 +47,14 @@ ac crm people bulk-delete --ids id1,id2,id3 [--yes]
 
 > **Bulk vs single rule**: when the user names **more than one** id for delete or upsert, ALWAYS use `bulk-delete --ids id1,id2,id3` or `bulk-upsert --file <path>`. Do not loop single `delete` calls — slower and breaks atomicity.
 
-> **Provenance & approval (ENG-819)**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (which agent surfaced it, e.g. `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual + CSV adds are auto-approved; agent-discovered rows start unapproved. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent`, and `--added-by-user <user-id>`. Mark agent finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
+> For a read of multiple known person IDs, use `people by-ids`; do not loop
+> `people get`. The endpoint preserves caller order and silently omits unknown
+> or inaccessible IDs. Add `--include-deleted` when the user asks for
+> soft-deleted records.
 
-> **Actioned (ENG-912)**: `approved_by` / `approved_at` doubles as the Actioned stamp. Any of {note added, manual outbound comm logged, list-add, sequence-enrol} stamps it forward. `ac crm companies mark-actioned` / `ac crm people mark-actioned --ids ... [--note "..."]` are the explicit bulk actions behind the Sonar / Headhunter Mark-done button — with `--note` each also writes a `crm_activities` row (`type=note`, `source_app=manual`) per company/person, otherwise just stamps (ENG-912 companies, ENG-1127 people).
+> **Provenance & approval**: every company/person carries `created_by_user_id` (who added it manually or via CSV), `discovered_via_agent` (set only by the legacy Sonar and Headhunter workflows: `sonar`/`headhunter`), and `approved_by`/`approved_at` (human vetting). Manual and CSV adds are auto-approved. Every app add starts unapproved: the legacy Sonar and Headhunter workflows, a Signals promotion, and the rows Company Search and People Search add to the CRM. A row becomes approved when a user approves it, marks it actioned, or adds the person to an Outreach sequence. An enrolment an agent makes approves nothing. Filter the lists with `--approved`/`--unapproved`, `--added-by-type user|agent` (`agent` matches the legacy workflow rows only), and `--added-by-user <user-id>`. Mark app finds as vetted with `ac crm companies approve --ids ...` / `ac crm people approve --ids ...` (bulk-friendly; use `unapprove` to reverse).
+
+> **Actioned**: `approved_by` / `approved_at` doubles as the Actioned stamp. Any of {note added, manual outbound comm logged, list-add, sequence-enrol} stamps it forward. `ac crm companies mark-actioned` / `ac crm people mark-actioned --ids ... [--note "..."]` are the explicit bulk actions behind the Mark-done button in Sonar (legacy), Company Search, Headhunter (legacy) and People Search. With `--note` each also writes a `crm_activities` row (`type=note`, `source_app=manual`) per company/person. Without `--note` each only stamps.
 
 ## Deals
 
@@ -82,7 +88,8 @@ ac crm activities delete <activity-id> [--yes]
 ## Communications (Email & Messages)
 
 ```bash
-ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email]
+ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email] \
+  [--folder inbox|sent|drafts|archived|scheduled]
 ac crm comms thread <thread-id>
 ac crm comms unread
 ac crm comms mark-read <thread-id>
@@ -98,23 +105,33 @@ ac crm comms archive --thread-id <id>
 ac crm comms unarchive --thread-id <id>
 ac crm comms delete <communication-id> [--yes]
 
+# Scheduled send (status scheduled -> sending -> sent, or failed)
+ac crm comms list --folder scheduled          # your scheduled emails, send-time order
+ac crm comms schedule <communication-id> --at 2030-01-07T09:00:00+00:00
+ac crm comms unschedule <communication-id>    # back to Drafts
+ac crm comms send-now <communication-id>      # scheduled or failed email
+
 # Approval workflow (awaiting_approval status)
 ac crm comms pending-approvals [--sequence-id <id>] [--step-id <id>]
 ac crm comms approve <communication-id>
 ac crm comms reject <communication-id> --action skip_send [--reason "..."]
-ac crm comms regenerate <communication-id>
+ac crm comms regenerate <communication-id> [--instruction "..."] \
+  [--apply-to-sequence] [--apply-to-writing-style] [--scope draft|step]
 ```
 
 ## Lists
 
+A list holds people and companies. `members --member-type` reads one kind.
+
 ```bash
 ac crm lists list
 ac crm lists get <list-id>
-ac crm lists create --name "Q2 Targets" [--member-type person] [--type static]
+ac crm lists create --name "Q2 Targets" [--type static]
 ac crm lists add-member <list-id> --person-id <id>
 ac crm lists add-members <list-id> --member-type person --ids id1,id2,id3
-ac crm lists remove-member <list-id> --person-id <id>
-ac crm lists members <list-id>
+ac crm lists remove-member <list-id> --person-id <id> [--yes]
+ac crm lists members <list-id> [--member-type person|company] [--include-person-details] [--include-company-details]
+ac crm lists update <list-id> [--name ...] [--description ... | --clear-description]
 ac crm lists lists-for-member --person-id <id>
 ac crm lists lists-for-member --company-id <id>
 ac crm lists bulk-remove-members <list-id> --member-type person --ids id1,id2,id3 [--yes]
