@@ -344,7 +344,7 @@ ac admin entitlement-grants list --org-id <org-id> [--json]
 # --source is plan_addon, trial or comp. --mode defaults to grant.
 # A trial needs --expires-at (ISO 8601 with a timezone, later than now).
 ac admin entitlement-grants create --org-id <org-id> --key network --source comp
-ac admin entitlement-grants create --org-id <org-id> --key chat --source trial --expires-at 2026-10-01T00:00:00+00:00
+ac admin entitlement-grants create --org-id <org-id> --key chat --source trial --expires-at 2027-01-01T00:00:00+00:00
 ac admin entitlement-grants create --org-id <org-id> --key crm --source comp --mode revoke
 
 ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
