@@ -2769,6 +2769,14 @@ campaign answers the same enrollment.
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw enrollment JSON: `state`, `ended_reason`, `next_due_at`, `active_run_id`, `version` |
 
+#### `ac agentic outreach enrollments timeline <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50 |
+| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
+
+Newest first. Exit code 3 for an enrollment of another organization.
+
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
