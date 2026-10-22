@@ -51,6 +51,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Subscriptions](#subscriptions)
    - [Subscription Plans](#subscription-plans)
 5. [Platform](#platform)
+   - [Agentic Outreach Drafts](#agentic-outreach-drafts)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
    - [Settings](#settings)
@@ -2687,6 +2688,53 @@ returns exit code 3. With `--json` the answer is
 The delete keeps no record of the company. A later run that finds the same
 company writes a new prospect at `new`. Use `dismiss` to keep a company out of
 the review list.
+
+### Agentic Outreach Drafts
+
+#### `ac agentic outreach drafts list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--campaign-id` | str | None | Only the drafts of this campaign |
+| `--limit` | int | 50 | How many drafts, 1 to 100 |
+| `--json` | flag | off | Raw `{"items": [...]}` JSON |
+
+Lists the drafts that wait for review, newest first. The first column is the
+draft ID, which is the decision ID every other command takes.
+
+#### `ac agentic outreach drafts get <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+
+#### `ac agentic outreach drafts save <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--subject` | str | no | New subject |
+| `--body` | str | no | New plain text body |
+| `--body-file` | path | no | Read the new body from a file. Not with `--body`. |
+| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+
+Give at least one field. A save changes the `content_hash` and keeps the
+`version`. After the approval the text is locked, and a save returns exit
+code 5 (`draft_locked`).
+
+#### `ac agentic outreach drafts approve <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--version` | int | yes | The `version` that `get` or `save` printed |
+| `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
+| `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
+
+A mismatch, a second reviewer, a paused campaign or a stopped organization
+returns exit code 5, and `--json` carries the reason in `context.code`.
+
+#### `ac agentic outreach drafts reject <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--mode` | `regenerate`, `skip` or `exit` | yes | Plan a new email now, send nothing and look later, or end the enrollment |
+| `--note` | str | no | Feedback that later Runs read |
+| `--yes` / `-y` | flag | no | Skip the question that `--mode exit` asks. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw review JSON: `outcome` is `rejected` and `reviewer_note` holds the note |
 
 ### Agentic Conversations
 

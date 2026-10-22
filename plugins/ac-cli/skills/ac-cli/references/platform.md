@@ -134,6 +134,38 @@ person to `prospect`. It moves a row at the `identified` stage, and a person
 that holds no stage. A qualified lead or a customer keeps the stage it holds.
 A company always holds a stage, so only a person can hold none.
 
+## Agentic Outreach Drafts
+
+```bash
+ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50]
+ac agentic outreach drafts get <draft-id>
+ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
+ac agentic outreach drafts approve <draft-id> --version <n> --content-hash <hash>
+ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
+```
+
+These commands review the emails that an agentic Outreach campaign drafted.
+They are not the legacy `ac envoy outbox` drafts. The draft ID is the decision
+ID that `list` prints.
+
+`get` prints the draft text, the enrollment `version` and the `content_hash`.
+`approve` must send both values back. Save your edits first, then approve with
+the `version` and `content_hash` that `save` or a new `get` printed. The Run
+then sends that exact text once. A save after the approval returns exit code 5.
+
+`approve` returns exit code 5 with a `code` in `--json` output when the
+version or the text changed (`version_changed`, `content_changed`), another
+person approved first (`already_approved`), the campaign is not active
+(`campaign_not_active`), the organization stopped Outreach
+(`organization_stopped`), or the Run does not wait yet (`approval_not_ready`;
+retry in a few seconds). Read the draft again before you retry.
+
+`reject --mode regenerate` plans a new email at once. `--mode skip` sends
+nothing and looks again later. `--mode exit` ends the person's enrollment and
+asks first; pass `--yes` to skip the question. `--note` is feedback that later
+Runs read. Do not approve an Outreach email with `ac agentic approvals`; that
+inbox refuses it with exit code 5.
+
 ## Organization Analytics
 
 ```bash
