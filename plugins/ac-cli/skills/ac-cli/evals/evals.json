@@ -1359,6 +1359,57 @@
           "text": "`ac agentic outreach drafts reject d-79 .*--mode exit`"
         }
       ]
+    },
+    {
+      "id": 98,
+      "prompt": "Create an agentic Outreach campaign called 'Q4 intro' with the goal 'Book a call', enroll CRM person p-11 in it, and start it.",
+      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --goal \"Book a call\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`. It does not use `ac envoy campaigns`.",
+      "assertions": [
+        {
+          "name": "creates_the_campaign",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns create .*--name`"
+        },
+        {
+          "name": "enrolls_the_crm_person",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns enroll .*(--person-kind crm.person|--person-id p-11).*(--person-kind crm.person|--person-id p-11)`"
+        },
+        {
+          "name": "activates",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns activate`"
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "prompt": "Pause the agentic Outreach campaign c-21 and stop agentic Outreach for the whole organization.",
+      "expected_output": "Runs `ac agentic outreach campaigns pause c-21` and `ac agentic outreach organization stop --yes` (or answers the confirmation).",
+      "assertions": [
+        {
+          "name": "pauses",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns pause c-21`"
+        },
+        {
+          "name": "stops_the_organization",
+          "type": "command_matches",
+          "text": "`ac agentic outreach organization stop`"
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "prompt": "I added an email address for the person in agentic Outreach enrollment e-31. Make Outreach try again.",
+      "expected_output": "Runs `ac agentic outreach enrollments evaluate e-31`, because a CRM edit starts no Run.",
+      "assertions": [
+        {
+          "name": "evaluates",
+          "type": "command_matches",
+          "text": "`ac agentic outreach enrollments evaluate e-31`"
+        }
+      ]
     }
   ]
 }

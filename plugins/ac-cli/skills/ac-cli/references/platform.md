@@ -134,6 +134,53 @@ person to `prospect`. It moves a row at the `identified` stage, and a person
 that holds no stage. A qualified lead or a customer keeps the stage it holds.
 A company always holds a stage, so only a person can hold none.
 
+## Agentic Outreach Campaigns
+
+```bash
+ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50]
+ac agentic outreach campaigns get <campaign-id>
+ac agentic outreach campaigns create --name "Q4 intro" [--goal "Book a call"] [--instructions "..."] [--max-emails 3] [--min-days 3] [--writing-style-id <id>] [--playbook-id <id>] [--battlecard-id <id>]
+ac agentic outreach campaigns update <campaign-id> [same options; pass none to a link option to clear it]
+ac agentic outreach campaigns activate|pause|resume <campaign-id>
+ac agentic outreach campaigns archive <campaign-id> [--yes]
+ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
+ac agentic outreach enrollments list --campaign-id <campaign-id> [--state active|awaiting_approval|needs_contact_data|ended] [--limit 100]
+ac agentic outreach enrollments get <enrollment-id>
+ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
+ac agentic outreach enrollments exit <enrollment-id> [--yes]
+ac agentic outreach organization status|resume
+ac agentic outreach organization stop [--yes]
+```
+
+These commands run the agentic Outreach campaigns. They are not the legacy
+`ac envoy campaigns` or `ac envoy sequences`.
+
+A new campaign is a `draft`, and the caller owns it: the owner's mailbox sends
+its emails. `activate` and `resume` both set the campaign `active`; `pause`
+sets it `paused`. While a campaign is paused, no new Run starts and no email is
+sent. A Run that started before the pause still finishes its decision, and its
+send is refused. `archive` is final and asks first. It ends every live
+enrollment in the background, so for a few seconds a person can still read as
+live.
+
+`enroll` adds one person and starts the first Run. A person can be live in
+one campaign only. Enrolling a person who is live in another campaign returns
+exit code 5 (`already_enrolled`), and the message names that campaign. A
+campaign holds at most 200 live enrollments (`campaign_full`). A prospect
+person that is already in the CRM enrolls as the CRM person.
+
+`enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
+enrollment in `needs_contact_data`, and after you add an email to the CRM
+person, because a CRM edit starts no Run. It returns exit code 5 when the
+enrollment waits for a draft review (`awaiting_approval`), a Run decides now
+(`run_in_progress`), the campaign is not active, the organization stopped, or
+the enrollment ended. `enrollments exit` ends the enrollment as `manual` and
+cancels a draft that waits for review.
+
+`organization stop` stops Outreach for every campaign of the organization,
+and `resume` clears it. Only an organization admin may run them; another
+member gets exit code 4.
+
 ## Agentic Outreach Drafts
 
 ```bash
