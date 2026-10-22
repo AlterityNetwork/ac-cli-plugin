@@ -2697,12 +2697,15 @@ the review list.
 |------|------|---------|-------------|
 | `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
 | `--limit` | int | 50 | How many campaigns, 1 to 100 |
-| `--json` | flag | off | Raw `{"items": [...]}` JSON |
+| `--json` | flag | off | Raw `{"items": [...]}` JSON. Each campaign holds `enrollment_counts`. |
+
+`enrollment_counts` is `{active, awaiting_approval, needs_contact_data, ended,
+live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 
 #### `ac agentic outreach campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw campaign JSON |
+| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` |
 
 #### `ac agentic outreach campaigns create`
 | Flag | Type | Required | Description |
@@ -2761,8 +2764,15 @@ campaign answers the same enrollment.
 |------|------|----------|-------------|
 | `--campaign-id` | str | yes | The campaign |
 | `--state` | `active`, `awaiting_approval`, `needs_contact_data` or `ended` | no | Only the enrollments in this state; default all |
+| `--search` | str | no | Only the people whose name holds this text, in any case; at most 100 characters |
 | `--limit` | int | no | How many enrollments, 1 to 200; default 100 |
-| `--json` | flag | no | Raw `{"items": [...]}` JSON |
+| `--offset` | int | no | How many enrollments to skip first; default 0 |
+| `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
+
+Each row is the enrollment plus `person_name`, `email` and `last_decision`
+(`{id, action_type, outcome, executed_at, created_at}`, or null before the
+first decision). `email` is the email of the person row; a Run can choose
+another address.
 
 #### `ac agentic outreach enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
@@ -2772,10 +2782,12 @@ campaign answers the same enrollment.
 #### `ac agentic outreach enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50 |
+| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50. The newest rows of each kind are kept. |
+| `--order` | `desc` or `asc` | no | `desc` (default) lists the newest item first, `asc` the oldest |
 | `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
 
-Newest first. Exit code 3 for an enrollment of another organization.
+An item with no time is last in both orders. Exit code 3 for an enrollment of
+another organization.
 
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |
