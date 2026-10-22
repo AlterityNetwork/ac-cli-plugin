@@ -88,7 +88,8 @@ ac crm activities delete <activity-id> [--yes]
 ## Communications (Email & Messages)
 
 ```bash
-ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email]
+ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email] \
+  [--folder inbox|sent|drafts|archived|scheduled]
 ac crm comms thread <thread-id>
 ac crm comms unread
 ac crm comms mark-read <thread-id>
@@ -103,6 +104,12 @@ ac crm comms unread-thread-ids
 ac crm comms archive --thread-id <id>
 ac crm comms unarchive --thread-id <id>
 ac crm comms delete <communication-id> [--yes]
+
+# Scheduled send (status scheduled -> sending -> sent, or failed)
+ac crm comms list --folder scheduled          # your scheduled emails, send-time order
+ac crm comms schedule <communication-id> --at 2030-01-07T09:00:00+00:00
+ac crm comms unschedule <communication-id>    # back to Drafts
+ac crm comms send-now <communication-id>      # scheduled or failed email
 
 # Approval workflow (awaiting_approval status)
 ac crm comms pending-approvals [--sequence-id <id>] [--step-id <id>]
