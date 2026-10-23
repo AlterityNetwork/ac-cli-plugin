@@ -121,7 +121,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Outreach (`ac envoy`) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
-| Platform | agentic saved searches, prospect review, web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
+| Platform | agentic saved searches, prospect review, agentic Outreach campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Agentic Capabilities and Runs | Start stable product IDs; start one definition; read Run identity, detail and children on agentic-platform | [`references/agentic-runs.md`](references/agentic-runs.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
@@ -169,7 +169,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
 | "cache stats" / "cache hit rate" / "cache hit ratio" | `ac admin cache-stats` (top-level admin command) | `ac admin ai-usage summary` (token cache) is not the same — `cache-stats` covers platform cache, ai-usage covers Anthropic prompt cache |
-| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts | both exist for different surfaces — match the user's context |
+| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts; `ac agentic outreach drafts approve` for agentic Outreach campaign drafts | three surfaces — match the user's context; `ac agentic approvals` refuses an agentic Outreach draft (exit 5) |
 
 ## Co-required flags
 

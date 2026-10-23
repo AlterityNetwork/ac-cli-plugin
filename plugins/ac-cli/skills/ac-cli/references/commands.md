@@ -52,6 +52,8 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Subscription Plans](#subscription-plans)
    - [Entitlement Grants](#entitlement-grants)
 5. [Platform](#platform)
+   - [Agentic Outreach Campaigns](#agentic-outreach-campaigns)
+   - [Agentic Outreach Drafts](#agentic-outreach-drafts)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
    - [Settings](#settings)
@@ -2713,6 +2715,190 @@ returns exit code 3. With `--json` the answer is
 The delete keeps no record of the company. A later run that finds the same
 company writes a new prospect at `new`. Use `dismiss` to keep a company out of
 the review list.
+
+### Agentic Outreach Campaigns
+
+#### `ac agentic outreach campaigns list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
+| `--limit` | int | 50 | How many campaigns, 1 to 100 |
+| `--json` | flag | off | Raw `{"items": [...]}` JSON. Each campaign holds `enrollment_counts`. |
+
+`enrollment_counts` is `{active, awaiting_approval, needs_contact_data, ended,
+live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
+
+#### `ac agentic outreach campaigns get <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` |
+
+#### `ac agentic outreach campaigns create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Campaign name |
+| `--goal` | str | no | What a reply should achieve. The planner reads it. |
+| `--instructions` | str | no | Guidance the planner reads |
+| `--max-emails` | int | no | Most emails per person, 1 to 20 (default 3) |
+| `--min-days` | int | no | Fewest days between emails, 1 to 30 (default 3) |
+| `--writing-style-id` | str | no | A writing style of the organization |
+| `--playbook-id` | str | no | A playbook of the organization |
+| `--battlecard-id` | str | no | A battlecard of the organization |
+| `--json` | flag | no | Raw campaign JSON |
+
+The campaign starts as `draft`, and the caller owns it. A link to a row of
+another organization returns exit code 3.
+
+#### `ac agentic outreach campaigns update <campaign-id>`
+Takes the `create` options, all optional, and `--json`. Give at least one.
+Pass `none` to `--writing-style-id`, `--playbook-id` or `--battlecard-id` to
+clear that link. An archived campaign returns exit code 5
+(`campaign_archived`).
+
+#### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw campaign JSON |
+
+`activate` and `resume` send the same request: set the campaign `active`, from
+`draft` or `paused`. `pause` sets an `active` campaign `paused`. Pausing a
+draft, or any move of an archived campaign, returns exit code 5
+(`invalid_status_change`). A repeat of the current status succeeds.
+
+#### `ac agentic outreach campaigns archive <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw campaign JSON |
+
+Archived is final. Every live enrollment ends as `manual`, in the background.
+
+#### `ac agentic outreach campaigns enroll <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person-kind` | `crm.person` or `prospect.person` | yes | The kind of the person ID |
+| `--person-id` | str | yes | A CRM person ID or a prospect person ID |
+| `--json` | flag | no | Raw enrollment JSON |
+
+Exit code 5 with `already_enrolled` (`context.campaign_name` names the other
+campaign), `campaign_full` (200 live enrollments) or `campaign_archived`.
+Exit code 3 for a person of another organization. A repeat in the same
+campaign answers the same enrollment.
+
+#### `ac agentic outreach enrollments list`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--campaign-id` | str | yes | The campaign |
+| `--state` | `active`, `awaiting_approval`, `needs_contact_data` or `ended` | no | Only the enrollments in this state; default all |
+| `--search` | str | no | Only the people whose name holds this text, in any case; at most 100 characters |
+| `--limit` | int | no | How many enrollments, 1 to 200; default 100 |
+| `--offset` | int | no | How many enrollments to skip first; default 0 |
+| `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
+
+Each row is the enrollment plus `person_name`, `email` and `last_decision`
+(`{id, action_type, outcome, executed_at, created_at}`, or null before the
+first decision). `email` is the email of the person row; a Run can choose
+another address.
+
+#### `ac agentic outreach enrollments get <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw enrollment JSON: `state`, `ended_reason`, `next_due_at`, `active_run_id`, `version` |
+
+#### `ac agentic outreach enrollments timeline <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50. The newest rows of each kind are kept. |
+| `--order` | `desc` or `asc` | no | `desc` (default) lists the newest item first, `asc` the oldest |
+| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
+
+An item with no time is last in both orders. Exit code 3 for an enrollment of
+another organization.
+
+#### `ac agentic outreach enrollments evaluate <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--request-id` | str | no | Your id for the request. A repeat with the same id starts no second Run. |
+| `--json` | flag | no | Raw `{"enrollment": {...}, "event_id": "manual:..."}` JSON |
+
+Re-evaluate, retry, or retry after an added email. Exit code 5 with
+`awaiting_approval`, `run_in_progress`, `campaign_not_active`,
+`organization_stopped` or `enrollment_ended`.
+
+#### `ac agentic outreach enrollments exit <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw enrollment JSON: `state` is `ended`, `ended_reason` is `manual` |
+
+An enrollment that ended for another reason returns exit code 5
+(`enrollment_ended`).
+
+#### `ac agentic outreach organization status|stop|resume`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | `stop` only: skip the question |
+| `--json` | flag | no | Raw `{"stopped": bool, "stopped_at": ...}` JSON |
+
+`stop` and `resume` are organization admin only (exit code 4 for another
+member). A repeated `stop` keeps the first stop time.
+
+### Agentic Outreach Drafts
+
+#### `ac agentic outreach drafts list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--campaign-id` | str | None | Only the drafts of this campaign |
+| `--limit` | int | 50 | How many drafts, 1 to 100 |
+| `--offset` | int | 0 | How many drafts to skip first |
+| `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
+
+Lists the drafts that wait for review, newest first. The first column is the
+draft ID, which is the decision ID every other command takes. Each row adds
+`person_name`, `campaign_name`, `campaign_status` (JSON only, not a column) and
+`expires_at`. The list
+holds `proposed` drafts and `approved` drafts that wait for the send; the
+`outcome` field tells them apart. `expires_at` is when the pending approval
+expires, and it is null for an approved draft. Columns: Draft ID, Person
+(`person_name`, or the address when the person is gone), Subject (`subject`), Outcome
+(`outcome`), Campaign (`campaign_name`), Expires (`expires_at`). The title reads "Outreach drafts
+<from>-<to> of <total>". In table output a last line prints the next `--offset` while
+`has_more` is true. With `--json`, the next offset is `offset` plus the length of `data`.
+
+#### `ac agentic outreach drafts get <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+
+#### `ac agentic outreach drafts save <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--subject` | str | no | New subject |
+| `--body` | str | no | New plain text body |
+| `--body-file` | path | no | Read the new body from a file. Not with `--body`. |
+| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+
+Give at least one field. A save changes the `content_hash` and keeps the
+`version`. After the approval the text is locked, and a save returns exit
+code 5 (`draft_locked`).
+
+#### `ac agentic outreach drafts approve <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--version` | int | yes | The `version` that `get` or `save` printed |
+| `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
+| `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
+
+A mismatch, a second reviewer, a paused campaign or a stopped organization
+returns exit code 5, and `--json` carries the reason in `context.code`.
+
+#### `ac agentic outreach drafts reject <draft-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--mode` | `regenerate`, `skip` or `exit` | yes | Plan a new email now, send nothing and look later, or end the enrollment |
+| `--note` | str | no | Feedback that later Runs read |
+| `--yes` / `-y` | flag | no | Skip the question that `--mode exit` asks. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw review JSON: `outcome` is `rejected` and `reviewer_note` holds the note |
 
 ### Agentic Conversations
 
