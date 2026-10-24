@@ -137,7 +137,7 @@ A company always holds a stage, so only a person can hold none.
 ## Agentic Outreach Campaigns
 
 ```bash
-ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50]
+ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
 ac agentic outreach campaigns get <campaign-id>
 ac agentic outreach campaigns create --name "Q4 intro" [--goal "Book a call"] [--instructions "..."] [--max-emails 3] [--min-days 3] [--writing-style-id <id>] [--playbook-id <id>] [--battlecard-id <id>]
 ac agentic outreach campaigns update <campaign-id> [same options; pass none to a link option to clear it]
