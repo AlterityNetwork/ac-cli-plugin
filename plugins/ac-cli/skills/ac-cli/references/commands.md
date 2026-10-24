@@ -2723,7 +2723,11 @@ the review list.
 |------|------|---------|-------------|
 | `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
 | `--limit` | int | 50 | How many campaigns, 1 to 100 |
-| `--json` | flag | off | Raw `{"items": [...]}` JSON. Each campaign holds `enrollment_counts`. |
+| `--offset` | int | 0 | How many campaigns to skip first |
+| `--json` | flag | off | Raw `{"items": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON. Each campaign holds `enrollment_counts`. |
+
+The table title names the page and the total, for example `1-50 of 120`. When
+more campaigns wait, the last line names the next `--offset`.
 
 `enrollment_counts` is `{active, awaiting_approval, needs_contact_data, ended,
 live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
