@@ -2829,7 +2829,7 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
-| `--json` | flag | no | Raw enrollment JSON: `state` is `ended`, `ended_reason` is `manual` |
+| `--json` | flag | no | Raw enrollment JSON: `state` is `ended`, `ended_reason` is `manual`, `ended_by` is the caller |
 
 An enrollment that ended for another reason returns exit code 5
 (`enrollment_ended`).

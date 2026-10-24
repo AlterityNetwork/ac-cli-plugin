@@ -191,8 +191,8 @@ enrollment in `needs_contact_data`, and after you add an email to the CRM
 person, because a CRM edit starts no Run. It returns exit code 5 when the
 enrollment waits for a draft review (`awaiting_approval`), a Run decides now
 (`run_in_progress`), the campaign is not active, the organization stopped, or
-the enrollment ended. `enrollments exit` ends the enrollment as `manual` and
-cancels a draft that waits for review.
+the enrollment ended. `enrollments exit` ends the enrollment as `manual`,
+records the caller in `ended_by` and rejects a draft that waits for review.
 
 `organization stop` stops Outreach for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
