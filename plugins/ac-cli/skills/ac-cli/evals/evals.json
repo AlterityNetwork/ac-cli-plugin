@@ -1422,6 +1422,40 @@
           "text": "`ac agentic outreach enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
         }
       ]
+    },
+    {
+      "id": 102,
+      "prompt": "As super admin, raise the People Search credit price to 35 credits per company, keep the 150 credit minimum per run, starting 1 December 2026.",
+      "expected_output": "Runs `ac admin credit-prices create --action-key people.search --unit company --credits 35 --minimum-credits 150 --effective-from 2026-12-01...`. A price change is a new version, so it does not try an update or a delete.",
+      "assertions": [
+        {
+          "name": "creates a new price version",
+          "type": "command_matches",
+          "text": "`ac admin credit-prices create` `--action-key[ =]people\\.search` `--unit[ =]company` `--credits[ =]35` `--minimum-credits[ =]150` `--effective-from[ =][\"']?2026-12-01`"
+        },
+        {
+          "name": "no invented update or delete",
+          "type": "command_forbidden",
+          "text": "`ac admin credit-prices (update|delete)` `ac admin prices`"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "prompt": "How many credits has my organisation spent this billing period, and how many are left?",
+      "expected_output": "Runs `ac profiles usage` and reads the Credits line (or the `credits` block with --json): spent, balance and the period end.",
+      "assertions": [
+        {
+          "name": "reads the usage with the credit balance",
+          "type": "command_matches",
+          "text": "`ac profiles usage`"
+        },
+        {
+          "name": "does not read the price book or token cost",
+          "type": "command_forbidden",
+          "text": "`ac admin credit-prices` `ac admin ai-usage`"
+        }
+      ]
     }
   ]
 }

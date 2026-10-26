@@ -120,7 +120,7 @@ For the command list of a domain, **read the matching reference file** before co
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
 | Outreach (`ac envoy`) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
-| Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
+| Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, agentic Outreach campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Agentic Capabilities and Runs | Start stable product IDs; start one definition; read Run identity, detail and children on agentic-platform | [`references/agentic-runs.md`](references/agentic-runs.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
@@ -154,6 +154,8 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "fetch these people IDs" / read multiple known person IDs | `ac crm people by-ids --ids p-100,p-101,p-102` (add `--include-deleted` when soft-deleted records are requested) | looping `ac crm people get <id>` — the batch read exists and preserves caller order |
 | "JSON file of people, bulk upsert / import" | `ac crm people bulk-upsert --file <path>` | `ac crm import preview --file <path>` is for the CSV-style CRM import flow; for a JSON file of people use `bulk-upsert` |
 | "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
+| "credit price" / "price book" / "change what an action costs" (admin) | `ac admin credit-prices list` · `ac admin credit-prices create` (a change is a new version) | `ac admin prices` (does not exist) · `credit-prices update` / `delete` (do not exist) · `subscription-plans` (plan prices in cents, not credits) |
+| "credit balance" / "credits left" / "how many credits did we spend" | `ac profiles usage` (the Credits line; `--json` gives the `credits` block) | `ac admin ai-usage …` (token cost, not credits) · `ac admin credit-prices` (prices, not the balance) |
 | "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
 | "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
 | "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac envoy signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
@@ -181,6 +183,7 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output) |
 | `ac admin subscriptions create` | `--org-id` AND `--plan-id` AND `--billing-period` AND `--started-at` |
 | `ac admin subscription-plans create` | `--slug` AND `--name` AND `--monthly-price-cents` AND `--annual-price-cents` (dollars × 100; "$9/mo" → 900) |
+| `ac admin credit-prices create` | `--action-key` AND `--unit` AND `--credits` (`--effective-from` at least 60 seconds from now when given) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
 | `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
 | `ac envoy outbox reject` | `--action` (`regenerate`, `remove_recipient`, `skip_send`, or `manual_edit`) |
@@ -288,6 +291,7 @@ The CLI uses semantic exit codes so agents can branch on failure type:
 | 3 | Not found | 404 |
 | 4 | Auth / permission denied | 401, 403 |
 | 5 | Conflict | 409 |
+| 6 | Payment required (for example `credits_exhausted`) | 402 |
 
 ```bash
 ac crm companies get bad-id
@@ -422,6 +426,7 @@ ac login --email "..." --password "..."   # Re-auth on the new env
 | `Not authenticated` | `ac login --email ... --password ...` |
 | 401 after long idle | Token refresh failed — re-run `ac login` |
 | 403 / Forbidden | Account lacks role; admin commands need `superadmin` (verify via `ac whoami`) |
+| 402 `credits_exhausted` (exit 6) | The organisation used all of its credits for the period. `ac profiles usage` shows the balance; an owner or admin adds credits |
 | `ac env use <x>` "no effect" | Expected — env switched but you must `ac login` again on the new env |
 | Connection refused | `ac health check`; if cloud VM, enable **Full network access** in project settings |
 | Cloud VM blocks API | Allowlist `api.agencycore.dev` and `tjzxfwiqommgrzxaflar.supabase.co` |
