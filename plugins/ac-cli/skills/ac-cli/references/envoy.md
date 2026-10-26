@@ -1,6 +1,6 @@
-# Outreach (`ac envoy`) Quick Reference
+# Sequences (`ac envoy`) Quick Reference
 
-For full flag tables see `commands.md` (Outreach section).
+For full flag tables see `commands.md` (Sequences section).
 
 ## Sequences
 
@@ -11,6 +11,7 @@ ac envoy sequences create --name "Q2 Outreach" [--description "..."] \
   [--writing-style-id <id>] [--playbook-id <id>] [--crm-list-id <id>]
 ac envoy sequences update <sequence-id> --name "Updated Name"
 ac envoy sequences update <sequence-id> --draft-feedback "Write in British English."
+ac envoy sequences update <sequence-id> --no-auto-enrich   # skip a recipient with no email or phone at once
 ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
@@ -139,7 +140,7 @@ Repeat `--icp-id` to target several ideal customer profiles on an offer. Omittin
 ## Dashboard, Signals & Inbox Count
 
 ```bash
-ac envoy dashboard                          # Outreach stats overview
+ac envoy dashboard                          # Sequences stats overview
 ac envoy signals <recipient-id>             # Sales signals for a recipient (positional, NOT --recipient-id)
 ac envoy inbox-count                        # Total inbox thread count
 ```

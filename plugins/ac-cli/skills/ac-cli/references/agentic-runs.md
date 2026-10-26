@@ -99,6 +99,7 @@ ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
 ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs list --saved-search-id <saved-search-id> --json
 ac agentic runs list --capability signals.search --capability people.signals --json
 ac agentic runs list --capability company.search --status succeeded --include-result --json
 ac agentic runs spans <run-id> --scope tree --json
@@ -116,6 +117,11 @@ the `people.signals` Runs in one page, and the title of each.
 names `signals.search`, `people.signals`, or both, each Run also
 carries a `title`: the saved-search name, else the first sales-signal criterion,
 the ICP, or the target-company text. Every other list answers `title: null`.
+
+`--saved-search-id` lists the Runs one saved search started, from Run now or
+from its schedule, for every capability. Runs a saved search started before the
+filter existed list only for Signals, because only a Signals Run input named
+its saved search.
 
 Run start, list and detail JSON include `capability_id` and `contract_version`.
 The values come from the published executor binding at admission. A later
