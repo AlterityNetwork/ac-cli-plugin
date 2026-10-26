@@ -288,6 +288,7 @@ The CLI uses semantic exit codes so agents can branch on failure type:
 | 3 | Not found | 404 |
 | 4 | Auth / permission denied | 401, 403 |
 | 5 | Conflict | 409 |
+| 6 | Plan refusal: a module the plan does not hold, a lapsed subscription, or a full seat count. The error prints the message and the remedy | 402 |
 
 ```bash
 ac crm companies get bad-id
