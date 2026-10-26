@@ -2641,16 +2641,19 @@ two types counts under both. A type that no prospect holds is not listed.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Full name of the person |
-| `--linkedin-url` | str | yes | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
 | `--title` | str | no | Current job title |
 | `--email` | str | no | Work email address |
 | `--json` | flag | no | Raw prospect person JSON |
 
 Adds one person you name to a company prospect. The answer is one prospect
 person row, the same shape as one `people` item. The command sends `--title`
-and `--email` only when you give them. The person goes to global Intelligence
-by the LinkedIn profile. A typed value fills only an empty field, so it never
-replaces a stored provider value. The prospect `people_state` becomes `found`.
+`--email` and `--linkedin-url` only when you give them. With a LinkedIn
+profile, the person goes to global Intelligence by that profile, and a typed
+value fills only an empty field, so it never replaces a stored provider
+value. With no profile, the person stays on the prospect: the row holds the
+name, title and email, and a second add of the same name answers that row.
+The prospect `people_state` becomes `found`.
 A missing prospect returns exit code 3. A person prospect or a promoted
 prospect returns exit code 5. A profile URL that is not `/in/`, or an email
 that is not valid, returns exit code 2.

@@ -67,7 +67,7 @@ ac agentic prospects signal-types [--review-state new]
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
-ac agentic prospects add-person <prospect-id> --name <name> --linkedin-url <url> [--title <title>] [--email <email>]
+ac agentic prospects add-person <prospect-id> --name <name> [--linkedin-url <url>] [--title <title>] [--email <email>]
 ac agentic prospects search-persona <prospect-id>
 ac agentic prospects find-people <prospect-id> [--title <title>]... [--department <department>]... [--seniority <level>]... [--country <code>]...
 ac agentic prospects find-people <prospect-id> --describe "<the people to find>"
@@ -104,8 +104,9 @@ keeps the first stamp.
 
 `add-person` and `find-people` give a company prospect more people. Neither
 works on a person prospect or a promoted prospect: both return exit code 5.
-`add-person` attaches one person you name. The LinkedIn `/in/` profile is
-required. A typed value fills only an empty field of the stored person.
+`add-person` attaches one person you name. Only the name is required. With a
+LinkedIn `/in/` profile, a typed value fills only an empty field of the stored
+person. With no profile, the person stays on the prospect.
 `find-people` starts one `people.search` Run for the company. With no option
 it looks for the decision makers that `search-persona` shows. The `--title`,
 `--department`, `--seniority` and `--country` options replace that persona.
