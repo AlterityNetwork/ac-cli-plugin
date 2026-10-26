@@ -2673,12 +2673,17 @@ returns exit code 3, and a person prospect or a promoted prospect returns 5.
 | `--department` | string, repeatable | Department to look for |
 | `--seniority` | string, repeatable | Seniority to look for, such as `director` |
 | `--country` | string, repeatable | ISO country code to look for, such as `GB` |
+| `--describe` | string | Free text that describes the people, in place of the four list options |
 | `--json` | flag | Raw Run start JSON |
 
 Starts one `people.search` Run for the company of the prospect. With no
 option, the Run looks for the persona that `search-persona` shows. Any option
 replaces that whole persona, and each list you fill narrows the search. The
-API takes up to 20 distinct values in each list. A repeated value or an
+API takes up to 20 distinct values in each list. `--describe` sends free text
+instead, up to 1,000 characters: the Run plans the four lists from it with
+one AI step, then searches. A description that names no title, department,
+seniority or country fails the Run. `--describe` with a list option returns
+exit code 2. A repeated value or an
 unknown country code returns exit code 2. The answer is the Run detail, the
 same shape as `ac agentic capabilities start`: `id`, `status`, `outcome` and
 more. The command sends no `Idempotency-Key` header. The server owns the key:

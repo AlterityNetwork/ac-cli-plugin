@@ -70,6 +70,7 @@ ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects add-person <prospect-id> --name <name> --linkedin-url <url> [--title <title>] [--email <email>]
 ac agentic prospects search-persona <prospect-id>
 ac agentic prospects find-people <prospect-id> [--title <title>]... [--department <department>]... [--seniority <level>]... [--country <code>]...
+ac agentic prospects find-people <prospect-id> --describe "<the people to find>"
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
@@ -108,6 +109,8 @@ required. A typed value fills only an empty field of the stored person.
 `find-people` starts one `people.search` Run for the company. With no option
 it looks for the decision makers that `search-persona` shows. The `--title`,
 `--department`, `--seniority` and `--country` options replace that persona.
+`--describe` takes free text instead, and the Run plans the lists from it.
+Use it when the request names people in words rather than exact fields.
 The people attach to the prospect when the Run ends. Read them with
 `people`. While the Run is live, `get` shows `people_search_run_id` and a
 second `find-people` returns exit code 5.

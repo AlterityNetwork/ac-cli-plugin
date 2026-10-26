@@ -1481,6 +1481,33 @@
           "text": "`ac agentic capabilities start people\\.search`"
         }
       ]
+    },
+    {
+      "id": 104,
+      "prompt": "At the company of agentic prospect p-123, look for whoever runs their customer retention and loyalty programmes.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123 --describe \"...\"`, passing the request as free text, and reports the Run id and status.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "describes_the_people",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*--describe [\"'].*(retention|loyalty)`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
+        }
+      ]
     }
   ]
 }
