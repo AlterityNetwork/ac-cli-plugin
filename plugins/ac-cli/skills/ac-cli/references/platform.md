@@ -154,7 +154,7 @@ ac agentic outreach organization stop [--yes]
 ```
 
 These commands run the agentic Outreach campaigns. They are not the legacy
-`ac envoy campaigns` or `ac envoy sequences`.
+`ac envoy sequences`.
 
 A new campaign is a `draft`, and the caller owns it: the owner's mailbox sends
 its emails. A campaign has a name and an optional description, nothing more.

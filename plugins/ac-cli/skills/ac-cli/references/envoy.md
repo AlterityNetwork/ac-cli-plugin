@@ -27,19 +27,6 @@ ac envoy sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
 ac envoy sequences for-prospect <prospect-id>          # Sequences containing a given person
 ```
 
-## Campaigns
-
-```bash
-ac envoy campaigns list [--archived] [--query "..."] [--limit 50]
-ac envoy campaigns get <campaign-id>
-ac envoy campaigns create --name "Q2 Outreach" [--description "..."] \
-  [--goal "10 demos"] [--source-app envoy] [--started-at 2026-04-01] [--ended-at 2026-06-30]
-ac envoy campaigns update <campaign-id> --name "Q2 Renamed"
-ac envoy campaigns delete <campaign-id> [--yes]
-ac envoy campaigns archive <campaign-id>
-ac envoy campaigns unarchive <campaign-id>
-```
-
 ## Steps
 
 ```bash

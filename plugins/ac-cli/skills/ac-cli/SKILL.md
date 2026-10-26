@@ -3,7 +3,7 @@ name: ac-cli
 description: >
   AgencyCore platform via `ac` CLI: CRM (companies, contacts, deals, pipelines,
   activities, follow-ups, communications, lists, imports, engagement); outreach
-  automation (Sequences app sequences, campaigns, recipients, outbox drafts, inbox
+  automation (Sequences app sequences, recipients, outbox drafts, inbox
   replies, signals, battlecards, playbooks, cold emails); workflows (runs,
   schedules, cron, presets, CSV, discovered companies/people); admin (users,
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
@@ -118,7 +118,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Domain | Covers | Reference |
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
-| Sequences (`ac envoy`) | sequences, campaigns, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
+| Sequences (`ac envoy`) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, agentic Outreach campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
@@ -187,7 +187,6 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac files images upload` | path AND `--category` |
 | `ac resources upload` | path AND `--name` |
 | `ac admin legal-docs create` | `--document-type` AND `--version` AND `--title` |
-| `ac envoy campaigns create` (with date range) | `--name` AND `--started-at` AND `--ended-at` |
 
 If the user asks for a "weekday" / "Eastern" / "ET" cron, translate to `--cron "0 9 * * 1-5" --timezone America/New_York` (or the right tz). Do not omit `--timezone` even when the user phrases it as a weekday.
 
