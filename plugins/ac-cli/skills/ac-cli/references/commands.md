@@ -20,7 +20,6 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Engagement Dashboard](#engagement-dashboard)
 2. [Sequences (`ac envoy`)](#sequences-ac-envoy)
    - [Sequences](#sequences)
-   - [Campaigns](#campaigns)
    - [Steps](#steps)
    - [Recipients](#recipients)
    - [Outbox](#outbox)
@@ -833,40 +832,6 @@ Lists sequences that include the given prospect (person ID).
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
-
----
-
-### Campaigns
-
-#### `ac envoy campaigns list`
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--archived` | flag | off | Show archived campaigns instead of active |
-| `--query` / `-q` | str | — | Search by name |
-| `--limit` | int | — | Max results |
-| `--offset` | int | 0 | Row offset |
-| `--limit` | int | — | Max results |
-| `--json` | flag | off | Raw JSON output |
-
-#### `ac envoy campaigns get <campaign-id>` / `delete <campaign-id> [--yes]`
-Standard get/delete.
-
-#### `ac envoy campaigns create`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--name` | str | yes | Campaign name |
-| `--description` | str | no | Description |
-| `--goal` | str | no | Campaign goal |
-| `--source-app` | str | no | Source app slug |
-| `--started-at` | ISO date | no | Start date |
-| `--ended-at` | ISO date | no | End date |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac envoy campaigns update <campaign-id>`
-Same flags as `create` (all optional).
-
-#### `ac envoy campaigns archive <campaign-id>` / `unarchive <campaign-id>`
-Toggle archive state.
 
 ---
 
