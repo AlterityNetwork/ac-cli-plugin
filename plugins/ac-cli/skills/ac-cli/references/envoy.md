@@ -1,6 +1,6 @@
-# Outreach (`ac envoy`) Quick Reference
+# Sequences (`ac envoy`) Quick Reference
 
-For full flag tables see `commands.md` (Outreach section).
+For full flag tables see `commands.md` (Sequences section).
 
 ## Sequences
 
@@ -140,7 +140,7 @@ Repeat `--icp-id` to target several ideal customer profiles on an offer. Omittin
 ## Dashboard, Signals & Inbox Count
 
 ```bash
-ac envoy dashboard                          # Outreach stats overview
+ac envoy dashboard                          # Sequences stats overview
 ac envoy signals <recipient-id>             # Sales signals for a recipient (positional, NOT --recipient-id)
 ac envoy inbox-count                        # Total inbox thread count
 ```
