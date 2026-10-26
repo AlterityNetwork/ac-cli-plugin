@@ -1449,6 +1449,38 @@
           "text": "`ac agentic capabilities start people\\.search`"
         }
       ]
+    },
+    {
+      "id": 103,
+      "prompt": "Search the company of agentic prospect p-123 for heads of marketing in the UK, not the usual decision makers.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123 --department marketing --country GB`, or with a marketing title in place of the department, and reports the Run id and status.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "names_the_persona",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*(--department [\"']?marketing|--title [\"']?[Hh]ead of [Mm]arketing).*`"
+        },
+        {
+          "name": "names_the_country",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*--country [\"']?GB`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
+        }
+      ]
     }
   ]
 }
