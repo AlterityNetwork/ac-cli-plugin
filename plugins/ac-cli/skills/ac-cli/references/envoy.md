@@ -11,6 +11,7 @@ ac envoy sequences create --name "Q2 Outreach" [--description "..."] \
   [--writing-style-id <id>] [--playbook-id <id>] [--crm-list-id <id>]
 ac envoy sequences update <sequence-id> --name "Updated Name"
 ac envoy sequences update <sequence-id> --draft-feedback "Write in British English."
+ac envoy sequences update <sequence-id> --no-auto-enrich   # skip a recipient with no email or phone at once
 ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
