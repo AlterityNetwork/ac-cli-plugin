@@ -362,6 +362,8 @@ ac admin credit-prices list [--action-key people.search] [--all-versions] [--jso
 # --unit is run, row, company, entity, thousand_tokens, draft, message or call.
 # A priced action keeps its unit (people.search is company). A new action
 # takes call, thousand_tokens, message or draft; the API refuses another unit.
+# --minimum-credits applies only to people.search (per run) and front_door.turn
+# (per message); the API refuses a minimum on any other action.
 # --credits 0 is valid (email.send is free). --minimum-credits is the least one
 # charge costs (the chat minimum per message, the People Search minimum per run).
 # --effective-from is ISO 8601 with a timezone, at least 60 seconds from now.
