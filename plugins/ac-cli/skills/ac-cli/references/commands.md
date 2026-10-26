@@ -2741,23 +2741,16 @@ live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
-| `--goal` | str | no | What a reply should achieve. The planner reads it. |
-| `--instructions` | str | no | Guidance the planner reads |
-| `--max-emails` | int | no | Most emails per person, 1 to 20 (default 3) |
-| `--min-days` | int | no | Fewest days between emails, 1 to 30 (default 3) |
-| `--writing-style-id` | str | no | A writing style of the organization |
-| `--playbook-id` | str | no | A playbook of the organization |
-| `--battlecard-id` | str | no | A battlecard of the organization |
-| `--json` | flag | no | Raw campaign JSON |
+| `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
+| `--json` | flag | no | Raw campaign JSON: `{id, name, description, status, created_by, created_at, updated_at}` |
 
-The campaign starts as `draft`, and the caller owns it. A link to a row of
-another organization returns exit code 3.
+The campaign starts as `draft`, and the caller owns it. A description longer
+than 2000 characters returns exit code 2.
 
 #### `ac agentic outreach campaigns update <campaign-id>`
-Takes the `create` options, all optional, and `--json`. Give at least one.
-Pass `none` to `--writing-style-id`, `--playbook-id` or `--battlecard-id` to
-clear that link. An archived campaign returns exit code 5
-(`campaign_archived`).
+Takes `--name`, `--description` and `--json`, all optional. Give at least one.
+Pass `--description ""` to clear the description. An archived campaign returns
+exit code 5 (`campaign_archived`).
 
 #### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
 | Flag | Type | Required | Description |

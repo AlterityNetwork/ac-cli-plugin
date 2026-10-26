@@ -139,8 +139,8 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
 ac agentic outreach campaigns get <campaign-id>
-ac agentic outreach campaigns create --name "Q4 intro" [--goal "Book a call"] [--instructions "..."] [--max-emails 3] [--min-days 3] [--writing-style-id <id>] [--playbook-id <id>] [--battlecard-id <id>]
-ac agentic outreach campaigns update <campaign-id> [same options; pass none to a link option to clear it]
+ac agentic outreach campaigns create --name "Q4 intro" [--description "Heads of growth at Series A SaaS companies"]
+ac agentic outreach campaigns update <campaign-id> [--name "..."] [--description "..."]
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
@@ -157,7 +157,12 @@ These commands run the agentic Outreach campaigns. They are not the legacy
 `ac envoy campaigns` or `ac envoy sequences`.
 
 A new campaign is a `draft`, and the caller owns it: the owner's mailbox sends
-its emails. `activate` and `resume` both set the campaign `active`; `pause`
+its emails. A campaign has a name and an optional description, nothing more.
+The campaign has no fixed goal and no email limits. For each Run, the planner
+selects the next step from the latest context of the person. The description
+is context for the planner, not an instruction. The planner prompt holds the
+email cadence: with no reply, at most 4 emails, with gaps of about 3, then 5,
+then 7 days. `activate` and `resume` both set the campaign `active`; `pause`
 sets it `paused`. While a campaign is paused, no new Run starts and no email is
 sent. A Run that started before the pause still finishes its decision, and its
 send is refused. `archive` is final and asks first. It ends every live
