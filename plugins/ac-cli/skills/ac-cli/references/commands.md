@@ -2651,9 +2651,10 @@ two types counts under both. A type that no prospect holds is not listed.
 Adds one person you name to a company prospect. The answer is one prospect
 person row, the same shape as one `people` item. The command sends `--title`
 `--email` and `--linkedin-url` only when you give them. With a LinkedIn
-profile, the person goes to global Intelligence by that profile, and a typed
-value fills only an empty field, so it never replaces a stored provider
-value. With no profile, the person stays on the prospect: the row holds the
+profile, the person goes to global Intelligence by that profile. The title
+and the email stay on the prospect and never reach global Intelligence. Each
+fills only a value the profile does not have, so it never replaces a stored
+provider value. With no profile, the person stays on the prospect: the row holds the
 name, title and email, and a second add of the same name answers that row.
 The prospect `people_state` becomes `found`.
 A missing prospect returns exit code 3. A person prospect or a promoted

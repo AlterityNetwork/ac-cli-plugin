@@ -104,9 +104,10 @@ keeps the first stamp.
 
 `add-person` and `find-people` give a company prospect more people. Neither
 works on a person prospect or a promoted prospect: both return exit code 5.
-`add-person` attaches one person you name. Only the name is required. With a
-LinkedIn `/in/` profile, a typed value fills only an empty field of the stored
-person. With no profile, the person stays on the prospect.
+`add-person` attaches one person you name. Only the name is required. The
+title and the email stay on the prospect, and each fills only a value the
+LinkedIn profile does not have. With no profile, the person stays on the
+prospect.
 `find-people` starts one `people.search` Run for the company. With no option
 it looks for the decision makers that `search-persona` shows. The `--title`,
 `--department`, `--seniority` and `--country` options replace that persona.
