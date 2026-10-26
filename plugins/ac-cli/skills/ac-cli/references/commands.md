@@ -2639,6 +2639,71 @@ two types counts under both. A type that no prospect holds is not listed.
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
+#### `ac agentic prospects add-person <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Full name of the person |
+| `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--title` | str | no | Current job title |
+| `--email` | str | no | Work email address |
+| `--json` | flag | no | Raw prospect person JSON |
+
+Adds one person you name to a company prospect. The answer is one prospect
+person row, the same shape as one `people` item. The command sends `--title`
+`--email` and `--linkedin-url` only when you give them. With a LinkedIn
+profile, the person goes to global Intelligence by that profile. The title
+and the email stay on the prospect and never reach global Intelligence. Each
+fills only a value the profile does not have, so it never replaces a stored
+provider value. With no profile, the person stays on the prospect: the row holds the
+name, title and email, and a second add of the same name answers that row.
+The prospect `people_state` becomes `found`.
+A missing prospect returns exit code 3. A person prospect or a promoted
+prospect returns exit code 5. A profile URL that is not `/in/`, or an email
+that is not valid, returns exit code 2.
+
+#### `ac agentic prospects search-persona <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw persona JSON: `{"persona": {...}}` |
+
+Shows the persona that `find-people` uses when you name no option: the
+decision makers (owner, founder, c-suite, vice president and director), plus
+the departments the original Signals brief names. It prints one line each for
+`Job titles`, `Departments`, `Seniority` and `Countries`. A missing prospect
+returns exit code 3, and a person prospect or a promoted prospect returns 5.
+
+#### `ac agentic prospects find-people <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--title` | string, repeatable | Job title to look for |
+| `--department` | string, repeatable | Department to look for |
+| `--seniority` | string, repeatable | Seniority to look for, such as `director` |
+| `--country` | string, repeatable | ISO country code to look for, such as `GB` |
+| `--describe` | string | Free text that describes the people, in place of the four list options |
+| `--json` | flag | Raw Run start JSON |
+
+Starts one `people.search` Run for the company of the prospect. With no
+option, the Run looks for the persona that `search-persona` shows. Any option
+replaces that whole persona, and each list you fill narrows the search. The
+API takes up to 20 distinct values in each list. `--describe` sends free text
+instead, up to 1,000 characters: the Run plans the four lists from it with
+one AI step, then searches. A description that names no title, department,
+seniority or country fails the Run. `--describe` with a list option returns
+exit code 2. A repeated value or an
+unknown country code returns exit code 2. The answer is the Run detail, the
+same shape as `ac agentic capabilities start`: `id`, `status`, `outcome` and
+more. The command sends no `Idempotency-Key` header. The server owns the key:
+one key for each prospect, minute and persona.
+
+While the Run is live, `get` JSON carries `people_search_run_id` and `get`
+prints it as `People search Run`. A second start in that time returns exit
+code 5. When the Run ends, the platform attaches the people it found and
+clears the link. A start in the same minute after the Run ended answers that
+Run again, with `outcome` `duplicate`. Read them with `ac agentic prospects people <prospect-id>`.
+A search that finds nobody sets `people_state` to `no_matching_people` with
+the reason `search_no_match`. A person prospect or a promoted prospect
+returns exit code 5, and a missing prospect returns 3.
+
 #### `ac agentic prospects watch <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|

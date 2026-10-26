@@ -146,6 +146,13 @@ capability's input contract. The human table shows it in the
 `Definition / Search` column. It is null for unfiltered lists, non-search Runs
 and older Runs whose input did not retain the submitted query.
 
+`ac agentic prospects find-people <prospect-id>` starts one `people.search` Run
+for the company of a prospect. The prospect holds the link in
+`people_search_run_id` while the Run is live. When the Run ends, the platform
+attaches the people it found to the prospect and clears the link. Read the Run
+with `ac agentic runs get <run-id>`, and the people with
+`ac agentic prospects people <prospect-id>`.
+
 `list` JSON and the human `Prospects` column carry `prospect_count`: how many
 prospects the Run last wrote. It is null on every list but a
 `--capability signals.search` or `--capability people.signals` one, because only
