@@ -2637,6 +2637,45 @@ two types counts under both. A type that no prospect holds is not listed.
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
+#### `ac agentic prospects add-person <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Full name of the person |
+| `--linkedin-url` | str | yes | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--title` | str | no | Current job title |
+| `--email` | str | no | Work email address |
+| `--json` | flag | no | Raw prospect person JSON |
+
+Adds one person you name to a company prospect. The answer is one prospect
+person row, the same shape as one `people` item. The command sends `--title`
+and `--email` only when you give them. The person goes to global Intelligence
+by the LinkedIn profile. A typed value fills only an empty field, so it never
+replaces a stored provider value. The prospect `people_state` becomes `found`.
+A missing prospect returns exit code 3. A person prospect or a promoted
+prospect returns exit code 5. A profile URL that is not `/in/`, or an email
+that is not valid, returns exit code 2.
+
+#### `ac agentic prospects find-people <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw Run start JSON |
+
+Starts one `people.search` Run for the company of the prospect. The Run looks
+for decision makers: owner, founder, c-suite, vice president and director,
+plus the departments the original Signals brief names. The answer is the Run
+detail, the same shape as `ac agentic capabilities start`: `id`, `status`,
+`outcome` and more. The command sends no `Idempotency-Key` header. The server
+owns the key: one key for each prospect for each minute.
+
+While the Run is live, `get` JSON carries `people_search_run_id` and `get`
+prints it as `People search Run`. A second start in that time returns exit
+code 5. When the Run ends, the platform attaches the people it found and
+clears the link. A start in the same minute after the Run ended answers that
+Run again, with `outcome` `duplicate`. Read them with `ac agentic prospects people <prospect-id>`.
+A search that finds nobody sets `people_state` to `no_matching_people` with
+the reason `search_no_match`. A person prospect or a promoted prospect
+returns exit code 5, and a missing prospect returns 3.
+
 #### `ac agentic prospects watch <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|

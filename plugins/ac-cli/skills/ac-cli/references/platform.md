@@ -67,6 +67,8 @@ ac agentic prospects signal-types [--review-state new]
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
+ac agentic prospects add-person <prospect-id> --name <name> --linkedin-url <url> [--title <title>] [--email <email>]
+ac agentic prospects find-people <prospect-id>
 ac agentic prospects watch <prospect-id>
 ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
@@ -97,6 +99,15 @@ prospect with no score drops out when either bound is set.
 `dismiss-action` closes the suggested action card and stamps
 `suggested_action_dismissed_at`. It changes no review state, and a repeat call
 keeps the first stamp.
+
+`add-person` and `find-people` give a company prospect more people. Neither
+works on a person prospect or a promoted prospect: both return exit code 5.
+`add-person` attaches one person you name. The LinkedIn `/in/` profile is
+required. A typed value fills only an empty field of the stored person.
+`find-people` starts one `people.search` Run for the decision makers of the
+company. The people attach to the prospect when the Run ends. Read them with
+`people`. While the Run is live, `get` shows `people_search_run_id` and a
+second `find-people` returns exit code 5.
 
 `restore` undoes `watch` and `dismiss`: it returns the prospect to `new`. A
 prospect already at `new` writes nothing, and a promoted prospect is refused.

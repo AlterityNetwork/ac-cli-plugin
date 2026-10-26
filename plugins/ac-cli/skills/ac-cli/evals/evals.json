@@ -1422,6 +1422,33 @@
           "text": "`ac agentic outreach enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
         }
       ]
+    },
+    {
+      "id": 102,
+      "prompt": "Find the decision makers at the company of agentic prospect p-123, and tell me where the people show up.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123`, reports the Run id and status, and points at `ac agentic prospects people p-123` for the people after the Run ends.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "starts_the_prospect_search",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
+        }
+      ]
     }
   ]
 }
