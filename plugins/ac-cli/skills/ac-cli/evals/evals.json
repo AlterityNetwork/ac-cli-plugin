@@ -1368,7 +1368,7 @@
         {
           "name": "creates_the_campaign",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns create .*--name`"
+          "text": "`ac agentic outreach campaigns create .*(--name|--description).*(--name|--description)`"
         },
         {
           "name": "enrolls_the_crm_person",
