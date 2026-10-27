@@ -638,18 +638,6 @@
       ]
     },
     {
-      "id": 45,
-      "prompt": "Create a Q3 outreach campaign called 'Renewal push' running 2026-07-01 to 2026-09-30.",
-      "expected_output": "Uses `ac envoy campaigns create` with name + dates.",
-      "assertions": [
-        {
-          "name": "campaign_create",
-          "type": "command_matches",
-          "text": "`ac envoy campaigns create --name .Renewal push.` with `--started-at 2026-07-01` and `--ended-at 2026-09-30`"
-        }
-      ]
-    },
-    {
       "id": 46,
       "prompt": "Look up battlecards mentioning 'Salesforce'.",
       "expected_output": "Runs `ac envoy battlecards list --query Salesforce`.",
@@ -931,12 +919,12 @@
     {
       "id": 70,
       "prompt": "List my Outreach campaigns.",
-      "expected_output": "Runs `ac envoy campaigns list`.",
+      "expected_output": "Runs `ac agentic outreach campaigns list`.",
       "assertions": [
         {
           "name": "campaigns_list",
           "type": "command_matches",
-          "text": "`ac envoy campaigns list`"
+          "text": "`ac agentic outreach campaigns list`"
         }
       ]
     },
@@ -1363,7 +1351,7 @@
     {
       "id": 98,
       "prompt": "Create an agentic Outreach campaign called 'Q4 intro' with the description 'Heads of growth at Series A SaaS companies', enroll CRM person p-11 in it, and start it.",
-      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`. It does not use `ac envoy campaigns`.",
+      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`.",
       "assertions": [
         {
           "name": "creates_the_campaign",
@@ -1420,6 +1408,92 @@
           "name": "searches the campaign",
           "type": "command_matches",
           "text": "`ac agentic outreach enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "prompt": "Find the decision makers at the company of agentic prospect p-123, and tell me where the people show up.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123`, reports the Run id and status, and points at `ac agentic prospects people p-123` for the people after the Run ends.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "starts_the_prospect_search",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "prompt": "Search the company of agentic prospect p-123 for heads of marketing in the UK, not the usual decision makers.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123 --department marketing --country GB`, or with a marketing title in place of the department, and reports the Run id and status.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "names_the_persona",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*(--department [\"']?marketing|--title [\"']?[Hh]ead of [Mm]arketing).*`"
+        },
+        {
+          "name": "names_the_country",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*--country [\"']?GB`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "prompt": "At the company of agentic prospect p-123, look for whoever runs their customer retention and loyalty programmes.",
+      "expected_output": "Starts the people search with `ac agentic prospects find-people p-123 --describe \"...\"`, passing the request as free text, and reports the Run id and status.",
+      "assertions": [
+        {
+          "name": "auth_check_first",
+          "type": "auth_check_first",
+          "text": "`ac whoami` runs before the people search starts"
+        },
+        {
+          "name": "reads_platform_reference",
+          "type": "reads_file",
+          "text": "Reads `references/platform.md` before composing the find-people command"
+        },
+        {
+          "name": "describes_the_people",
+          "type": "command_matches",
+          "text": "`ac agentic prospects find-people p-123 .*--describe [\"'].*(retention|loyalty)`"
+        },
+        {
+          "name": "does_not_start_the_capability_by_hand",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.search`"
         }
       ]
     }
