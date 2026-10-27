@@ -1,6 +1,6 @@
-# Outreach (`ac envoy`) Quick Reference
+# Sequences (`ac envoy`) Quick Reference
 
-For full flag tables see `commands.md` (Outreach section).
+For full flag tables see `commands.md` (Sequences section).
 
 ## Sequences
 
@@ -11,6 +11,7 @@ ac envoy sequences create --name "Q2 Outreach" [--description "..."] \
   [--writing-style-id <id>] [--playbook-id <id>] [--crm-list-id <id>]
 ac envoy sequences update <sequence-id> --name "Updated Name"
 ac envoy sequences update <sequence-id> --draft-feedback "Write in British English."
+ac envoy sequences update <sequence-id> --no-auto-enrich   # skip a recipient with no email or phone at once
 ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
@@ -24,19 +25,6 @@ ac envoy sequences classify-step-subtype "Send a manual follow-up email"
 ac envoy sequences outputs <sequence-id> [--limit 50] [--offset 0]
 ac envoy sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
 ac envoy sequences for-prospect <prospect-id>          # Sequences containing a given person
-```
-
-## Campaigns
-
-```bash
-ac envoy campaigns list [--archived] [--query "..."] [--limit 50]
-ac envoy campaigns get <campaign-id>
-ac envoy campaigns create --name "Q2 Outreach" [--description "..."] \
-  [--goal "10 demos"] [--source-app envoy] [--started-at 2026-04-01] [--ended-at 2026-06-30]
-ac envoy campaigns update <campaign-id> --name "Q2 Renamed"
-ac envoy campaigns delete <campaign-id> [--yes]
-ac envoy campaigns archive <campaign-id>
-ac envoy campaigns unarchive <campaign-id>
 ```
 
 ## Steps
@@ -139,7 +127,7 @@ Repeat `--icp-id` to target several ideal customer profiles on an offer. Omittin
 ## Dashboard, Signals & Inbox Count
 
 ```bash
-ac envoy dashboard                          # Outreach stats overview
+ac envoy dashboard                          # Sequences stats overview
 ac envoy signals <recipient-id>             # Sales signals for a recipient (positional, NOT --recipient-id)
 ac envoy inbox-count                        # Total inbox thread count
 ```

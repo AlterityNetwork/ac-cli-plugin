@@ -18,9 +18,8 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Import](#import)
    - [Search & Dashboard](#search--dashboard)
    - [Engagement Dashboard](#engagement-dashboard)
-2. [Outreach (`ac envoy`)](#outreach-ac-envoy)
+2. [Sequences (`ac envoy`)](#sequences-ac-envoy)
    - [Sequences](#sequences)
-   - [Campaigns](#campaigns)
    - [Steps](#steps)
    - [Recipients](#recipients)
    - [Outbox](#outbox)
@@ -730,7 +729,7 @@ and status, and top clicked links.
 
 ---
 
-## Outreach (`ac envoy`)
+## Sequences (`ac envoy`)
 
 ### Sequences
 
@@ -754,6 +753,8 @@ and status, and top clicked links.
 | `--draft-feedback` | str | no | Reviewer feedback that every draft applies. Pass `""` to clear it |
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
+| `--skip-non-working-days` / `--no-skip-non-working-days` | flag | no | Roll sends forward off weekends and bank holidays |
+| `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email or phone before a step that needs it. On by default |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy sequences update <sequence-id>`
@@ -832,40 +833,6 @@ Lists sequences that include the given prospect (person ID).
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
-
----
-
-### Campaigns
-
-#### `ac envoy campaigns list`
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--archived` | flag | off | Show archived campaigns instead of active |
-| `--query` / `-q` | str | — | Search by name |
-| `--limit` | int | — | Max results |
-| `--offset` | int | 0 | Row offset |
-| `--limit` | int | — | Max results |
-| `--json` | flag | off | Raw JSON output |
-
-#### `ac envoy campaigns get <campaign-id>` / `delete <campaign-id> [--yes]`
-Standard get/delete.
-
-#### `ac envoy campaigns create`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--name` | str | yes | Campaign name |
-| `--description` | str | no | Description |
-| `--goal` | str | no | Campaign goal |
-| `--source-app` | str | no | Source app slug |
-| `--started-at` | ISO date | no | Start date |
-| `--ended-at` | ISO date | no | End date |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac envoy campaigns update <campaign-id>`
-Same flags as `create` (all optional).
-
-#### `ac envoy campaigns archive <campaign-id>` / `unarchive <campaign-id>`
-Toggle archive state.
 
 ---
 
@@ -2402,7 +2369,7 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--org-id` | str | yes | Organization ID |
-| `--json` | flag | no | Raw JSON output (`grants` plus the resolved `snapshot`) |
+| `--json` | flag | no | Raw JSON output (`grants` plus the resolved `snapshot`, which carries `enforced` and `seats_used`) |
 
 #### `ac admin entitlement-grants create`
 | Flag | Type | Required | Description |
@@ -2666,6 +2633,71 @@ two types counts under both. A type that no prospect holds is not listed.
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
+
+#### `ac agentic prospects add-person <prospect-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | Full name of the person |
+| `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--title` | str | no | Current job title |
+| `--email` | str | no | Work email address |
+| `--json` | flag | no | Raw prospect person JSON |
+
+Adds one person you name to a company prospect. The answer is one prospect
+person row, the same shape as one `people` item. The command sends `--title`
+`--email` and `--linkedin-url` only when you give them. With a LinkedIn
+profile, the person goes to global Intelligence by that profile. The title
+and the email stay on the prospect and never reach global Intelligence. Each
+fills only a value the profile does not have, so it never replaces a stored
+provider value. With no profile, the person stays on the prospect: the row holds the
+name, title and email, and a second add of the same name answers that row.
+The prospect `people_state` becomes `found`.
+A missing prospect returns exit code 3. A person prospect or a promoted
+prospect returns exit code 5. A profile URL that is not `/in/`, or an email
+that is not valid, returns exit code 2.
+
+#### `ac agentic prospects search-persona <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw persona JSON: `{"persona": {...}}` |
+
+Shows the persona that `find-people` uses when you name no option: the
+decision makers (owner, founder, c-suite, vice president and director), plus
+the departments the original Signals brief names. It prints one line each for
+`Job titles`, `Departments`, `Seniority` and `Countries`. A missing prospect
+returns exit code 3, and a person prospect or a promoted prospect returns 5.
+
+#### `ac agentic prospects find-people <prospect-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--title` | string, repeatable | Job title to look for |
+| `--department` | string, repeatable | Department to look for |
+| `--seniority` | string, repeatable | Seniority to look for, such as `director` |
+| `--country` | string, repeatable | ISO country code to look for, such as `GB` |
+| `--describe` | string | Free text that describes the people, in place of the four list options |
+| `--json` | flag | Raw Run start JSON |
+
+Starts one `people.search` Run for the company of the prospect. With no
+option, the Run looks for the persona that `search-persona` shows. Any option
+replaces that whole persona, and each list you fill narrows the search. The
+API takes up to 20 distinct values in each list. `--describe` sends free text
+instead, up to 1,000 characters: the Run plans the four lists from it with
+one AI step, then searches. A description that names no title, department,
+seniority or country fails the Run. `--describe` with a list option returns
+exit code 2. A repeated value or an
+unknown country code returns exit code 2. The answer is the Run detail, the
+same shape as `ac agentic capabilities start`: `id`, `status`, `outcome` and
+more. The command sends no `Idempotency-Key` header. The server owns the key:
+one key for each prospect, minute and persona.
+
+While the Run is live, `get` JSON carries `people_search_run_id` and `get`
+prints it as `People search Run`. A second start in that time returns exit
+code 5. When the Run ends, the platform attaches the people it found and
+clears the link. A start in the same minute after the Run ended answers that
+Run again, with `outcome` `duplicate`. Read them with `ac agentic prospects people <prospect-id>`.
+A search that finds nobody sets `people_state` to `no_matching_people` with
+the reason `search_no_match`. A person prospect or a promoted prospect
+returns exit code 5, and a missing prospect returns 3.
 
 #### `ac agentic prospects watch <prospect-id>`
 | Flag | Type | Description |
@@ -2975,7 +3007,7 @@ positional argument. There is no `--message` flag and no single-conversation
 | `--period-days` | int | 30 | Reporting window from 1 to 365 days |
 | `--json` | flag | off | Raw JSON output |
 
-Shows Sonar (legacy), Headhunter (legacy), Outreach, CRM, and account-activity output for the active
+Shows Sonar (legacy), Headhunter (legacy), Sequences, CRM, and account-activity output for the active
 organization.
 
 ---
@@ -3439,7 +3471,7 @@ Switch the current user's selected organization.
 Mark the current user's password as set (post Supabase magic-link signup). No flags.
 
 #### `ac profiles subscription`
-Show the current organization's subscription. Calls `GET /api/v1/subscriptions/me`.
+Show the current organization's subscription. Calls `GET /api/v1/subscriptions/me`. When the API sends the entitlement snapshot, it also prints the plan modules, the access mode (`read_only` after the subscription lapses), whether enforcement has started, and the seats used against the plan limit.
 
 | Flag | Type | Description |
 |------|------|-------------|

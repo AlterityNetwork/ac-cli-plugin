@@ -336,7 +336,7 @@ ac admin subscription-plans delete <plan-id> [--yes]
 
 ## Entitlement Grants
 
-> Per-organization changes to the plan template. A `grant` row adds one key, a `revoke` row removes one, and a trial is a grant with `--expires-at`. `list` also prints the resolved snapshot: plan keys plus active grants minus active revokes, with expiry compared at read time.
+> Per-organization changes to the plan template. A `grant` row adds one key, a `revoke` row removes one, and a trial is a grant with `--expires-at`. `list` also prints the resolved snapshot: plan keys plus active grants minus active revokes, with expiry compared at read time. It also prints `Enforced` (no until billing enforcement starts for the organization; until then no check refuses anything) and `Seats` (seats used / the plan limit).
 
 ```bash
 ac admin entitlement-grants list --org-id <org-id> [--json]

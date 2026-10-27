@@ -111,6 +111,7 @@ ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
 ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs list --saved-search-id <saved-search-id> --json
 ac agentic runs list --capability signals.search --capability people.signals --json
 ac agentic runs list --capability company.search --status succeeded --include-result --json
 ac agentic runs spans <run-id> --scope tree --json
@@ -128,6 +129,11 @@ the `people.signals` Runs in one page, and the title of each.
 names `signals.search`, `people.signals`, or both, each Run also
 carries a `title`: the saved-search name, else the first sales-signal criterion,
 the ICP, or the target-company text. Every other list answers `title: null`.
+
+`--saved-search-id` lists the Runs one saved search started, from Run now or
+from its schedule, for every capability. Runs a saved search started before the
+filter existed list only for Signals, because only a Signals Run input named
+its saved search.
 
 Run start, list and detail JSON include `capability_id` and `contract_version`.
 The values come from the published executor binding at admission. A later
@@ -151,6 +157,13 @@ When `list` is filtered with `--capability company.search`, `people.search` or
 capability's input contract. The human table shows it in the
 `Definition / Search` column. It is null for unfiltered lists, non-search Runs
 and older Runs whose input did not retain the submitted query.
+
+`ac agentic prospects find-people <prospect-id>` starts one `people.search` Run
+for the company of a prospect. The prospect holds the link in
+`people_search_run_id` while the Run is live. When the Run ends, the platform
+attaches the people it found to the prospect and clears the link. Read the Run
+with `ac agentic runs get <run-id>`, and the people with
+`ac agentic prospects people <prospect-id>`.
 
 `list` JSON and the human `Prospects` column carry `prospect_count`: how many
 prospects the Run last wrote. It is null on every list but a
