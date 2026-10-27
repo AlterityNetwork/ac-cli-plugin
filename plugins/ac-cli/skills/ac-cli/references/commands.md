@@ -2368,7 +2368,7 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--org-id` | str | yes | Organization ID |
-| `--json` | flag | no | Raw JSON output (`grants` plus the resolved `snapshot`) |
+| `--json` | flag | no | Raw JSON output (`grants` plus the resolved `snapshot`, which carries `enforced` and `seats_used`) |
 
 #### `ac admin entitlement-grants create`
 | Flag | Type | Required | Description |
@@ -3441,7 +3441,7 @@ Switch the current user's selected organization.
 Mark the current user's password as set (post Supabase magic-link signup). No flags.
 
 #### `ac profiles subscription`
-Show the current organization's subscription. Calls `GET /api/v1/subscriptions/me`.
+Show the current organization's subscription. Calls `GET /api/v1/subscriptions/me`. When the API sends the entitlement snapshot, it also prints the plan modules, the access mode (`read_only` after the subscription lapses), whether enforcement has started, and the seats used against the plan limit.
 
 | Flag | Type | Description |
 |------|------|-------------|
