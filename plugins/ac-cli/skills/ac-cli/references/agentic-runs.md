@@ -64,6 +64,18 @@ Errors preserve the API code in JSON output: unknown ID (404), unavailable bindi
 (409), missing scope (403), invalid input (422), oversized input
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
+A spent limit refuses the start with a `detail` object `{code, message, remedy}`.
+`ac agentic capabilities start` and `ac agentic runs start` answer the same two:
+
+| Code | Status | Exit | What to do |
+|------|--------|------|------------|
+| `day_cap_exhausted` | 429, with `Retry-After` | 1 | Try again after midnight UTC, or ask an owner or admin to raise the daily cap |
+| `credits_exhausted` | 402 | 6 | Ask an owner or admin to add credits, or wait for the next billing period. `ac profiles usage` shows the balance |
+
+Text mode prints `Error {status}: {message} {remedy} ({code})`. `--json` keeps the
+`detail` object. A Run that is already in flight is not refused at the start: it
+ends `partial` at its next checkpoint, with `partial_reason` `budget_exhausted`.
+
 ## Start a run
 
 The command starts one Run of one definition. The definition is an agent or a

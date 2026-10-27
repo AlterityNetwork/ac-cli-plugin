@@ -350,6 +350,38 @@ ac admin entitlement-grants create --org-id <org-id> --key crm --source comp --m
 ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
 ```
 
+## Credit Prices
+
+> The platform price book: the credits one action costs, per unit. A price is never changed in place. A new price is a new version of the action key, and the API gives it the next version number. There is no update and no delete command. An action key with no price row is free.
+
+```bash
+# The latest version of each action key (default), one key, or every version.
+ac admin credit-prices list [--action-key people.search] [--all-versions] [--json]
+
+# Required flags: --action-key, --unit, --credits.
+# --unit is run, row, company, entity, thousand_tokens, draft, message or call.
+# A priced action keeps its unit (people.search is company). A new action
+# takes call, thousand_tokens, message or draft; the API refuses another unit.
+# --minimum-credits applies only to people.search (per run) and front_door.turn
+# (per message); the API refuses a minimum on any other action.
+# --credits 0 is valid (email.send is free). --minimum-credits is the least one
+# charge costs (the chat minimum per message, the People Search minimum per run).
+# --effective-from is ISO 8601 with a timezone, at least 60 seconds from now.
+# Without it the version starts 60 seconds from now. A start in the past or
+# inside 60 seconds is a 422 (exit 2).
+ac admin credit-prices create --action-key people.search --unit company --credits 35 --minimum-credits 150 --effective-from 2026-12-01T00:00:00+00:00
+
+# Two writes for the same key at the same time: the second is a 409 (exit 5).
+# Run `list --action-key <key>` again and retry.
+```
+
+The seeded action keys are `company.search` (run), `company.search.supplied` (row),
+`signals.search` (run), `people.search` (company, minimum per run), `company.enrich` and
+`people.enrich` (entity), `front_door.turn` (thousand_tokens, minimum per message),
+`definition.run` (thousand_tokens), `email.draft` (draft) and `email.send` (message).
+A charge uses the version in effect when its run started, so a new version does not
+change the charges of a run already in flight.
+
 ## Intelligence (global intel_companies / intel_people)
 
 > Superadmin viewer + CRUD over the **global, org-free** intelligence tables

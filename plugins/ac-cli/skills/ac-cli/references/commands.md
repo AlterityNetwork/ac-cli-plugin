@@ -50,6 +50,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Subscriptions](#subscriptions)
    - [Subscription Plans](#subscription-plans)
    - [Entitlement Grants](#entitlement-grants)
+   - [Credit Prices](#credit-prices)
 5. [Platform](#platform)
    - [Agentic Outreach Campaigns](#agentic-outreach-campaigns)
    - [Agentic Outreach Drafts](#agentic-outreach-drafts)
@@ -2387,6 +2388,35 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 | `--yes` | flag | no | Skip confirmation |
 | `--json` | flag | no | Raw JSON output |
 
+### Credit Prices
+
+The platform price book (super admin). A price is never changed in place: `create` adds the next
+version of an action key. There is no update and no delete command.
+
+#### `ac admin credit-prices list`
+Calls `GET /api/v1/admin/credit-prices`. Prints Action, Unit, Credits, Minimum, Version and Effective from.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--action-key` | str | no | Show one action key, for example `people.search` |
+| `--all-versions` | flag | no | Show every version. Without it the list shows the latest version of each key |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin credit-prices create`
+Calls `POST /api/v1/admin/credit-prices`. Prints `Created {action_key} version {version}: {credits} credits per {unit}`.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--action-key` | str | yes | Action key: two or more dotted lowercase segments, for example `people.search` |
+| `--unit` | str | yes | `run`, `row`, `company`, `entity`, `thousand_tokens`, `draft`, `message` or `call` |
+| `--credits` | int | yes | Credits per unit. 0 is valid |
+| `--minimum-credits` | int | no | The least one charge costs. 0 sets no minimum |
+| `--effective-from` | ISO 8601 | no | Instant with a timezone, at least 60 seconds from now. Default: 60 seconds from now |
+| `--json` | flag | no | Raw JSON output |
+
+A start in the past or inside 60 seconds is a 422 (exit 2). Two writes for the same key at the
+same time give a 409 (exit 5); list the key again and retry.
+
 ---
 
 ## Platform
@@ -3449,6 +3479,14 @@ Show the current organization's subscription. Calls `GET /api/v1/subscriptions/m
 
 #### `ac profiles usage`
 Show what the current organization used in its billing period, one row per action with calls and tokens. Calls `GET /api/v1/subscriptions/me/usage`. The period is the live billing period, or the UTC calendar month when the organization has none.
+
+After the Period line it prints the credits line when the API sends a `credits` block:
+`Credits: 8,500 spent of 10,450, balance 1,950, period ends 2026-11-07`, plus ` (running low)` at
+80 percent or ` (used up)` when the balance is 0 or less. The total is spent plus balance (the
+allowance, the top-ups and the adjustments). With nothing available it prints
+`Credits: N spent, no allowance set`. With no block it prints no credits line. `--json` passes the
+block through: `allowance`, `top_ups`, `adjustments`, `spent`, `balance`, `enforced`, `state`
+(`no_allowance`, `ok`, `warning`, `exhausted`) and `warning_at`.
 
 | Flag | Type | Description |
 |------|------|-------------|
