@@ -1607,7 +1607,7 @@ Super admin only. The responses hold CRM data of more than one agency.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
-| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | default | Factor weights (0 to 1) for the best matches |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | default | Factor weights (0 to 1) for the best matches |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching algorithm`
@@ -1621,7 +1621,7 @@ Shows the factors, their sources, the default weights, the competitor rule, the 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
-| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching agency <org-id>`
@@ -1634,6 +1634,7 @@ Shows the factors, their sources, the default weights, the competitor rule, the 
 | `--w-services` | float | lens default | Weight of the service factor (0 to 1) |
 | `--w-accounts` | float | lens default | Weight of shared CRM accounts (0 to 1) |
 | `--w-size` | float | lens default | Weight of client size fit (0 to 1) |
+| `--w-searches` | float | lens default | Weight of same search targets (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching scan-website <org-id>`
@@ -1662,7 +1663,7 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--lens` | str | "complementary" | `complementary` or `similar` |
-| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 ---
