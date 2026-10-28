@@ -382,6 +382,25 @@ The seeded action keys are `company.search` (run), `company.search.supplied` (ro
 A charge uses the version in effect when its run started, so a new version does not
 change the charges of a run already in flight.
 
+## Agency Matching (read-only)
+
+> Profiles of each agency and ranked matches between agencies, for future collaboration. Read-only. The responses hold CRM data of more than one agency, so never pass them to an agency.
+> The `complementary` lens rewards the same market with different services (a joint pitch or a referral). The `similar` lens rewards the same market with the same services (overflow work).
+> Each weight is 0 to 1. A weight you leave out keeps the lens default. At least one weight must be above 0.
+
+```bash
+# Every real agency with its service tags, coverage and best match. Demo organisations are left out unless you ask.
+ac admin matching agencies [--include-demo] [--lens complementary|similar] [--json]
+
+# One agency: its profile and every other agency ranked, with the factor breakdown.
+ac admin matching agency <org-id> [--include-demo] [--lens similar] [--w-market 0.4] [--w-geography 0.2] [--w-services 0.3] [--w-accounts 0.1] [--json]
+
+# One pair: shared industries and countries, service gaps and shared CRM domains, as seen from the first agency.
+ac admin matching pair <org-a> <org-b> [--lens complementary] [--w-market 1] [--json]
+```
+
+Most CRM rows are Sonar prospects, so two agencies with similar searches share many CRM domains without a relationship. Read `engaged_shared_account_count` for the domains that one side holds past the prospect stage.
+
 ## Intelligence (global intel_companies / intel_people)
 
 > Superadmin viewer + CRUD over the **global, org-free** intelligence tables

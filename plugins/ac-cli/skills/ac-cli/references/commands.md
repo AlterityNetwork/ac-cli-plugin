@@ -1599,6 +1599,37 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 
 ---
 
+### Agency Matching (read-only)
+
+Super admin only. The responses hold CRM data of more than one agency.
+
+#### `ac admin matching agencies`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Include demo organisations |
+| `--lens` | str | "complementary" | `complementary` or `similar` |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching agency <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Rank demo organisations too |
+| `--lens` | str | "complementary" | `complementary` or `similar` |
+| `--w-market` | float | lens default | Weight of market overlap (0 to 1) |
+| `--w-geography` | float | lens default | Weight of geography overlap (0 to 1) |
+| `--w-services` | float | lens default | Weight of the service factor (0 to 1) |
+| `--w-accounts` | float | lens default | Weight of shared CRM accounts (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching pair <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--lens` | str | "complementary" | `complementary` or `similar` |
+| `--w-market`, `--w-geography`, `--w-services`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+---
+
 ### Organizations
 
 #### `ac admin orgs list`
