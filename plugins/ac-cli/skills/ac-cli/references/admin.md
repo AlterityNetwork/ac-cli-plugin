@@ -386,17 +386,24 @@ change the charges of a run already in flight.
 
 > Profiles of each agency and ranked matches between agencies, for future collaboration. Read-only. The responses hold CRM data of more than one agency, so never pass them to an agency.
 > Every match carries two scores. The complementary score rewards the same market with different services (a joint pitch or a referral). The similar score rewards the same market with the same services (overflow work). `--lens` only picks the sort order. Corbel's own organisations are left out.
-> Each weight is 0 to 1. A weight you leave out keeps the lens default. At least one weight must be above 0.
+> Five factors: same industries, same countries, service fit, client size fit (under 50, 50 to 249, 250 or more staff) and shared CRM. Different client sizes raise the complementary score; the same sizes raise the similar score.
+> Each weight is 0 to 1. A weight you leave out keeps the default (`--w-market 0.35 --w-geography 0.15 --w-services 0.25 --w-size 0.15 --w-accounts 0.1`). At least one weight must be above 0.
 
 ```bash
 # Every real agency with its service tags, coverage, best complementary and best similar match. Demo organisations are left out unless you ask.
 ac admin matching agencies [--include-demo] [--json]
 
 # Every pair of agencies once, with both scores, best complementary first (the data of the pair map).
-ac admin matching pairs [--include-demo] [--w-market 0.4] [--w-geography 0.2] [--w-services 0.3] [--w-accounts 0.1] [--json]
+ac admin matching pairs [--include-demo] [--w-market 0.35] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
 
 # One agency: its profile and every other agency ranked, with the factor breakdown.
-ac admin matching agency <org-id> [--include-demo] [--lens similar] [--w-market 0.4] [--w-geography 0.2] [--w-services 0.3] [--w-accounts 0.1] [--json]
+ac admin matching agency <org-id> [--include-demo] [--lens similar] [--w-market 0.35] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
+
+# Scan the homepage of one agency, or of every listed agency. Each scan is a paid page fetch and model call that runs on the server for 20 to 30 seconds; the command starts it, then waits for the result. The result feeds the service tags and is kept in Redis for 30 days, not in the database.
+ac admin matching scan-website <org-id> [--json]
+ac admin matching scan-websites [--include-demo] [--json]
+# Status of the last scan: none, pending, scanned, empty or failed, with what it found.
+ac admin matching scan-status <org-id> [--json]
 
 # One pair: shared industries and countries, service gaps and shared CRM domains, as seen from the first agency.
 ac admin matching pair <org-a> <org-b> [--lens complementary] [--w-market 1] [--json]

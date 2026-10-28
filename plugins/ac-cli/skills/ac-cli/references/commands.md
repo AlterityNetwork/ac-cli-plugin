@@ -1613,7 +1613,7 @@ Super admin only. The responses hold CRM data of more than one agency.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
-| `--w-market`, `--w-geography`, `--w-services`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching agency <org-id>`
@@ -1625,13 +1625,36 @@ Super admin only. The responses hold CRM data of more than one agency.
 | `--w-geography` | float | lens default | Weight of geography overlap (0 to 1) |
 | `--w-services` | float | lens default | Weight of the service factor (0 to 1) |
 | `--w-accounts` | float | lens default | Weight of shared CRM accounts (0 to 1) |
+| `--w-size` | float | lens default | Weight of client size fit (0 to 1) |
 | `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching scan-website <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Starts a scan of the homepage of one agency (a paid page fetch and model call that runs on the server), then waits for the result. The result is kept for 30 days.
+
+#### `ac admin matching scan-status <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the status of the last scan (`none`, `pending`, `scanned`, `empty`, `failed`) and what it found.
+
+#### `ac admin matching scan-websites`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Scan demo organisations too |
+| `--json` | flag | | Raw JSON output |
+
+Lists the agencies, starts a scan for each one that has a website, then waits for every result.
 
 #### `ac admin matching pair <org-a> <org-b>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--lens` | str | "complementary" | `complementary` or `similar` |
-| `--w-market`, `--w-geography`, `--w-services`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 ---
