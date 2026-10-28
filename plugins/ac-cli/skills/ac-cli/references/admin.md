@@ -396,6 +396,9 @@ ac admin matching agencies [--include-demo] [--w-market 0.25] [--w-searches 0.1]
 # The factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what is left out.
 ac admin matching algorithm [--json]
 
+# The Company profile of one agency, as its Memory page shows it, without acting as the agency.
+ac admin matching profile <org-id> [--json]
+
 # Every pair of agencies once, with both scores, best complementary first (the data of the pair map).
 ac admin matching pairs [--include-demo] [--w-market 0.25] [--w-searches 0.1] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
 
