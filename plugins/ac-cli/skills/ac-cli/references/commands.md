@@ -1617,6 +1617,13 @@ Super admin only. The responses hold CRM data of more than one agency.
 
 Shows the factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what the matching leaves out.
 
+#### `ac admin matching collaboration <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows a short note, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. The note is cached for each pair until a profile, scan or tag changes.
+
 #### `ac admin matching profile <org-id>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
