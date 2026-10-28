@@ -386,7 +386,7 @@ change the charges of a run already in flight.
 
 > Profiles of each agency and ranked matches between agencies, for future collaboration. Read-only. The responses hold CRM data of more than one agency, so never pass them to an agency.
 > Every match carries two scores. The complementary score rewards the same market with different services (a joint pitch or a referral). The similar score rewards the same market with the same services (overflow work). `--lens` only picks the sort order. Corbel's own organisations are left out.
-> Six factors: same industries (CRM), same search targets (the industries, countries and company sizes in Signals and Sonar search filters), same countries (CRM), service fit, client size fit (under 50, 50 to 249, 250 or more staff) and shared CRM. Different client sizes raise the complementary score; the same sizes raise the similar score. Both scores reward the same search targets.
+> Six factors: same industries (CRM), same search targets (the industries, countries and company sizes in Signals and Sonar search filters), same countries (CRM), service fit, client size fit (under 50, 50 to 249, 250 or more staff) and shared CRM. Different client sizes raise the complementary score; the same sizes raise the similar score. Both scores reward the same search targets. Each match also has a competitor score (same industries, services and client size; countries and searches stay out). A pair is flagged as a competitor at 70% or more, and `ac admin matching agency` shows the score in its Competitor column.
 > Each weight is 0 to 1. A weight you leave out keeps the default (`--w-market 0.25 --w-searches 0.1 --w-geography 0.15 --w-services 0.25 --w-size 0.15 --w-accounts 0.1`). At least one weight must be above 0.
 
 ```bash
