@@ -1622,7 +1622,7 @@ Shows the factors, their sources, the default weights, the competitor rule, the 
 |------|------|---------|-------------|
 | `--json` | flag | | Raw JSON output |
 
-Shows a short note, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. The note is cached for each pair until a profile, scan or tag changes.
+Shows three to five points, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. Each point starts with the way of working. The note is cached for each pair until a profile, scan or tag changes.
 
 #### `ac admin matching profile <org-id>`
 | Flag | Type | Default | Description |
