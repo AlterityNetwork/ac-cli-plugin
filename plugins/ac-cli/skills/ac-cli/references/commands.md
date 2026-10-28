@@ -1607,7 +1607,15 @@ Super admin only. The responses hold CRM data of more than one agency.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
+| `--w-market`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | default | Factor weights (0 to 1) for the best matches |
 | `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching algorithm`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what the matching leaves out.
 
 #### `ac admin matching pairs`
 | Flag | Type | Default | Description |

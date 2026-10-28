@@ -391,7 +391,10 @@ change the charges of a run already in flight.
 
 ```bash
 # Every real agency with its service tags, coverage, best complementary and best similar match. Demo organisations are left out unless you ask.
-ac admin matching agencies [--include-demo] [--json]
+ac admin matching agencies [--include-demo] [--w-market 0.35] [--w-size 0.15] [--json]
+
+# The factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what is left out.
+ac admin matching algorithm [--json]
 
 # Every pair of agencies once, with both scores, best complementary first (the data of the pair map).
 ac admin matching pairs [--include-demo] [--w-market 0.35] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
