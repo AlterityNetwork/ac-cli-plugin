@@ -385,12 +385,15 @@ change the charges of a run already in flight.
 ## Agency Matching (read-only)
 
 > Profiles of each agency and ranked matches between agencies, for future collaboration. Read-only. The responses hold CRM data of more than one agency, so never pass them to an agency.
-> The `complementary` lens rewards the same market with different services (a joint pitch or a referral). The `similar` lens rewards the same market with the same services (overflow work).
+> Every match carries two scores. The complementary score rewards the same market with different services (a joint pitch or a referral). The similar score rewards the same market with the same services (overflow work). `--lens` only picks the sort order. Corbel's own organisations are left out.
 > Each weight is 0 to 1. A weight you leave out keeps the lens default. At least one weight must be above 0.
 
 ```bash
-# Every real agency with its service tags, coverage and best match. Demo organisations are left out unless you ask.
-ac admin matching agencies [--include-demo] [--lens complementary|similar] [--json]
+# Every real agency with its service tags, coverage, best complementary and best similar match. Demo organisations are left out unless you ask.
+ac admin matching agencies [--include-demo] [--json]
+
+# Every pair of agencies once, with both scores, best complementary first (the data of the pair map).
+ac admin matching pairs [--include-demo] [--w-market 0.4] [--w-geography 0.2] [--w-services 0.3] [--w-accounts 0.1] [--json]
 
 # One agency: its profile and every other agency ranked, with the factor breakdown.
 ac admin matching agency <org-id> [--include-demo] [--lens similar] [--w-market 0.4] [--w-geography 0.2] [--w-services 0.3] [--w-accounts 0.1] [--json]
