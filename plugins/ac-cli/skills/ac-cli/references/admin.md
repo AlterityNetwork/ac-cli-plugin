@@ -307,6 +307,21 @@ ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraud
 # skip the confirmation prompt. Use when plans were set up in the Stripe dashboard
 # rather than via `subscription-plans create`.
 ac admin billing import-stripe-products [--yes] [--json]
+
+# Credit top-up: charge credits to the organization's saved payment method.
+# The invoice is the credits at GBP 0.01 each, with tax on top, and the
+# organization needs a card on file. --credits is 100 to 1,000,000. The credits
+# land when Stripe reports the invoice paid, not when the command returns, and
+# they count in the current credit period only. The command makes a new
+# --request-id per run; pass the same one again to retry without a second
+# charge. A declined card exits 6 (code top_up_payment_failed) and voids the
+# invoice. No card on file, or a non-GBP organization, exits 5.
+ac admin billing top-up --org-id <org-id> --credits 2500 [--request-id <uuid>] [--yes] [--json]
+
+# The credit balance of every organization in its current period, most used
+# first. --attention keeps only those at 80 percent of their credits or more
+# (state warning or exhausted). The card column shows whether a top-up can run.
+ac admin billing credit-usage [--attention] [--json]
 ```
 
 ## Subscription Plans
@@ -348,6 +363,20 @@ ac admin entitlement-grants create --org-id <org-id> --key chat --source trial -
 ac admin entitlement-grants create --org-id <org-id> --key crm --source comp --mode revoke
 
 ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
+```
+
+## Limit Overrides
+
+> Per-organization values of the numeric plan limits. Today only `email_sends_per_day` takes an override: the daily email cap of the organization, counted per UTC day across every send path. An override replaces the plan value, and clearing it returns to the plan value. A cap refuses a send only once billing enforcement starts for the organization. The per-mailbox Outreach cap of 50 is separate and takes no override.
+
+```bash
+# The overrides, the plan limits and the limits they resolve to.
+ac admin limit-overrides list --org-id <org-id> [--json]
+
+# --limit defaults to email_sends_per_day. --value 0 refuses every send.
+ac admin limit-overrides set --org-id <org-id> --value 500 [--limit email_sends_per_day] [--json]
+
+ac admin limit-overrides clear --org-id <org-id> [--limit email_sends_per_day] [--yes] [--json]
 ```
 
 ## Credit Prices
