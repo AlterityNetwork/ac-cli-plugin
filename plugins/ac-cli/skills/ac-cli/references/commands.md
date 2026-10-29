@@ -1719,6 +1719,8 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
 | `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`). Use `[]` to clear |
 | `--comped/--no-comped` | flag | no | Set or clear the comped flag. A comped organization is never billed, and `activate-billing` refuses it |
+| `--prospect-emails-per-day` | int | no | Prospect emails one mailbox sends per UTC day (default 30). `0` stops every prospect email |
+| `--clear-prospect-emails-per-day` | flag | no | Return the prospect email cap to the platform default. Not with `--prospect-emails-per-day` |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs delete <org-id>`
@@ -3090,8 +3092,8 @@ positional argument. There is no `--message` flag and no single-conversation
 | `--period-days` | int | 30 | Reporting window from 1 to 365 days |
 | `--json` | flag | off | Raw JSON output |
 
-Shows Sonar (legacy), Headhunter (legacy), Sequences, CRM, and account-activity output for the active
-organization.
+Shows Signals, Sequences, CRM, and account-activity output for the active organization,
+and ranks the launched sequences by their lifetime reply rate.
 
 ---
 
@@ -3467,6 +3469,13 @@ Lists all connected accounts in the organization.
 | `--body` | str | yes | Email body |
 | `--reply-to-message-id` | str | no | Message ID to reply to |
 | `--json` | flag | no | Raw JSON output |
+
+#### `ac nylas send-cap`
+Shows today's prospect emails of your mailbox against its daily cap. A send to a prospect past the cap is refused with HTTP 429, code `prospect_send_cap_reached`.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw JSON output (`limit`, `used`, `resets_at`). A null `limit` means no cap |
 
 #### `ac nylas update-signature`
 | Flag | Type | Required | Description |

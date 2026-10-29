@@ -1530,6 +1530,18 @@
           "text": "`ac admin credit-prices` `ac admin ai-usage`"
         }
       ]
+    },
+    {
+      "id": 107,
+      "prompt": "How many more cold emails can I send from my mailbox today?",
+      "expected_output": "Runs `ac nylas send-cap` and reads the used count against the daily limit.",
+      "assertions": [
+        {
+          "name": "reads the prospect email cap",
+          "type": "command_matches",
+          "text": "`ac nylas send-cap`"
+        }
+      ]
     }
   ]
 }
