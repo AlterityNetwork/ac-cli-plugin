@@ -382,6 +382,44 @@ The seeded action keys are `company.search` (run), `company.search.supplied` (ro
 A charge uses the version in effect when its run started, so a new version does not
 change the charges of a run already in flight.
 
+## Agency Matching (read-only except the paid model calls)
+
+> Profiles of each agency and ranked matches between agencies, for future collaboration. Read-only, except that `scan-website`, `scan-websites` and `collaboration` start paid page fetches or model calls and store the results in Redis; `scan-websites` does this for every listed agency. Ask before you run them. The responses hold CRM data of more than one agency, so never pass them to an agency.
+> Every match carries two scores. The complementary score rewards the same market with different services (a joint pitch or a referral). The similar score rewards the same market with the same services (overflow work). `--lens` only picks the sort order. Corbel's own organisations are left out.
+> Six factors: same industries (CRM), same search targets (the industries, countries and company sizes in Signals and Sonar search filters), same countries (CRM), service fit, client size fit (under 50, 50 to 249, 250 or more staff) and shared CRM. Different client sizes raise the complementary score; the same sizes raise the similar score. The complementary score rewards the same search targets. The similar score reads the same industries, services and client size only, so it is also the competitor score: a pair is flagged as a competitor at 70% or more. Countries and search targets count in the complementary score only.
+> Each weight is 0 to 1. A weight you leave out keeps the default (`--w-market 0.25 --w-searches 0.1 --w-geography 0.15 --w-services 0.25 --w-size 0.15 --w-accounts 0.1`). At least one weight must be above 0.
+
+```bash
+# Every real agency with its service tags, coverage, best complementary and best similar match. Demo organisations are left out unless you ask.
+ac admin matching agencies [--include-demo] [--w-market 0.25] [--w-searches 0.1] [--w-size 0.15] [--json]
+
+# The factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what is left out.
+ac admin matching algorithm [--json]
+
+# Model-written points on how two agencies could work together (cached for each pair).
+ac admin matching collaboration <org-a> <org-b> [--json]
+
+# The Company profile of one agency, as its Memory page shows it, without acting as the agency.
+ac admin matching profile <org-id> [--json]
+
+# Every pair of agencies once, with both scores, best complementary first (the data of the pair map).
+ac admin matching pairs [--include-demo] [--w-market 0.25] [--w-searches 0.1] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
+
+# One agency: its profile and every other agency ranked, with the factor breakdown.
+ac admin matching agency <org-id> [--include-demo] [--lens similar] [--w-market 0.25] [--w-searches 0.1] [--w-geography 0.15] [--w-services 0.25] [--w-size 0.15] [--w-accounts 0.1] [--json]
+
+# Scan the homepage of one agency, or of every listed agency. Each scan is a paid page fetch and model call that runs on the server for 20 to 30 seconds; the command starts it, then waits for the result. The result feeds the service tags and is kept in Redis for 30 days, not in the database.
+ac admin matching scan-website <org-id> [--json]
+ac admin matching scan-websites [--include-demo] [--json]
+# Status of the last scan: none, pending, scanned, empty or failed, with what it found.
+ac admin matching scan-status <org-id> [--json]
+
+# One pair: shared industries and countries, service gaps and shared CRM domains, as seen from the first agency.
+ac admin matching pair <org-a> <org-b> [--lens complementary] [--w-market 1] [--json]
+```
+
+Most CRM rows are Sonar prospects, so two agencies with similar searches share many CRM domains without a relationship. Read `engaged_shared_account_count` for the domains that one side holds past the prospect stage.
+
 ## Intelligence (global intel_companies / intel_people)
 
 > Superadmin viewer + CRUD over the **global, org-free** intelligence tables

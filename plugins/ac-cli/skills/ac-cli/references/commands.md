@@ -1599,6 +1599,89 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 
 ---
 
+### Agency Matching (read-only except the paid model calls)
+
+Super admin only. The responses hold CRM data of more than one agency. `scan-website`, `scan-websites` and `collaboration` start paid page fetches or model calls, so ask before you run them.
+
+#### `ac admin matching agencies`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Include demo organisations |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) for the best matches |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching algorithm`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what the matching leaves out.
+
+#### `ac admin matching collaboration <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Paid: the first call for a pair runs one model call. Shows three to five points, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. Each point starts with the way of working. The note is cached for each pair until a profile, scan or tag changes.
+
+#### `ac admin matching profile <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the Company profile of an agency as its Memory page shows it: the Markdown and its gaps. It does not act as the agency.
+
+#### `ac admin matching pairs`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Include demo organisations |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching agency <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Rank demo organisations too |
+| `--lens` | str | "complementary" | Sort order: `complementary` or `similar` |
+| `--w-market` | float | 0.25 | Weight of market overlap (0 to 1) |
+| `--w-geography` | float | 0.15 | Weight of geography overlap (0 to 1) |
+| `--w-services` | float | 0.25 | Weight of the service factor (0 to 1) |
+| `--w-accounts` | float | 0.1 | Weight of shared CRM accounts (0 to 1) |
+| `--w-size` | float | 0.15 | Weight of client size fit (0 to 1) |
+| `--w-searches` | float | 0.1 | Weight of same search targets (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching scan-website <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Starts a scan of the homepage of one agency (a paid page fetch and model call that runs on the server), then waits for the result. The result is kept for 30 days.
+
+#### `ac admin matching scan-status <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the status of the last scan (`none`, `pending`, `scanned`, `empty`, `failed`) and what it found.
+
+#### `ac admin matching scan-websites`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Scan demo organisations too |
+| `--json` | flag | | Raw JSON output |
+
+Lists the agencies, starts a scan for each one that has a website, then waits for every result.
+
+#### `ac admin matching pair <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--lens` | str | "complementary" | `complementary` or `similar` |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+---
+
 ### Organizations
 
 #### `ac admin orgs list`
