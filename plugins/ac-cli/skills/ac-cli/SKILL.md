@@ -155,6 +155,9 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "JSON file of people, bulk upsert / import" | `ac crm people bulk-upsert --file <path>` | `ac crm import preview --file <path>` is for the CSV-style CRM import flow; for a JSON file of people use `bulk-upsert` |
 | "subscription plan" / "create a plan" (admin) | `ac admin subscription-plans …` (full word) | `ac admin plans` — does not exist |
 | "credit price" / "price book" / "change what an action costs" (admin) | `ac admin credit-prices list` · `ac admin credit-prices create` (a change is a new version) | `ac admin prices` (does not exist) · `credit-prices update` / `delete` (do not exist) · `subscription-plans` (plan prices in cents, not credits) |
+| "top up credits" / "add credits" / "buy credits" (admin) | `ac admin billing top-up --org-id <id> --credits <n>` (credits at GBP 0.01, landed when Stripe reports paid) | `ac admin credits add` (does not exist) · `credit-prices create` (changes a price, adds no credits) |
+| "who is low on credits" / "credit usage per organization" (admin) | `ac admin billing credit-usage [--attention]` | `ac profiles usage` (your own organization only) |
+| "daily email limit" / "send cap" for one organization (admin) | `ac admin limit-overrides set --org-id <id> --value <n>` · `list` · `clear` | `entitlement-grants` (keys, no numbers) · `subscription-plans update` (changes the plan for every organization on it) |
 | "credit balance" / "credits left" / "how many credits did we spend" | `ac profiles usage` (the Credits line; `--json` gives the `credits` block) | `ac admin ai-usage …` (token cost, not credits) · `ac admin credit-prices` (prices, not the balance) |
 | "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
 | "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
@@ -183,6 +186,8 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output) |
 | `ac admin subscriptions create` | `--org-id` AND `--plan-id` AND `--billing-period` AND `--started-at` |
 | `ac admin subscription-plans create` | `--slug` AND `--name` AND `--monthly-price-cents` AND `--annual-price-cents` (dollars × 100; "$9/mo" → 900) |
+| `ac admin billing top-up` | `--org-id` AND `--credits` (100 to 1,000,000) |
+| `ac admin limit-overrides set` | `--org-id` AND `--value` |
 | `ac admin credit-prices create` | `--action-key` AND `--unit` AND `--credits` (`--effective-from` at least 60 seconds from now when given) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
 | `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |

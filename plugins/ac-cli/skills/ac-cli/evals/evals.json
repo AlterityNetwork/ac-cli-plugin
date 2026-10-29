@@ -1542,6 +1542,57 @@
           "text": "`ac nylas send-cap`"
         }
       ]
+    },
+    {
+      "id": 108,
+      "prompt": "As super admin, add 2,500 credits to the organization 3f1c2a9e-1111-4222-8333-444455556666. Charge their card on file.",
+      "expected_output": "Runs `ac admin billing top-up --org-id 3f1c2a9e-1111-4222-8333-444455556666 --credits 2500`. It does not invent an `ac admin credits` command and does not change a credit price.",
+      "assertions": [
+        {
+          "name": "charges a top-up",
+          "type": "command_matches",
+          "text": "`ac admin billing top-up` `--org-id[ =]3f1c2a9e-1111-4222-8333-444455556666` `--credits[ =]2500`"
+        },
+        {
+          "name": "no invented credits command or price change",
+          "type": "command_forbidden",
+          "text": "`ac admin credits` `ac admin credit-prices create`"
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "prompt": "As super admin, which organizations have used 80 percent or more of their credits this period?",
+      "expected_output": "Runs `ac admin billing credit-usage --attention`. It does not read a single organization's usage with `ac profiles usage`.",
+      "assertions": [
+        {
+          "name": "lists the worklist at 80 percent or more",
+          "type": "command_matches",
+          "text": "`ac admin billing credit-usage` `--attention`"
+        },
+        {
+          "name": "no single-organization read",
+          "type": "command_forbidden",
+          "text": "`ac profiles usage` `ac admin ai-usage`"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "prompt": "As super admin, let the organization 3f1c2a9e-1111-4222-8333-444455556666 send up to 500 emails a day.",
+      "expected_output": "Runs `ac admin limit-overrides set --org-id 3f1c2a9e-1111-4222-8333-444455556666 --value 500`. It does not change the plan for every organization on it, and it does not add an entitlement grant.",
+      "assertions": [
+        {
+          "name": "sets the daily email cap override",
+          "type": "command_matches",
+          "text": "`ac admin limit-overrides set` `--org-id[ =]3f1c2a9e-1111-4222-8333-444455556666` `--value[ =]500`"
+        },
+        {
+          "name": "no plan edit or grant",
+          "type": "command_forbidden",
+          "text": "`ac admin subscription-plans update` `ac admin entitlement-grants create`"
+        }
+      ]
     }
   ]
 }
