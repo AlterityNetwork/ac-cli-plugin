@@ -36,7 +36,7 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
 ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json] [--comped/--no-comped]
+ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json] [--comped/--no-comped] [--prospect-emails-per-day N | --clear-prospect-emails-per-day]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
@@ -369,7 +369,7 @@ ac admin entitlement-grants delete <grant-id> --org-id <org-id> [--yes] [--json]
 
 ## Limit Overrides
 
-> Per-organization values of the numeric plan limits. Today only `email_sends_per_day` takes an override: the daily email cap of the organization, counted per UTC day across every send path. An override replaces the plan value, and clearing it returns to the plan value. A cap refuses a send only once billing enforcement starts for the organization. The per-mailbox Outreach cap of 50 is separate and takes no override.
+> Per-organization values of the numeric plan limits. Today only `email_sends_per_day` takes an override: the daily email cap of the organization, counted per UTC day across every send path. An override replaces the plan value, and clearing it returns to the plan value. A cap refuses a send only once billing enforcement starts for the organization. At the cap an Outreach send waits for the next UTC day, and every other send is refused. The per-mailbox Outreach cap of 50 and the daily prospect cap of each mailbox are separate.
 
 ```bash
 # The overrides, the plan limits and the limits they resolve to.
