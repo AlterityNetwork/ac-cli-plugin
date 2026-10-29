@@ -3007,8 +3007,8 @@ positional argument. There is no `--message` flag and no single-conversation
 | `--period-days` | int | 30 | Reporting window from 1 to 365 days |
 | `--json` | flag | off | Raw JSON output |
 
-Shows Sonar (legacy), Headhunter (legacy), Sequences, CRM, and account-activity output for the active
-organization.
+Shows Signals, Sequences, CRM, and account-activity output for the active organization,
+and ranks the launched sequences by their lifetime reply rate.
 
 ---
 
