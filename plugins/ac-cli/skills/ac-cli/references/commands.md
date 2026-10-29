@@ -1599,9 +1599,9 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 
 ---
 
-### Agency Matching (read-only)
+### Agency Matching (read-only except the paid model calls)
 
-Super admin only. The responses hold CRM data of more than one agency.
+Super admin only. The responses hold CRM data of more than one agency. `scan-website`, `scan-websites` and `collaboration` start paid page fetches or model calls, so ask before you run them.
 
 #### `ac admin matching agencies`
 | Flag | Type | Default | Description |
@@ -1622,7 +1622,7 @@ Shows the factors, their sources, the default weights, the competitor rule, the 
 |------|------|---------|-------------|
 | `--json` | flag | | Raw JSON output |
 
-Shows three to five points, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. Each point starts with the way of working. The note is cached for each pair until a profile, scan or tag changes.
+Paid: the first call for a pair runs one model call. Shows three to five points, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. Each point starts with the way of working. The note is cached for each pair until a profile, scan or tag changes.
 
 #### `ac admin matching profile <org-id>`
 | Flag | Type | Default | Description |
