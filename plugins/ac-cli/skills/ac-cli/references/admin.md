@@ -309,18 +309,20 @@ ac admin billing refund <charge-id> [--amount-cents N] [--reason duplicate|fraud
 ac admin billing import-stripe-products [--yes] [--json]
 
 # Credit top-up: charge credits to the organization's saved payment method.
-# The invoice is the credits at GBP 0.01 each, with tax on top, and the
+# The invoice is the credits at GBP 0.01 each, with any VAT on top, and the
 # organization needs a card on file. --credits is 100 to 1,000,000. The credits
 # land when Stripe reports the invoice paid, not when the command returns, and
 # they count in the current credit period only. The command makes a new
-# --request-id per run; pass the same one again to retry without a second
-# charge. A declined card exits 6 (code top_up_payment_failed) and voids the
-# invoice. No card on file, or a non-GBP organization, exits 5.
+# --request-id per run and prints it before the charge; after a lost answer,
+# pass the same one again to retry without a second charge. A declined card
+# exits 6 (code top_up_payment_failed) and voids the invoice. No card on file,
+# or an organization whose subscription is not in GBP, exits 5.
 ac admin billing top-up --org-id <org-id> --credits 2500 [--request-id <uuid>] [--yes] [--json]
 
 # The credit balance of every organization in its current period, most used
 # first. --attention keeps only those at 80 percent of their credits or more
 # (state warning or exhausted). The card column shows whether a top-up can run.
+# It ends with a note when some balances did not load (`unread_count`).
 ac admin billing credit-usage [--attention] [--json]
 ```
 

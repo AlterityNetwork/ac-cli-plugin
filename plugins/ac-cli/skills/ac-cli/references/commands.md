@@ -2338,13 +2338,13 @@ Refunds a Stripe charge, fully or partially (`--amount-cents`), with an optional
 Imports active Stripe products and their recurring prices into the `subscription_plans` catalogue. Idempotent: each active product with a recurring price is matched to a plan by `stripe_product_id` (prices and name updated in place) or created as a new plan with a derived unique slug; products with no recurring price are skipped. Returns `imported` / `updated` / `skipped` counts plus a `messages` list (e.g. a product missing a monthly or annual price defaults it to 0). Requires `--yes` (or `AC_YES=1`) to skip the confirmation prompt. Use when plans were configured in the Stripe dashboard rather than via `subscription-plans create`.
 
 #### `ac admin billing top-up`
-Charges a credit top-up to the organization's saved payment method: the credits at GBP 0.01 each, with tax on top. The credits land when Stripe reports the invoice paid and count in the current credit period only. A declined card exits 6 (`top_up_payment_failed`) and voids the invoice; no card on file or a non-GBP organization exits 5.
+Charges a credit top-up to the organization's saved payment method: the credits at GBP 0.01 each, with tax on top. The credits land when Stripe reports the invoice paid and count in the current credit period only. A declined card exits 6 (`top_up_payment_failed`) and voids the invoice; no card on file or an organization whose subscription is not in GBP exits 5.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--org-id` | str | yes | Organization ID |
 | `--credits` | int | yes | Credits to add, 100 to 1,000,000 |
-| `--request-id` | UUID | no | Keys the Stripe calls. A new one per run by default; pass the same one to retry without a second charge |
+| `--request-id` | UUID | no | Keys the Stripe calls. A new one per run by default, printed before the charge; pass the same one to retry without a second charge |
 | `--yes` | flag | no | Skip the price confirmation |
 | `--json` | flag | no | Raw JSON output (`invoice_id`, `status`, `credits`, `amount_pence`, `total_pence`, `currency`) |
 
@@ -2354,7 +2354,7 @@ Lists the credit balance of every organization in its current period, most used 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--attention` | flag | no | Only organizations at 80 percent of their credits or more (`warning` or `exhausted`) |
-| `--json` | flag | no | Raw JSON output (`organizations`, each with `allowance`, `top_ups`, `spent`, `balance`, `used_percent`, `state`, `can_top_up`) |
+| `--json` | flag | no | Raw JSON output (`organizations`, each with `allowance`, `top_ups`, `spent`, `balance`, `used_percent`, `state`, `can_top_up`; and `unread_count`, the organizations whose balance did not load) |
 
 ---
 
