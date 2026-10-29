@@ -1607,7 +1607,7 @@ Super admin only. The responses hold CRM data of more than one agency.
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
-| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | default | Factor weights (0 to 1) for the best matches |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) for the best matches |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching algorithm`
@@ -1635,7 +1635,7 @@ Shows the Company profile of an agency as its Memory page shows it: the Markdown
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Include demo organisations |
-| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching agency <org-id>`
@@ -1643,12 +1643,12 @@ Shows the Company profile of an agency as its Memory page shows it: the Markdown
 |------|------|---------|-------------|
 | `--include-demo` | flag | false | Rank demo organisations too |
 | `--lens` | str | "complementary" | Sort order: `complementary` or `similar` |
-| `--w-market` | float | lens default | Weight of market overlap (0 to 1) |
-| `--w-geography` | float | lens default | Weight of geography overlap (0 to 1) |
-| `--w-services` | float | lens default | Weight of the service factor (0 to 1) |
-| `--w-accounts` | float | lens default | Weight of shared CRM accounts (0 to 1) |
-| `--w-size` | float | lens default | Weight of client size fit (0 to 1) |
-| `--w-searches` | float | lens default | Weight of same search targets (0 to 1) |
+| `--w-market` | float | 0.25 | Weight of market overlap (0 to 1) |
+| `--w-geography` | float | 0.15 | Weight of geography overlap (0 to 1) |
+| `--w-services` | float | 0.25 | Weight of the service factor (0 to 1) |
+| `--w-accounts` | float | 0.1 | Weight of shared CRM accounts (0 to 1) |
+| `--w-size` | float | 0.15 | Weight of client size fit (0 to 1) |
+| `--w-searches` | float | 0.1 | Weight of same search targets (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 #### `ac admin matching scan-website <org-id>`
@@ -1677,7 +1677,7 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--lens` | str | "complementary" | `complementary` or `similar` |
-| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | lens default | Factor weights (0 to 1) |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
 | `--json` | flag | | Raw JSON output |
 
 ---
