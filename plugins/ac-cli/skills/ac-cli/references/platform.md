@@ -390,6 +390,7 @@ ac nylas org-accounts
 ac nylas disconnect [--yes]
 ac nylas send --to "jane@example.com" --subject "Hello" --body "Hi Jane..." \
   [--reply-to-message-id <id>]
+ac nylas send-cap            # today's prospect emails against the daily cap
 ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
 ```
