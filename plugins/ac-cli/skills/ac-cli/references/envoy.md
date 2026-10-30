@@ -92,6 +92,8 @@ ac envoy inbox remove-tags <thread-id> --tags "stale"
 ac envoy inbox reply <thread-id> --body "Thanks for your reply!"
 ```
 
+The list holds only threads with at least one reply from the prospect, by email or LinkedIn. A thread of sent emails only is not listed; read sent emails with `ac envoy sequences outputs <sequence-id>`. The Channel column is `email` or `linkedin`. `reply` sends an email, so it refuses a LinkedIn thread: answer that person on LinkedIn.
+
 **Standard "read first thread + reply" recipe** — when the user asks to read messages then reply, chain all three steps in one call:
 
 ```bash
