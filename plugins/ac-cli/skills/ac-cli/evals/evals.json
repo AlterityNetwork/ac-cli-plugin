@@ -1542,6 +1542,18 @@
           "text": "`ac nylas send-cap`"
         }
       ]
+    },
+    {
+      "id": 108,
+      "prompt": "Mark the first thread in my outreach inbox as read.",
+      "expected_output": "Lists the Sequences inbox, then runs `ac envoy inbox mark-read` on the first thread id. Does not use `ac crm comms mark-read` or `ac notifications read`.",
+      "assertions": [
+        {
+          "name": "marks a Sequences inbox thread read",
+          "type": "command_sequence",
+          "text": "Sequence: `ac envoy inbox list`, `ac envoy inbox mark-read`"
+        }
+      ]
     }
   ]
 }
