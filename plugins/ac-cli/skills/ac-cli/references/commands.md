@@ -1055,6 +1055,13 @@ Returns all messages in a thread.
 
 Marks the thread as complete.
 
+#### `ac envoy inbox mark-read <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Marks every message of the thread as read by you. Other users keep their own read state.
+
 #### `ac envoy inbox update-status <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
