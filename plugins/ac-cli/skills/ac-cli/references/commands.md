@@ -754,7 +754,7 @@ and status, and top clicked links.
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
 | `--skip-non-working-days` / `--no-skip-non-working-days` | flag | no | Roll sends forward off weekends and bank holidays |
-| `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email or phone before a step that needs it. On by default |
+| `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email, phone or LinkedIn URL before a step that needs it. On by default |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy sequences update <sequence-id>`
