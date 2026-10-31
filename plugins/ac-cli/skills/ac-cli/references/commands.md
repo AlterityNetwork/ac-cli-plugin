@@ -2761,6 +2761,7 @@ code 2.
 | `--clear-title` | flag | no | Remove the typed job title |
 | `--email` | str | no | Work email address |
 | `--clear-email` | flag | no | Remove the typed email |
+| `--expected-updated-at` | str | no | The `updated_at` of the person as you read it, from `people --json` |
 | `--json` | flag | no | Raw prospect person JSON |
 
 Corrects one person a company prospect lists. `<person-id>` is the prospect
@@ -2770,7 +2771,9 @@ profile value shows again. A new `--linkedin-url` moves the row to the global
 person of that profile. The name of a person with a profile comes from the
 profile, so `--name` changes it only together with a new `--linkedin-url`.
 A promoted prospect takes the edit. When the person is in the CRM, the CRM
-person takes the values the review shows.
+person takes the values the review shows, in the same transaction.
+`--expected-updated-at` sends the version you read: when another write changed
+the person after that read, the edit is refused and nothing is written.
 Give at least one option, and never a value beside its clear: either is exit
 code 2. A missing prospect or person returns exit code 3. A person prospect,
 a profile or a name the prospect already lists, a person another write

@@ -68,7 +68,7 @@ ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects add-person <prospect-id> --name <name> [--linkedin-url <url>] [--title <title>] [--email <email>] [--named-signal-id <signal-id>]
-ac agentic prospects edit-person <prospect-id> <person-id> [--name <name>] [--linkedin-url <url>] [--title <title> | --clear-title] [--email <email> | --clear-email]
+ac agentic prospects edit-person <prospect-id> <person-id> [--name <name>] [--linkedin-url <url>] [--title <title> | --clear-title] [--email <email> | --clear-email] [--expected-updated-at <timestamp>]
 ac agentic prospects search-persona <prospect-id>
 ac agentic prospects find-people <prospect-id> [--title <title>]... [--department <department>]... [--seniority <level>]... [--country <code>]...
 ac agentic prospects find-people <prospect-id> --describe "<the people to find>"
@@ -116,9 +116,12 @@ person ID that `people` shows. Only the options you give change.
 `--clear-title` and `--clear-email` remove the typed value, and the profile
 value shows again. A new `--linkedin-url` moves the person to that profile.
 The name of a person with a profile changes only with a new profile. It
-works on a promoted prospect, and a person in the CRM changes there too. A
-person prospect, a profile or a name the prospect already lists, and an email
-or LinkedIn URL another CRM person holds each return exit code 5.
+works on a promoted prospect, and a person in the CRM changes there too.
+Pass `--expected-updated-at` with the `updated_at` that `people --json` showed,
+so an edit made after another write changed the person is refused. A
+person prospect, a person changed since that read, a profile or a name the
+prospect already lists, and an email or LinkedIn URL another CRM person holds
+each return exit code 5.
 `find-people` starts one `people.search` Run for the company. With no option
 it looks for the decision makers that `search-persona` shows. The `--title`,
 `--department`, `--seniority` and `--country` options replace that persona.
