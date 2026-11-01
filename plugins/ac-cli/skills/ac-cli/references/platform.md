@@ -197,8 +197,8 @@ email address is on the organization do-not-contact list is refused
 (`opted_out`), whatever the case or spacing of the address. A prospect
 person that is already in the CRM enrolls as the CRM person.
 
-`enroll-batch` adds up to 200 people in one request and prints one result per
-person, in order: `added`, `already_enrolled` (with the other campaign's name
+`enroll-batch` adds up to 200 people, in requests of 50, and prints one result
+per person, in order: `added`, `already_enrolled` (with the other campaign's name
 and status), `campaign_full`, `opted_out` or `not_found`. One refused person
 never blocks the others. Name each person as `kind:id` with `--person`, or put
 one per line in a `--file`.

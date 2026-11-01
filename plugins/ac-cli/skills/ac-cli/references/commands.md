@@ -2944,15 +2944,17 @@ campaign answers the same enrollment.
 | `--file` | path | one of these two | One `kind:id` per line. Blank lines and `#` comments are skipped. |
 | `--json` | flag | no | Raw JSON: `{"results": [...]}` |
 
-Enrolls 1 to 200 people in one request. The CLI refuses more than 200, an
-empty list, and a malformed line with exit code 2 before any call. The table
-prints one row per person, in the order given: the person, the outcome and a
+Enrolls 1 to 200 people. The CLI sends them in requests of 50 (the API
+limit per request), one after another. It refuses more than 200, an empty
+list, and a malformed line with exit code 2 before any call. The table prints
+one row per person, in the order given: the person, the outcome and a
 detail. The outcome is `added`, `already_enrolled` (the detail names the other
 campaign and its status), `campaign_full`, `opted_out` or `not_found`. One
 refused person never blocks the others. A person already in this campaign
 answers `added` with the same enrollment. An archived campaign returns exit
-code 5 (`campaign_archived`) and enrolls nobody; an unknown campaign returns
-exit code 3.
+code 5 (`campaign_archived`); an unknown campaign returns exit code 3. When a
+request fails, the run stops: the table shows the people already sent and
+marks the rest `not_sent`. Running it again is safe.
 
 #### `ac agentic outreach enrollments list`
 | Flag | Type | Required | Description |
