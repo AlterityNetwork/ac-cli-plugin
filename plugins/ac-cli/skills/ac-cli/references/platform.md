@@ -187,7 +187,10 @@ to the caller. A sender outside the organization returns exit code 2 (422).
 The sender cannot change once the campaign has an enrollment, in any status:
 that returns exit code 5 (`sender_locked`). For each Run, the planner selects
 the next step from the latest context of the person. The goal and the
-description are context for the planner, not instructions. `activate` and `resume` both set the campaign `active`; `pause`
+description are context for the planner, not instructions. The planner does
+not read the channels and the limits yet: its prompt still holds the email
+cadence, with no reply at most 4 emails, with gaps of about 3, then 5, then 7
+days. `activate` and `resume` both set the campaign `active`; `pause`
 sets it `paused`. While a campaign is paused, no new Run starts and no email is
 sent. A Run that started before the pause still finishes its decision, and its
 send is refused. `archive` is final and asks first. It ends every live
