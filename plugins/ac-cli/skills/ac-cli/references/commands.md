@@ -2883,8 +2883,7 @@ the review list.
 The table title names the page and the total, for example `1-50 of 120`. When
 more campaigns wait, the last line names the next `--offset`.
 
-`enrollment_counts` is `{active, awaiting_approval, needs_contact_data, ended,
-live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
+`enrollment_counts` is `{active, needs_contact_data, ended, live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 
 #### `ac agentic outreach campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
@@ -2922,7 +2921,8 @@ draft, or any move of an archived campaign, returns exit code 5
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw campaign JSON |
 
-Archived is final. Every live enrollment ends as `manual`, in the background.
+Archived is final. Every live enrollment ends as `campaign_archived`, in the
+background.
 
 #### `ac agentic outreach campaigns enroll <campaign-id>`
 | Flag | Type | Required | Description |
@@ -2940,7 +2940,7 @@ campaign answers the same enrollment.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign-id` | str | yes | The campaign |
-| `--state` | `active`, `awaiting_approval`, `needs_contact_data` or `ended` | no | Only the enrollments in this state; default all |
+| `--status` | `active`, `needs_contact_data` or `ended` | no | Only the enrollments in this status; default all |
 | `--search` | str | no | Only the people whose name holds this text, in any case; at most 100 characters |
 | `--limit` | int | no | How many enrollments, 1 to 200; default 100 |
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
@@ -2954,7 +2954,7 @@ another address.
 #### `ac agentic outreach enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw enrollment JSON: `state`, `ended_reason`, `next_due_at`, `active_run_id`, `version` |
+| `--json` | flag | no | Raw enrollment JSON: `status`, `ended_reason`, `next_check_at`, `touch_count`, `context_version` |
 
 #### `ac agentic outreach enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
@@ -2980,7 +2980,7 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
-| `--json` | flag | no | Raw enrollment JSON: `state` is `ended`, `ended_reason` is `manual`, `ended_by` is the caller |
+| `--json` | flag | no | Raw enrollment JSON: `status` is `ended`, `ended_reason` is `user_exit`, `ended_by` is the caller |
 
 An enrollment that ended for another reason returns exit code 5
 (`enrollment_ended`).
@@ -3019,7 +3019,7 @@ expires, and it is null for an approved draft. Columns: Draft ID, Person
 #### `ac agentic outreach drafts get <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked` |
 
 #### `ac agentic outreach drafts save <draft-id>`
 | Flag | Type | Required | Description |
@@ -3027,16 +3027,16 @@ expires, and it is null for an approved draft. Columns: Draft ID, Person
 | `--subject` | str | no | New subject |
 | `--body` | str | no | New plain text body |
 | `--body-file` | path | no | Read the new body from a file. Not with `--body`. |
-| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked` |
 
 Give at least one field. A save changes the `content_hash` and keeps the
-`version`. After the approval the text is locked, and a save returns exit
+`context_version`. After the approval the text is locked, and a save returns exit
 code 5 (`draft_locked`).
 
 #### `ac agentic outreach drafts approve <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--version` | int | yes | The `version` that `get` or `save` printed |
+| `--context-version` | int | yes | The `context_version` that `get` or `save` printed |
 | `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
 | `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
 

@@ -163,7 +163,7 @@ ac agentic outreach campaigns update <campaign-id> [--name "..."] [--description
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
-ac agentic outreach enrollments list --campaign-id <campaign-id> [--state active|awaiting_approval|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
+ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
 ac agentic outreach enrollments timeline <enrollment-id> [--limit 50] [--order desc|asc]
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
@@ -195,8 +195,8 @@ campaign holds at most 200 live enrollments (`campaign_full`). A prospect
 person that is already in the CRM enrolls as the CRM person.
 
 `campaigns list` and `campaigns get` show the live enrollments against the cap
-(`People 140/200`) and the count per state: active, awaiting a draft review,
-needing an email, and ended.
+(`People 140/200`) and the count per status: active, needing an email, and
+ended. A draft that waits for review is not a status; `drafts list` shows it.
 
 `enrollments list` shows one page of a campaign, newest first. Each row names
 the person, the email of the person row, the state and the last decision
@@ -213,9 +213,10 @@ first, as the enrollment drawer shows it.
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM
 person, because a CRM edit starts no Run. It returns exit code 5 when the
-enrollment waits for a draft review (`awaiting_approval`), a Run decides now
-(`run_in_progress`), the campaign is not active, the organization stopped, or
-the enrollment ended. `enrollments exit` ends the enrollment as `manual`,
+enrollment has a draft that waits for review (`awaiting_approval`), an approved
+email waits to send (`run_in_progress`), the campaign is not active, the
+organization stopped, or the enrollment ended. `enrollments exit` ends the
+enrollment as `user_exit`,
 records the caller in `ended_by` and rejects a draft that waits for review.
 
 `organization stop` stops Outreach for every campaign of the organization,
@@ -228,7 +229,7 @@ member gets exit code 4.
 ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50] [--offset 0]
 ac agentic outreach drafts get <draft-id>
 ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
-ac agentic outreach drafts approve <draft-id> --version <n> --content-hash <hash>
+ac agentic outreach drafts approve <draft-id> --context-version <n> --content-hash <hash>
 ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
 ```
 
@@ -242,9 +243,10 @@ prints the next `--offset` while more drafts wait. Only the table output has
 that line: with `--json`, compute the next offset as `offset + length(data)`
 while `has_more` is true.
 
-`get` prints the draft text, the enrollment `version` and the `content_hash`.
-`approve` must send both values back. Save your edits first, then approve with
-the `version` and `content_hash` that `save` or a new `get` printed. The Run
+`get` prints the draft text, the enrollment `context_version` and the
+`content_hash`. `approve` must send both values back. Save your edits first,
+then approve with the `context_version` and `content_hash` that `save` or a new
+`get` printed. The Run
 then sends that exact text once. A save after the approval returns exit code 5.
 
 `approve` returns exit code 5 with a `code` in `--json` output when the
