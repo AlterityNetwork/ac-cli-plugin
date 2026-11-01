@@ -163,6 +163,7 @@ ac agentic outreach campaigns update <campaign-id> [--name "..."] [--description
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
+ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
 ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
 ac agentic outreach enrollments timeline <enrollment-id> [--limit 50] [--order desc|asc]
@@ -195,6 +196,12 @@ campaign holds at most 200 live enrollments (`campaign_full`). A person whose
 email address is on the organization do-not-contact list is refused
 (`opted_out`), whatever the case or spacing of the address. A prospect
 person that is already in the CRM enrolls as the CRM person.
+
+`enroll-batch` adds up to 200 people, in requests of 50, and prints one result
+per person, in order: `added`, `already_enrolled` (with the other campaign's name
+and status), `campaign_full`, `opted_out` or `not_found`. One refused person
+never blocks the others. Name each person as `kind:id` with `--person`, or put
+one per line in a `--file`.
 
 `campaigns list` and `campaigns get` show the live enrollments against the cap
 (`People 140/200`) and the count per status: active, needing an email, and
