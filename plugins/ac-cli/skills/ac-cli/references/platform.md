@@ -191,7 +191,9 @@ live.
 `enroll` adds one person and starts the first Run. A person can be live in
 one campaign only. Enrolling a person who is live in another campaign returns
 exit code 5 (`already_enrolled`), and the message names that campaign. A
-campaign holds at most 200 live enrollments (`campaign_full`). A prospect
+campaign holds at most 200 live enrollments (`campaign_full`). A person whose
+email address is on the organization do-not-contact list is refused
+(`opted_out`), whatever the case or spacing of the address. A prospect
 person that is already in the CRM enrolls as the CRM person.
 
 `campaigns list` and `campaigns get` show the live enrollments against the cap

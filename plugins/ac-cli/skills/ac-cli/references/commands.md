@@ -2932,7 +2932,8 @@ background.
 | `--json` | flag | no | Raw enrollment JSON |
 
 Exit code 5 with `already_enrolled` (`context.campaign_name` names the other
-campaign), `campaign_full` (200 live enrollments) or `campaign_archived`.
+campaign), `campaign_full` (200 live enrollments), `opted_out` (the email
+address is on the do-not-contact list) or `campaign_archived`.
 Exit code 3 for a person of another organization. A repeat in the same
 campaign answers the same enrollment.
 
