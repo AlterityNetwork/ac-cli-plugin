@@ -2937,6 +2937,23 @@ address is on the do-not-contact list) or `campaign_archived`.
 Exit code 3 for a person of another organization. A repeat in the same
 campaign answers the same enrollment.
 
+#### `ac agentic outreach campaigns enroll-batch <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person` | `kind:id` | one of these two | One person, such as `crm.person:<id>` or `prospect.person:<id>`. Repeat it for each person. |
+| `--file` | path | one of these two | One `kind:id` per line. Blank lines and `#` comments are skipped. |
+| `--json` | flag | no | Raw JSON: `{"results": [...]}` |
+
+Enrolls 1 to 200 people in one request. The CLI refuses more than 200, an
+empty list, and a malformed line with exit code 2 before any call. The table
+prints one row per person, in the order given: the person, the outcome and a
+detail. The outcome is `added`, `already_enrolled` (the detail names the other
+campaign and its status), `campaign_full`, `opted_out` or `not_found`. One
+refused person never blocks the others. A person already in this campaign
+answers `added` with the same enrollment. An archived campaign returns exit
+code 5 (`campaign_archived`) and enrolls nobody; an unknown campaign returns
+exit code 3.
+
 #### `ac agentic outreach enrollments list`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
