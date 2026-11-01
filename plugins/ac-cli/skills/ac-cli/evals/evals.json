@@ -1554,6 +1554,18 @@
           "text": "Sequence: `ac envoy inbox list`, `ac envoy inbox mark-read`"
         }
       ]
+    },
+    {
+      "id": 109,
+      "prompt": "Enroll the CRM people p-1, p-2 and p-3 in the agentic Outreach campaign c-41 in one go, and tell me who could not be added.",
+      "expected_output": "Runs `ac agentic outreach campaigns enroll-batch c-41 --person crm.person:p-1 --person crm.person:p-2 --person crm.person:p-3` (one request, not three `campaigns enroll` calls), then reports each person whose outcome is not `added`.",
+      "assertions": [
+        {
+          "name": "one_batch_request",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns enroll-batch c-41 .*--person crm.person:p-1`"
+        }
+      ]
     }
   ]
 }
