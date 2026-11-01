@@ -158,8 +158,8 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
 ac agentic outreach campaigns get <campaign-id>
-ac agentic outreach campaigns create --name "Q4 intro" [--description "Heads of growth at Series A SaaS companies"]
-ac agentic outreach campaigns update <campaign-id> [--name "..."] [--description "..."]
+ac agentic outreach campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7] [--sender <user-id>]
+ac agentic outreach campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N] [--sender <user-id>]
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
@@ -176,13 +176,18 @@ ac agentic outreach organization stop [--yes]
 These commands run the agentic Outreach campaigns. They are not the legacy
 `ac envoy sequences`.
 
-A new campaign is a `draft`, and the caller owns it: the owner's mailbox sends
-its emails. A campaign has a name and an optional description, nothing more.
-The campaign has no fixed goal and no email limits. For each Run, the planner
-selects the next step from the latest context of the person. The description
-is context for the planner, not an instruction. The planner prompt holds the
-email cadence: with no reply, at most 4 emails, with gaps of about 3, then 5,
-then 7 days. `activate` and `resume` both set the campaign `active`; `pause`
+A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
+required goal, an optional description, the allowed channels, the touch and
+follow-up limits and a sender. The defaults are email only, 5 touches and a
+follow-up gap of 3 to 7 days. `--channel` repeats for both channels, and on
+`update` it replaces the list. `--max-touches` is 1 to 10, and `--min-days` and
+`--max-days` are 1 to 30 with the minimum at most the maximum; a bad value
+returns exit code 2. The sender is the member whose mailbox sends; it defaults
+to the caller. A sender outside the organization returns exit code 2 (422).
+The sender cannot change once the campaign has an enrollment, in any status:
+that returns exit code 5 (`sender_locked`). For each Run, the planner selects
+the next step from the latest context of the person. The goal and the
+description are context for the planner, not instructions. `activate` and `resume` both set the campaign `active`; `pause`
 sets it `paused`. While a campaign is paused, no new Run starts and no email is
 sent. A Run that started before the pause still finishes its decision, and its
 send is refused. `archive` is final and asks first. It ends every live
