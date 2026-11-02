@@ -2733,6 +2733,7 @@ two types counts under both. A type that no prospect holds is not listed.
 | `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
 | `--title` | str | no | Current job title |
 | `--email` | str | no | Work email address |
+| `--named-signal-id` | str | no | The company signal that named the person |
 | `--json` | flag | no | Raw prospect person JSON |
 
 Adds one person you name to a company prospect. The answer is one prospect
@@ -2740,13 +2741,44 @@ person row, the same shape as one `people` item. The command sends `--title`
 `--email` and `--linkedin-url` only when you give them. With a LinkedIn
 profile, the person goes to global Intelligence by that profile. The title
 and the email stay on the prospect and never reach global Intelligence. Each
-fills only a value the profile does not have, so it never replaces a stored
-provider value. With no profile, the person stays on the prospect: the row holds the
-name, title and email, and a second add of the same name answers that row.
+is shown over the profile value, and promotion writes it to the CRM person.
+With no profile, the person stays on the prospect: the row holds the name,
+title and email, and a second add of the same name answers that row.
+`--named-signal-id` must name a signal the prospect holds. The review then
+lists the person once, also after a rename.
 The prospect `people_state` becomes `found`.
-A missing prospect returns exit code 3. A person prospect or a promoted
-prospect returns exit code 5. A profile URL that is not `/in/`, or an email
-that is not valid, returns exit code 2.
+A missing prospect returns exit code 3. A person prospect, a promoted
+prospect, or a signal the prospect does not hold returns exit code 5. A
+profile URL that is not `/in/`, or an email that is not valid, returns exit
+code 2.
+
+#### `ac agentic prospects edit-person <prospect-id> <person-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | no | Full name of the person |
+| `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--title` | str | no | Current job title |
+| `--clear-title` | flag | no | Remove the typed job title |
+| `--email` | str | no | Work email address |
+| `--clear-email` | flag | no | Remove the typed email |
+| `--expected-updated-at` | str | no | The `updated_at` of the person as you read it, from `people --json` |
+| `--json` | flag | no | Raw prospect person JSON |
+
+Corrects one person a company prospect lists. `<person-id>` is the prospect
+person ID, the `Person ID` column of `people`. The command sends a PATCH with
+only the options you give. A cleared title or email sends `null`, and the
+profile value shows again. A new `--linkedin-url` moves the row to the global
+person of that profile. The name of a person with a profile comes from the
+profile, so `--name` changes it only together with a new `--linkedin-url`.
+A promoted prospect takes the edit. When the person is in the CRM, the CRM
+person takes the values the review shows, in the same transaction.
+`--expected-updated-at` sends the version you read: when another write changed
+the person after that read, the edit is refused and nothing is written.
+Give at least one option, and never a value beside its clear: either is exit
+code 2. A missing prospect or person returns exit code 3. A person prospect,
+a profile or a name the prospect already lists, a person another write
+changed, and an email or LinkedIn URL another CRM person holds each return
+exit code 5.
 
 #### `ac agentic prospects search-persona <prospect-id>`
 | Flag | Type | Description |

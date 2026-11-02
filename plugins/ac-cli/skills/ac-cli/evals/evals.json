@@ -1571,6 +1571,18 @@
           "text": "`ac agentic outreach campaigns enroll-batch c-41 .*--person crm.person:p-1`"
         }
       ]
+    },
+    {
+      "id": 110,
+      "prompt": "I found the email of Jane Doe at the prospect p-123 by hand: jane@acme.test. Add it to her record.",
+      "expected_output": "Lists the people of p-123 to find the prospect person id of Jane Doe, then runs `ac agentic prospects edit-person` on that id with `--email jane@acme.test`. Does not use `add-person` or `ac crm people update`.",
+      "assertions": [
+        {
+          "name": "edits the listed person",
+          "type": "command_sequence",
+          "text": "Sequence: `ac agentic prospects people p-123`, then `ac agentic prospects edit-person p-123 .* --email jane@acme.test`"
+        }
+      ]
     }
   ]
 }
