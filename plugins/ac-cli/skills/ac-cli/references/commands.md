@@ -3010,9 +3010,13 @@ marks the rest `not_sent`. Running it again is safe.
 | `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
 Each row is the enrollment plus `person_name`, `email` and `last_decision`
-(`{id, action_type, outcome, executed_at, created_at}`, or null before the
-first decision). `email` is the email of the person row; a Run can choose
-another address.
+(`{id, type, status, outcome, executed_at, created_at}`, or null before the
+first decision). `type` is `email`, `linkedin_connection`, `linkedin_message`,
+`wait`, `stop` or null. `status` is `saved`, `invalid`, `error` or `discarded`.
+`outcome` is null except for an email draft review (`proposed`, `approved`,
+`rejected`, `sent` and so on). The Last action column shows the type and the
+status, or the outcome of a row with no status. `email` is the email of the
+person row; a Run can choose another address.
 
 #### `ac agentic outreach enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
@@ -3026,7 +3030,12 @@ another address.
 | `--order` | `desc` or `asc` | no | `desc` (default) lists the newest item first, `asc` the oldest |
 | `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
 
-An item with no time is last in both orders. Exit code 3 for an enrollment of
+A `decision` item adds `type`, `status`, `rationale`, `objective`,
+`followup_days`, `goal_met`, `trigger_reason`, `failure_reason`,
+`reviewer_note`, `subject` and `outcome`, with the values of `last_decision`.
+An `email` or `activity` item uses `status` for its own status. The table
+shows the type, the status and the subject of a decision. An item with no time
+is last in both orders. Exit code 3 for an enrollment of
 another organization.
 
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
@@ -3082,7 +3091,9 @@ expires, and it is null for an approved draft. Columns: Draft ID, Person
 #### `ac agentic outreach drafts get <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked` |
+| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked`, `rationale`, `failure_reason` |
+
+The detail shows the `rationale` as Why now and the `failure_reason` as Failure.
 
 #### `ac agentic outreach drafts save <draft-id>`
 | Flag | Type | Required | Description |
