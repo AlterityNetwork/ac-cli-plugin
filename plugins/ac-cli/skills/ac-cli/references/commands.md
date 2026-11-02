@@ -3032,8 +3032,8 @@ person row; a Run can choose another address.
 
 A `decision` item adds `type`, `status`, `rationale`, `objective`,
 `followup_days`, `goal_met`, `trigger_reason`, `failure_reason`,
-`reviewer_note`, `subject` and `outcome`, with the values of `last_decision`.
-An `email` or `activity` item uses `status` for its own status. The table
+`reviewer_note`, `subject` and `outcome`. `type`, `status` and `outcome` take
+the values listed for `last_decision`. An `email` or `activity` item uses `status` for its own status. The table
 shows the type, the status and the subject of a decision. An item with no time
 is last in both orders. Exit code 3 for an enrollment of
 another organization.
