@@ -229,14 +229,14 @@ ended. A draft that waits for review is not a status; `drafts list` shows it.
 
 `enrollments list` shows one page of a campaign, newest first. Each row names
 the person, the email of the person row, the state and the last decision
-(action and outcome). `--search` keeps the people whose name holds the text,
+(type and status). `--search` keeps the people whose name holds the text,
 in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
 `enrollments timeline` lists what happened to one enrollment: the start, each
-decision with its outcome and reviewer note, the thread emails (a reply shows
-as an `inbound` email), the CRM activities, and the end. It is newest first by
-default, the left column of the review card. `--order asc` lists it oldest
+decision with its type, status and subject (`--json` adds the rationale), the
+thread emails (a reply shows as an `inbound` email), the CRM activities, and
+the end. It is newest first by default, the left column of the review card. `--order asc` lists it oldest
 first, as the enrollment drawer shows it.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
