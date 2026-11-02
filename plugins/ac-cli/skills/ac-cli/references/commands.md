@@ -2894,16 +2894,27 @@ more campaigns wait, the last line names the next `--offset`.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
+| `--goal` | str | yes | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. |
 | `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
-| `--json` | flag | no | Raw campaign JSON: `{id, name, description, status, created_by, created_at, updated_at}` |
+| `--channel` | `email` or `linkedin`, repeatable | no | The channels the campaign can use. Default `email` |
+| `--max-touches` | int | no | The most outbound touches per person, 1 to 10. Default 5 |
+| `--min-days` | int | no | The fewest days between two touches, 1 to 30. Default 3 |
+| `--max-days` | int | no | The most days between two touches, 1 to 30. Default 7 |
+| `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at}` |
 
-The campaign starts as `draft`, and the caller owns it. A description longer
-than 2000 characters returns exit code 2.
+The campaign starts as `draft`. The caller owns it and is its sender, read
+only: `sender_user_id` is always the creator. A description or goal longer
+than 2000 characters, a blank goal, a value out of range or `--min-days`
+above `--max-days` returns exit code 2 with no call.
 
 #### `ac agentic outreach campaigns update <campaign-id>`
-Takes `--name`, `--description` and `--json`, all optional. Give at least one.
-Pass `--description ""` to clear the description. An archived campaign returns
-exit code 5 (`campaign_archived`).
+Takes `--name`, `--goal`, `--description`, `--channel`, `--max-touches`,
+`--min-days`, `--max-days` and `--json`, all optional, with the
+checks of `create`. Give at least one. Pass `--description ""` to clear the
+description. `--channel` replaces the channel list. One of `--min-days` or
+`--max-days` alone past the stored other bound returns exit code 2 (422). An
+archived campaign returns exit code 5 (`campaign_archived`). The sender does
+not change.
 
 #### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
 | Flag | Type | Required | Description |
