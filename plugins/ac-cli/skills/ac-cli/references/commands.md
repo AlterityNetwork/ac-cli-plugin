@@ -2842,6 +2842,16 @@ Returns one watched or dismissed prospect to `new` and answers the durable
 detail. A prospect already at `new` exits 0 and writes nothing. A promoted
 prospect returns exit code 5, because promotion wrote CRM rows.
 
+#### `ac agentic prospects bulk-curate <intent> <prospect-id>...`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+`<intent>` is `watch`, `dismiss` or `restore`. It takes 1 to 100 prospect ids
+with no repeats. The answer lists each prospect under one outcome: `updated`,
+`unchanged`, `promoted` or `not_found`. A promoted, missing or foreign
+prospect does not move and does not stop the others, so the command exits 0.
+
 #### `ac agentic prospects dismiss-action <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -2886,6 +2896,21 @@ person to `prospect`, with a reason. A row promoted now reads
 row at the `identified` stage, and a person that holds no stage. A qualified lead or a
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
+
+#### `ac agentic prospects bulk-promote <prospect-id>...`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person` | `<prospect-id>:<person-id>` | no | A prospect person to promote with its prospect. Repeat for each person. The prospect must be one of the ids the command names. |
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
+Promotes 1 to 25 prospects into CRM, one after the other, as `promote` does
+for each. A prospect with no `--person` promotes the company alone, or the
+subject person of a person prospect. The answer holds one result for each
+prospect: `status` is `promoted` with the `promotion` references, or `failed`
+with the `error` reason. A failed prospect does not stop the others. To enrol
+the promoted people, pass their `crm_person_id` values to
+`ac envoy recipients add`.
 
 #### `ac agentic prospects delete <prospect-id>`
 | Flag | Type | Required | Description |
