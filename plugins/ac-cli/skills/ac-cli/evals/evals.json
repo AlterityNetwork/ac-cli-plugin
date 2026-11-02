@@ -1310,7 +1310,7 @@
     {
       "id": 95,
       "prompt": "Show me the agentic Outreach email draft d-77 and approve it as it is.",
-      "expected_output": "Reads the draft with `ac agentic outreach drafts get d-77`, then approves it with `ac agentic outreach drafts approve d-77 --version <n> --content-hash <hash>` using the version and content hash that `get` printed. It does not use `ac agentic approvals` or `ac envoy outbox approve`.",
+      "expected_output": "Reads the draft with `ac agentic outreach drafts get d-77`, then approves it with `ac agentic outreach drafts approve d-77 --context-version <n> --content-hash <hash>` using the context version and content hash that `get` printed. It does not use `ac agentic approvals` or `ac envoy outbox approve`.",
       "assertions": [
         {
           "name": "reads_the_draft",
@@ -1320,19 +1320,19 @@
         {
           "name": "approves_with_version_and_hash",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts approve d-77 .*--version .*--content-hash`"
+          "text": "`ac agentic outreach drafts approve d-77 .*--context-version .*--content-hash`"
         }
       ]
     },
     {
       "id": 96,
       "prompt": "The agentic Outreach draft d-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
-      "expected_output": "Saves the new body with `ac agentic outreach drafts save d-78 --body ...`, then approves with the `--version` and `--content-hash` that the save printed, not the ones from before the save.",
+      "expected_output": "Saves the new body with `ac agentic outreach drafts save d-78 --body ...`, then approves with the `--context-version` and `--content-hash` that the save printed, not the ones from before the save.",
       "assertions": [
         {
           "name": "save_then_approve",
           "type": "command_sequence",
-          "text": "`ac agentic outreach drafts save d-78 .*--body` then `ac agentic outreach drafts approve d-78 .*--version .*--content-hash`"
+          "text": "`ac agentic outreach drafts save d-78 .*--body` then `ac agentic outreach drafts approve d-78 .*--context-version .*--content-hash`"
         }
       ]
     },
@@ -1350,13 +1350,18 @@
     },
     {
       "id": 98,
-      "prompt": "Create an agentic Outreach campaign called 'Q4 intro' with the description 'Heads of growth at Series A SaaS companies', enroll CRM person p-11 in it, and start it.",
-      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`.",
+      "prompt": "Create an agentic Outreach campaign called 'Q4 intro' with the goal 'Book a 20 min intro call' and the description 'Heads of growth at Series A SaaS companies', enroll CRM person p-11 in it, and start it.",
+      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --goal \"Book a 20 min intro call\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`.",
       "assertions": [
         {
           "name": "creates_the_campaign",
           "type": "command_matches",
           "text": "`ac agentic outreach campaigns create .*(--name|--description).*(--name|--description)`"
+        },
+        {
+          "name": "names_the_goal",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns create .*--goal`"
         },
         {
           "name": "enrolls_the_crm_person",
@@ -1557,6 +1562,18 @@
     },
     {
       "id": 109,
+      "prompt": "Enroll the CRM people p-1, p-2 and p-3 in the agentic Outreach campaign c-41 in one go, and tell me who could not be added.",
+      "expected_output": "Runs `ac agentic outreach campaigns enroll-batch c-41 --person crm.person:p-1 --person crm.person:p-2 --person crm.person:p-3` (one request, not three `campaigns enroll` calls), then reports each person whose outcome is not `added`.",
+      "assertions": [
+        {
+          "name": "one_batch_request",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns enroll-batch c-41 .*--person crm.person:p-1`"
+        }
+      ]
+    },
+    {
+      "id": 110,
       "prompt": "I found the email of Jane Doe at the prospect p-123 by hand: jane@acme.test. Add it to her record.",
       "expected_output": "Lists the people of p-123 to find the prospect person id of Jane Doe, then runs `ac agentic prospects edit-person` on that id with `--email jane@acme.test`. Does not use `add-person` or `ac crm people update`.",
       "assertions": [
