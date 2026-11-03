@@ -3109,8 +3109,8 @@ member). A repeated `stop` keeps the first stop time.
 Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
 LinkedIn message), oldest first, with the id as the tie. The first column is
 the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
-`(deleted)`), Type, To, Campaign (`campaign.name`, or `(deleted)`), Status,
-Created. `to` is the current email address, or the current LinkedIn profile URL
+the address when the person has no name), Type, To, Campaign (`campaign.name`),
+Status, Created. `to` is the current email address, or the current LinkedIn profile URL
 for a LinkedIn action, read fresh. The title reads "Outreach actions
 <from>-<to> of <total>"; `total` is the queue count. In table output a last line
 prints the next `--offset` while `has_more` is true. With `--json`, the next
@@ -3126,8 +3126,8 @@ the decision ID, the person, the company, the campaign and its status, `to`,
 the `rationale` as Why and the `objective`. Then it prints the inbound message
 the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
-LinkedIn message. A deleted person or campaign keeps the item, with a null
-name and a null `to`. An action of another organization returns exit code 3.
+LinkedIn message. A deleted person keeps the item, with a null name and a null
+`to`. An action of another organization returns exit code 3.
 
 #### `ac agentic outreach drafts save <draft-id>`
 | Flag | Type | Required | Description |
