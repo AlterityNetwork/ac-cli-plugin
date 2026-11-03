@@ -90,10 +90,13 @@ ac crm activities delete <activity-id> [--yes]
 ```bash
 ac crm comms list [--company-id <id>] [--contact-id <id>] [--type email] \
   [--folder inbox|sent|drafts|archived|scheduled]
-ac crm comms thread <thread-id>
+ac crm comms thread <thread-id>         # lists attachment names; a deleted document shows "(removed)"
 ac crm comms unread
 ac crm comms mark-read <thread-id>
-ac crm comms draft-email --contact-id <id> --subject "Intro" --content "Hi..."
+ac crm comms draft-email --contact-id <id> --subject "Intro" --content "Hi..." \
+  [--attach <resource-id>]...           # vault documents, 15 MB total per email
+ac crm comms update <communication-id> [--subject "..."] [--content "..."] \
+  [--attach <resource-id>... | --clear-attachments]   # --attach replaces the attachments
 ac crm comms generate-draft --mode compose --recipient-name "Jane" \
   [--company-name "Acme"] [--recipient-title "VP Sales"] \
   [--sender-signature "Best, John"] [--user-draft-subject "Intro"] \

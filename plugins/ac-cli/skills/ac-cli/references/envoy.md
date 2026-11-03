@@ -31,8 +31,10 @@ ac envoy sequences for-prospect <prospect-id>          # Sequences containing a 
 
 ```bash
 ac envoy steps create <sequence-id> --type message [--step-order 1] \
-  [--message-template "Hi {{name}}..."] [--prompt "Write a cold intro"]
-ac envoy steps update <sequence-id> <step-id> [--message-template "..."]
+  [--message-template "Hi {{name}}..."] [--prompt "Write a cold intro"] \
+  [--attach <resource-id>]...           # vault documents on each draft, 15 MB total
+ac envoy steps update <sequence-id> <step-id> [--message-template "..."] \
+  [--attach <resource-id>... | --clear-attachments]
 ac envoy steps delete <sequence-id> <step-id> [--yes]
 ac envoy steps reorder <sequence-id> --step-ids id1,id2,id3
 ac envoy steps stats <sequence-id>
@@ -119,8 +121,10 @@ ac envoy battlecards duplicate <battlecard-id>
 ```bash
 ac envoy playbooks list [--query "enterprise"] [--limit 50]
 ac envoy playbooks get <playbook-id>
-ac envoy playbooks create --name "Enterprise Outreach" [--description "..."] [--icp-id <profile-id>]
-ac envoy playbooks update <playbook-id> --name "Updated Playbook" [--icp-id <profile-id>]
+ac envoy playbooks create --name "Enterprise Outreach" [--icp "..."] [--offer "..."] \
+  [--cta "Book a call"] [--cta-link https://...] [--icp-id <profile-id>]... [--document <resource-id>]...
+ac envoy playbooks update <playbook-id> [--name "..."] [--icp "..."] [--offer "..."] [--cta "..."] \
+  [--cta-link ...] [--icp-id <profile-id>]... [--document <resource-id>... | --clear-documents]
 ac envoy playbooks delete <playbook-id> [--yes]
 ac envoy playbooks duplicate <playbook-id>
 ```

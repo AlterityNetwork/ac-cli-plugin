@@ -392,7 +392,7 @@ Cancels a scheduled or failed email and returns it to Drafts. The owner, or an o
 Sends a scheduled or failed email immediately. Owner only. Returns 409 once the send started.
 
 #### `ac crm comms thread <thread-id>`
-Shows all messages in a conversation thread.
+Shows all messages in a conversation thread. A message with attachments shows an `Attachments:` line with each file name. A vault document that was deleted shows as `<name> (removed)`; in `--json` the item has `missing: true`.
 
 #### `ac crm comms unread`
 Shows unread thread counts. No flags required.
@@ -425,7 +425,10 @@ Finds or creates a contact record for the given email.
 | `--deal-id` | str | no | Related deal |
 | `--to-emails` | str | no | Comma-separated recipient emails |
 | `--from-email` | str | no | Sender email override |
+| `--attach` | str | no | Vault document id to attach; repeat for several. Use `ac resources list --scope organization` for the ids |
 | `--json` | flag | no | Output raw JSON |
+
+All attachments of one email must total 15 MB or less (HTTP 400, code `attachments_too_large`).
 
 #### `ac crm comms generate-draft`
 | Flag | Type | Required | Description |
@@ -449,6 +452,8 @@ Finds or creates a contact record for the given email.
 | `--content` | str | Update content |
 | `--status` | str | Update status |
 | `--tags` | str | Comma-separated tags |
+| `--attach` | str | Vault document id to attach; repeat for several. Replaces the current attachments |
+| `--clear-attachments` | flag | Remove every attachment. Do not use it with `--attach` |
 | `--json` | flag | Output raw JSON |
 
 #### `ac crm comms archive`
@@ -847,7 +852,10 @@ Lists sequences that include the given prospect (person ID).
 | `--prompt` | str | no | AI prompt for draft generation |
 | `--delay-value` | int | no | Delay duration (for delay steps) |
 | `--delay-unit` | str | no | Delay unit (days, hours, minutes) |
+| `--attach` | str | no | Vault document id to attach to each email of a message step; repeat for several |
 | `--json` | flag | no | Raw JSON output |
+
+The attached documents of one step must total 15 MB or less (HTTP 400, code `attachments_too_large`). Each draft the step generates carries the documents. The output lists the attached ids (`attachment_resource_ids` in `--json`).
 
 #### `ac envoy steps update <sequence-id> <step-id>`
 | Flag | Type | Description |
@@ -856,6 +864,8 @@ Lists sequences that include the given prospect (person ID).
 | `--prompt` | str | Update AI prompt |
 | `--delay-value` | int | Update delay duration |
 | `--delay-unit` | str | Update delay unit |
+| `--attach` | str | Vault document id to attach; repeat for several. Replaces the current documents |
+| `--clear-attachments` | flag | Remove every attached document. Do not use it with `--attach` |
 | `--json` | flag | Raw JSON output |
 
 #### `ac envoy steps delete <sequence-id> <step-id>`
@@ -1139,23 +1149,29 @@ Creates a copy of the battlecard.
 | `--limit` | int | None | Max results |
 | `--json` | flag | off | Raw JSON output |
 
+The table shows the name, offer, CTA and the count of attached documents.
+
 #### `ac envoy playbooks get <playbook-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+Shows the name, ICP, offer, CTA, CTA link and the attached document ids.
+
 #### `ac envoy playbooks create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Playbook name |
-| `--description` | str | no | Playbook description |
-| `--status` | str | no | Playbook status |
-| `--competitor-name` | str | no | Competitor name |
+| `--icp` | str | no | Ideal customer profile, as text |
+| `--offer` | str | no | Offer or value proposition |
+| `--cta` | str | no | Call-to-action text |
+| `--cta-link` | str | no | Call-to-action URL |
 | `--icp-id` | str | no | Target an ideal customer profile; repeat for several profiles |
+| `--document` | str | no | Vault document id the offer attaches; repeat for several. Organisation documents only (HTTP 400 `Document not found` otherwise) |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy playbooks update <playbook-id>`
-Same optional flags as `create`. Only provided fields are updated.
+Same optional flags as `create`. Only provided fields are updated. `--document` replaces the current documents. `--clear-documents` removes every document; do not use it with `--document`.
 
 #### `ac envoy playbooks delete <playbook-id>`
 | Flag | Type | Description |
@@ -3597,11 +3613,14 @@ Lists all connected accounts in the organization.
 #### `ac nylas send`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--to` | str | yes | Recipient email address |
+| `--to` | str | yes | Comma-separated recipient email addresses |
 | `--subject` | str | yes | Email subject |
-| `--body` | str | yes | Email body |
+| `--body` | str | yes | Email body (plain text) |
 | `--reply-to-message-id` | str | no | Message ID to reply to |
+| `--attach` | str | no | Vault document id to attach; repeat for several |
 | `--json` | flag | no | Raw JSON output |
+
+All attachments must total 15 MB or less (HTTP 400, code `attachments_too_large`). A document that was deleted refuses the send (HTTP 400, code `attachment_missing`); nothing is sent.
 
 #### `ac nylas send-cap`
 Shows today's prospect emails of your mailbox against its daily cap. A send to a prospect past the cap is refused with HTTP 429, code `prospect_send_cap_reached`.
@@ -3627,10 +3646,13 @@ Shows today's prospect emails of your mailbox against its daily cap. A send to a
 ### Resources (Knowledge Base)
 
 #### `ac resources list`
+Lists every document of your organisation, not only the ones you uploaded, and the platform documents.
+
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
+| `--scope` | enum | API default `all` | `organization` (your organisation's documents, the only ones you can attach), `platform` or `all` |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac resources upload <file-path>`
@@ -3646,8 +3668,11 @@ Uploads a knowledge base resource file. Allowed formats: .pdf, .txt, .md, .docx.
 #### `ac resources delete <resource-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--force` | flag | Remove the document from every offer and sequence step that attaches it, then delete it |
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
+
+Without `--force`, a document that an offer or a sequence step attaches is refused with HTTP 409 (exit 5), code `resource_in_use`. The text output lists each offer and step and suggests `--force`. In `--json`, `context.offers` holds `{id, name}` and `context.steps` holds `{id, sequence_id, sequence_name, step_name}`.
 
 #### `ac resources status <resource-id>`
 | Flag | Type | Description |
