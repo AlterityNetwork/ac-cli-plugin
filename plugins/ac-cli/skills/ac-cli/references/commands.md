@@ -3093,8 +3093,8 @@ member). A repeated `stop` keeps the first stop time.
 
 ### Agentic Outreach Drafts
 
-`list`, `get` and `approve` take the proposed action by action ID. `save` and
-`reject` still take the v2 draft ID, which is a decision ID.
+`list`, `get`, `approve` and `reject` take the proposed action by action ID.
+`save` still takes the v2 draft ID, which is a decision ID.
 
 #### `ac agentic outreach drafts list`
 | Flag | Type | Default | Description |
@@ -3169,13 +3169,15 @@ has no email address or LinkedIn URL now), or `action_not_pending` (the action
 left the queue, or a retry changed the edit or the address). An impersonated
 session returns exit code 4.
 
-#### `ac agentic outreach drafts reject <draft-id>`
+#### `ac agentic outreach drafts reject <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--mode` | `regenerate`, `skip` or `exit` | yes | Plan a new email now, send nothing and look later, or end the enrollment |
-| `--note` | str | no | Feedback that later Runs read |
-| `--yes` / `-y` | flag | no | Skip the question that `--mode exit` asks. `AC_YES=1` does the same. |
-| `--json` | flag | no | Raw review JSON: `outcome` is `rejected` and `reviewer_note` holds the note |
+| `--then` | `regenerate` or `stop` | yes | Ask for one new draft now, or end the enrollment |
+| `--reason` | str, 1 to 1000 chars | for `regenerate` | What the next draft must change. The next decision reads it. Optional for `stop`. |
+| `--yes` / `-y` | flag | no | Skip the question that `--then stop` asks. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw action JSON, now `rejected` |
+
+Exit code 5 with `code`: `enrollment_ended` or `action_not_pending`. A retry of the same reject returns the same action.
 
 ### Agentic Conversations
 
