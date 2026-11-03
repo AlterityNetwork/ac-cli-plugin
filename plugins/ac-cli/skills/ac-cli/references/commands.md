@@ -3151,6 +3151,11 @@ code 5 (`draft_locked`).
 A mismatch, a second reviewer, a paused campaign or a stopped organization
 returns exit code 5, and `--json` carries the reason in `context.code`.
 
+No command prints the v2 `context_version` and `content_hash` without an edit:
+`get` reads an action, and `save` needs a changed field. To approve an unedited
+v2 draft, use the Review tab of the web app. ENG-2824 moves approve to the
+action ID.
+
 #### `ac agentic outreach drafts reject <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

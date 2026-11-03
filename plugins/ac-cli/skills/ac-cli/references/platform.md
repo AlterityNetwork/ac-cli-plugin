@@ -287,6 +287,8 @@ ID. `save` prints the v2 draft text, the enrollment `context_version` and the
 `content_hash`. `approve` must send both values back. Save your edits first,
 then approve with the `context_version` and `content_hash` that `save` printed.
 The Run then sends that exact text once. A save after the approval returns exit code 5.
+No command prints those two values without an edit, so approve an unedited v2
+draft in the Review tab of the web app. ENG-2824 moves approve to the action ID.
 
 `approve` returns exit code 5 with a `code` in `--json` output when the
 version or the text changed (`version_changed`, `content_changed`), another
