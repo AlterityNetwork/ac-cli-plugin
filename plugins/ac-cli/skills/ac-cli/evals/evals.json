@@ -1583,6 +1583,18 @@
           "text": "Sequence: `ac agentic prospects people p-123`, then `ac agentic prospects edit-person p-123 .* --email jane@acme.test`"
         }
       ]
+    },
+    {
+      "id": 111,
+      "prompt": "Dismiss these three Signals prospects in one go: 11111111-1111-4111-8111-111111111111, 22222222-2222-4222-8222-222222222222, 33333333-3333-4333-8333-333333333333.",
+      "expected_output": "Uses one `ac agentic prospects bulk-curate dismiss <id> <id> <id>` call instead of three `dismiss` calls.",
+      "assertions": [
+        {
+          "name": "uses_bulk_curate",
+          "type": "command_matches",
+          "text": "`ac agentic prospects bulk-curate dismiss` with all three prospect ids in one call (NOT three separate `ac agentic prospects dismiss` calls)"
+        }
+      ]
     }
   ]
 }
