@@ -437,7 +437,7 @@ ac nylas account
 ac nylas org-accounts
 ac nylas disconnect [--yes]
 ac nylas send --to "jane@example.com" --subject "Hello" --body "Hi Jane..." \
-  [--reply-to-message-id <id>]
+  [--reply-to-message-id <id>] [--attach <resource-id>]...   # --to takes a comma-separated list
 ac nylas send-cap            # today's prospect emails against the daily cap
 ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
@@ -497,8 +497,11 @@ companies and people the form already lists, and the chat never adds a row.
 
 ```bash
 ac resources list [--limit 50] [--offset 0]
+                                        # every document of your organisation, not only your uploads
 ac resources upload <file-path> --name "Source Name" [--description "..."] [--tags "tag1,tag2"]
-ac resources delete <resource-id> [--yes]
+ac resources delete <resource-id> [--force] [--yes]
+                                        # 409 resource_in_use lists the offers and steps that attach it;
+                                        # --force removes it from each, then deletes
 ac resources status <resource-id>
 ```
 
