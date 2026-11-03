@@ -3153,9 +3153,12 @@ code 5 (`draft_locked`).
 
 With no edit flag the draft is approved as it is, and no payload is sent. An
 edit flag reads the action first and sends the draft with the edited fields
-over it, so `--subject` alone keeps the body. The API checks the edit, reads
-the address now, and freezes the text, the address and their hash. Nothing
-sends until the Execution workflow picks the action up.
+over it, so `--subject` alone keeps the body. A flag the action type does not
+take returns exit code 2 before the approve: `--subject` fits a new email only,
+`--body` and `--body-file` an email, `--note` a LinkedIn note, `--message` a
+LinkedIn message. The API checks the edit, reads the address now, and freezes
+the text, the address and their hash. Nothing sends until the Execution
+workflow picks the action up.
 
 A retry of the same approve returns exit code 0 and the same action. An edit
 that fails the draft check returns exit code 2 with the `code`

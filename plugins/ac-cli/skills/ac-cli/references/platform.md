@@ -285,8 +285,9 @@ decision ID.
 `approve <action-id>` approves one proposed action. To approve the draft as it
 is, give no edit flag. To edit and approve in one step, give the field: an
 email takes `--subject` and `--body` (or `--body-file`), a LinkedIn note takes
-`--note`, a LinkedIn message takes `--message`. A field you leave out keeps
-its draft text. The approve freezes the text, the address read now, and their
+`--note`, a LinkedIn message takes `--message`. A reply email takes no
+`--subject`. Another flag returns exit code 2 and approves nothing. A field you
+leave out keeps its draft text. The approve freezes the text, the address read now, and their
 hash; a retry of the same approve is safe and returns the same action.
 
 `approve` returns exit code 2 when the edit fails the draft check (`code` and
