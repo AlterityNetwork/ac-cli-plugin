@@ -3093,32 +3093,41 @@ member). A repeated `stop` keeps the first stop time.
 
 ### Agentic Outreach Drafts
 
+`list` and `get` read the proposed actions by action ID. `save`, `approve` and
+`reject` still take the v2 draft ID, which is a decision ID.
+
 #### `ac agentic outreach drafts list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--campaign-id` | str | None | Only the drafts of this campaign |
-| `--limit` | int | 50 | How many drafts, 1 to 100 |
-| `--offset` | int | 0 | How many drafts to skip first |
+| `--status` | `pending_approval`, `approved`, `sending`, `executed`, `rejected`, `invalidated` or `failed` | None (the API reads `pending_approval`) | Only the actions in this status |
+| `--campaign-id` | str | None | Only the actions of this campaign |
+| `--type` | `email`, `linkedin_connection` or `linkedin_message` | None | Only the actions of this type |
+| `--limit` | int | 50 | How many actions, 1 to 100 |
+| `--offset` | int | 0 | How many actions to skip first |
 | `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
-Lists the drafts that wait for review, newest first. The first column is the
-draft ID, which is the decision ID every other command takes. Each row adds
-`person_name`, `campaign_name`, `campaign_status` (JSON only, not a column) and
-`expires_at`. The list
-holds `proposed` drafts and `approved` drafts that wait for the send; the
-`outcome` field tells them apart. `expires_at` is when the pending approval
-expires, and it is null for an approved draft. Columns: Draft ID, Person
-(`person_name`, or the address when the person is gone), Subject (`subject`), Outcome
-(`outcome`), Campaign (`campaign_name`), Expires (`expires_at`). The title reads "Outreach drafts
-<from>-<to> of <total>". In table output a last line prints the next `--offset` while
-`has_more` is true. With `--json`, the next offset is `offset` plus the length of `data`.
+Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
+LinkedIn message), oldest first, with the id as the tie. The first column is
+the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
+`(deleted)`), Type, To, Campaign (`campaign.name`, or `(deleted)`), Status,
+Created. `to` is the current email address, or the current LinkedIn profile URL
+for a LinkedIn action, read fresh. The title reads "Outreach actions
+<from>-<to> of <total>"; `total` is the queue count. In table output a last line
+prints the next `--offset` while `has_more` is true. With `--json`, the next
+offset is `offset` plus the length of `data`.
 
-#### `ac agentic outreach drafts get <draft-id>`
+#### `ac agentic outreach drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked`, `rationale`, `failure_reason` |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`} or null, `draft_payload` |
 
-The detail shows the `rationale` as Why now and the `failure_reason` as Failure.
+Reads one action by its action ID: the same item as `list`. The detail shows
+the decision ID, the person, the company, the campaign and its status, `to`,
+the `rationale` as Why and the `objective`. Then it prints the inbound message
+the draft answers (Replying to, cut at 500 characters, a reply only) and the
+draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
+LinkedIn message. A deleted person or campaign keeps the item, with a null
+name and a null `to`. An action of another organization returns exit code 3.
 
 #### `ac agentic outreach drafts save <draft-id>`
 | Flag | Type | Required | Description |
@@ -3135,7 +3144,7 @@ code 5 (`draft_locked`).
 #### `ac agentic outreach drafts approve <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--context-version` | int | yes | The `context_version` that `get` or `save` printed |
+| `--context-version` | int | yes | The `context_version` that `save` printed |
 | `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
 | `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
 

@@ -257,28 +257,36 @@ member gets exit code 4.
 ## Agentic Outreach Drafts
 
 ```bash
-ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50] [--offset 0]
-ac agentic outreach drafts get <draft-id>
+ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
+ac agentic outreach drafts get <action-id>
 ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
 ac agentic outreach drafts approve <draft-id> --context-version <n> --content-hash <hash>
 ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
 ```
 
-These commands review the emails that an agentic Outreach campaign drafted.
-They are not the legacy `ac envoy outbox` drafts. The draft ID is the decision
-ID that `list` prints.
+These commands review what an agentic Outreach campaign drafted. They are not
+the legacy `ac envoy outbox` drafts.
 
-`list` prints one page: each draft names the person, the campaign and when its
-approval expires. The title shows the rows against the total, and a last line
-prints the next `--offset` while more drafts wait. Only the table output has
+`list` and `get` read the Review queue: the proposed actions (an email, a
+LinkedIn note or a LinkedIn message). `list` reads the `pending_approval`
+actions by default, oldest first, and prints the queue `total`. Filter with
+`--status`, `--campaign-id` and `--type`. The first column is the action ID
+that `get` takes. The title shows the rows against the total, and a last line
+prints the next `--offset` while more actions wait. Only the table output has
 that line: with `--json`, compute the next offset as `offset + length(data)`
 while `has_more` is true.
 
-`get` prints the draft text, the enrollment `context_version` and the
+`get <action-id>` prints the person, the company, the campaign and its status,
+the address read fresh (`to`: the email address, or the LinkedIn profile URL),
+the decision rationale and objective, the inbound message the draft answers
+(cut at 500 characters, a reply only), and the draft. It also prints the
+decision ID.
+
+`save`, `approve` and `reject` still take the v2 draft ID, which is a decision
+ID. `save` prints the v2 draft text, the enrollment `context_version` and the
 `content_hash`. `approve` must send both values back. Save your edits first,
-then approve with the `context_version` and `content_hash` that `save` or a new
-`get` printed. The Run
-then sends that exact text once. A save after the approval returns exit code 5.
+then approve with the `context_version` and `content_hash` that `save` printed.
+The Run then sends that exact text once. A save after the approval returns exit code 5.
 
 `approve` returns exit code 5 with a `code` in `--json` output when the
 version or the text changed (`version_changed`, `content_changed`), another
