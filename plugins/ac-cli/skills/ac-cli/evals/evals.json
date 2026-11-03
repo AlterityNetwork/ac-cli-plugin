@@ -1309,18 +1309,18 @@
     },
     {
       "id": 95,
-      "prompt": "Show me the agentic Outreach email draft d-77 and approve it as it is.",
-      "expected_output": "Reads the draft with `ac agentic outreach drafts get d-77`, then approves it with `ac agentic outreach drafts approve d-77 --context-version <n> --content-hash <hash>` using the context version and content hash that `get` printed. It does not use `ac agentic approvals` or `ac envoy outbox approve`.",
+      "prompt": "Show me the agentic Outreach action a-77 that waits for review.",
+      "expected_output": "Reads the action with `ac agentic outreach drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac envoy outbox`.",
       "assertions": [
         {
-          "name": "reads_the_draft",
+          "name": "reads_the_action",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts get d-77`"
+          "text": "`ac agentic outreach drafts get a-77`"
         },
         {
-          "name": "approves_with_version_and_hash",
-          "type": "command_matches",
-          "text": "`ac agentic outreach drafts approve d-77 .*--context-version .*--content-hash`"
+          "name": "not_the_platform_inbox",
+          "type": "command_forbidden",
+          "text": "`ac agentic approvals` or `ac envoy outbox`"
         }
       ]
     },
@@ -1593,6 +1593,30 @@
           "name": "uses_bulk_curate",
           "type": "command_matches",
           "text": "`ac agentic prospects bulk-curate dismiss` with all three prospect ids in one call (NOT three separate `ac agentic prospects dismiss` calls)"
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "prompt": "Which LinkedIn connection notes wait for review in the Outreach campaign c-9?",
+      "expected_output": "Runs `ac agentic outreach drafts list --campaign-id c-9 --type linkedin_connection`. The default status is pending_approval, so it needs no `--status`.",
+      "assertions": [
+        {
+          "name": "filters_campaign_and_type",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts list .*--campaign-id c-9.*--type linkedin_connection` (flags in any order)"
+        }
+      ]
+    },
+    {
+      "id": 113,
+      "prompt": "Show me the Outreach emails that a reviewer rejected.",
+      "expected_output": "Runs `ac agentic outreach drafts list --status rejected --type email`.",
+      "assertions": [
+        {
+          "name": "filters_status_and_type",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts list .*--status rejected.*--type email` (flags in any order)"
         }
       ]
     }
