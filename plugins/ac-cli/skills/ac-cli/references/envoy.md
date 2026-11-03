@@ -93,6 +93,7 @@ ac envoy inbox update-status <thread-id> --status resolved
 ac envoy inbox add-tags <thread-id> --tags "hot-lead,priority"
 ac envoy inbox remove-tags <thread-id> --tags "stale"
 ac envoy inbox reply <thread-id> --body "Thanks for your reply!"
+ac envoy inbox reply <thread-id> --body "..." --attach <resource-id>   # repeat --attach for several
 ```
 
 The list holds only threads with at least one reply from the prospect, by email or LinkedIn. A thread of sent emails only is not listed; read sent emails with `ac envoy sequences outputs <sequence-id>`. The Channel column is `email` or `linkedin`. Each item in `--json` carries `unread_count`: the received messages you have not read. `mark-read` clears it for you only. `reply` sends an email, so it refuses a LinkedIn thread: answer that person on LinkedIn.

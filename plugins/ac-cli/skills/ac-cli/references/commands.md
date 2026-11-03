@@ -425,7 +425,7 @@ Finds or creates a contact record for the given email.
 | `--deal-id` | str | no | Related deal |
 | `--to-emails` | str | no | Comma-separated recipient emails |
 | `--from-email` | str | no | Sender email override |
-| `--attach` | str | no | Vault document id to attach; repeat for several. Use `ac resources list --scope organization` for the ids |
+| `--attach` | str | no | Vault document id to attach; repeat for several. Use `ac resources list` for the ids |
 | `--json` | flag | no | Output raw JSON |
 
 All attachments of one email must total 15 MB or less (HTTP 400, code `attachments_too_large`).
@@ -1095,6 +1095,7 @@ Marks every message of the thread as read by you. Other users keep their own rea
 |------|------|----------|-------------|
 | `--body` | str | yes | Reply message body |
 | `--subject` | str | no | Override subject line |
+| `--attach` | str | no | Vault document id to attach; repeat for several. Use `ac resources list` for the ids |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -3646,13 +3647,12 @@ Shows today's prospect emails of your mailbox against its daily cap. A send to a
 ### Resources (Knowledge Base)
 
 #### `ac resources list`
-Lists every document of your organisation, not only the ones you uploaded, and the platform documents.
+Lists every document of your organisation, not only the ones you uploaded.
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--limit` | int | 50 | Max results |
 | `--offset` | int | 0 | Skip results |
-| `--scope` | enum | API default `all` | `organization` (your organisation's documents, the only ones you can attach), `platform` or `all` |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac resources upload <file-path>`

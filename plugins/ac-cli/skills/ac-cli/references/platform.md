@@ -496,9 +496,8 @@ companies and people the form already lists, and the chat never adds a row.
 ## Resources (Knowledge Base)
 
 ```bash
-ac resources list [--limit 50] [--offset 0] [--scope organization|platform|all]
-                                        # every document of your organisation, plus platform documents
-                                        # unless --scope organization; only organisation documents attach
+ac resources list [--limit 50] [--offset 0]
+                                        # every document of your organisation, not only your uploads
 ac resources upload <file-path> --name "Source Name" [--description "..."] [--tags "tag1,tag2"]
 ac resources delete <resource-id> [--force] [--yes]
                                         # 409 resource_in_use lists the offers and steps that attach it;
