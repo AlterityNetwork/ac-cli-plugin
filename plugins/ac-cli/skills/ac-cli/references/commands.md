@@ -3093,7 +3093,7 @@ member). A repeated `stop` keeps the first stop time.
 
 ### Agentic Outreach Drafts
 
-`list` and `get` read the proposed actions by action ID. `save`, `approve` and
+`list`, `get` and `approve` take the proposed action by action ID. `save` and
 `reject` still take the v2 draft ID, which is a decision ID.
 
 #### `ac agentic outreach drafts list`
@@ -3141,20 +3141,33 @@ Give at least one field. A save changes the `content_hash` and keeps the
 `context_version`. After the approval the text is locked, and a save returns exit
 code 5 (`draft_locked`).
 
-#### `ac agentic outreach drafts approve <draft-id>`
+#### `ac agentic outreach drafts approve <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--context-version` | int | yes | The `context_version` that `save` printed |
-| `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
-| `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
+| `--subject` | str | no | New email subject |
+| `--body` | str | no | New plain text email body |
+| `--body-file` | path | no | Read the new email body from a file |
+| `--note` | str | no | New LinkedIn connection note |
+| `--message` | str | no | New LinkedIn message. Give one of `--body`, `--body-file` and `--message`. |
+| `--json` | flag | no | Raw item JSON, the same shape as `get`: `status` is `approved` on success |
 
-A mismatch, a second reviewer, a paused campaign or a stopped organization
-returns exit code 5, and `--json` carries the reason in `context.code`.
+With no edit flag the draft is approved as it is, and no payload is sent. An
+edit flag reads the action first and sends the draft with the edited fields
+over it, so `--subject` alone keeps the body. A flag the action type does not
+take returns exit code 2 before the approve: `--subject` fits a new email only,
+`--body` and `--body-file` an email, `--note` a LinkedIn note, `--message` a
+LinkedIn message. The API checks the edit, reads the address now, and freezes
+the text, the address and their hash. Nothing sends until the Execution
+workflow picks the action up.
 
-No command prints the v2 `context_version` and `content_hash` without an edit:
-`get` reads an action, and `save` needs a changed field. To approve an unedited
-v2 draft, use the Review tab of the web app. ENG-2824 moves approve to the
-action ID.
+A retry of the same approve returns exit code 0 and the same action. An edit
+that fails the draft check returns exit code 2 with the `code`
+(`draft_empty`, `draft_too_long`, `draft_placeholder`, `draft_link_in_note`)
+and the `field`. Exit code 5 carries `code`: `enrollment_ended`,
+`campaign_not_active`, `organization_stopped`, `recipient_missing` (the person
+has no email address or LinkedIn URL now), or `action_not_pending` (the action
+left the queue, or a retry changed the edit or the address). An impersonated
+session returns exit code 4.
 
 #### `ac agentic outreach drafts reject <draft-id>`
 | Flag | Type | Required | Description |
