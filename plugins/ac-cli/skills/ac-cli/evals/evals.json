@@ -1366,7 +1366,12 @@
         {
           "name": "reject_regenerate",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts reject a-80 .*--then regenerate.*--reason`"
+          "text": "`ac agentic outreach drafts reject a-80 .*--then regenerate`"
+        },
+        {
+          "name": "reject_regenerate_reason",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts reject a-80 .*--reason`"
         }
       ]
     },
