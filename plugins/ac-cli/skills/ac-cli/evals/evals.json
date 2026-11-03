@@ -1326,13 +1326,18 @@
     },
     {
       "id": 96,
-      "prompt": "The agentic Outreach draft d-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
-      "expected_output": "Saves the new body with `ac agentic outreach drafts save d-78 --body ...`, then approves with the `--context-version` and `--content-hash` that the save printed, not the ones from before the save.",
+      "prompt": "The agentic Outreach action a-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
+      "expected_output": "Edits and approves in one command: `ac agentic outreach drafts approve a-78 --body \"Hi Jane, quick question about Q4.\"`. No v2 save and no version or hash flags.",
       "assertions": [
         {
-          "name": "save_then_approve",
-          "type": "command_sequence",
-          "text": "`ac agentic outreach drafts save d-78 .*--body` then `ac agentic outreach drafts approve d-78 .*--context-version .*--content-hash`"
+          "name": "approve_with_the_edit",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts approve a-78 .*--body`"
+        },
+        {
+          "name": "no_v2_flags",
+          "type": "command_forbidden",
+          "text": "`--context-version` or `--content-hash`"
         }
       ]
     },

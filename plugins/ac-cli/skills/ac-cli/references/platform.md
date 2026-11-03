@@ -260,7 +260,7 @@ member gets exit code 4.
 ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
 ac agentic outreach drafts get <action-id>
 ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
-ac agentic outreach drafts approve <draft-id> --context-version <n> --content-hash <hash>
+ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
 ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
 ```
 
@@ -282,20 +282,24 @@ the decision rationale and objective, the inbound message the draft answers
 (cut at 500 characters, a reply only), and the draft. It also prints the
 decision ID.
 
-`save`, `approve` and `reject` still take the v2 draft ID, which is a decision
-ID. `save` prints the v2 draft text, the enrollment `context_version` and the
-`content_hash`. `approve` must send both values back. Save your edits first,
-then approve with the `context_version` and `content_hash` that `save` printed.
-The Run then sends that exact text once. A save after the approval returns exit code 5.
-No command prints those two values without an edit, so approve an unedited v2
-draft in the Review tab of the web app. ENG-2824 moves approve to the action ID.
+`approve <action-id>` approves one proposed action. To approve the draft as it
+is, give no edit flag. To edit and approve in one step, give the field: an
+email takes `--subject` and `--body` (or `--body-file`), a LinkedIn note takes
+`--note`, a LinkedIn message takes `--message`. A field you leave out keeps
+its draft text. The approve freezes the text, the address read now, and their
+hash; a retry of the same approve is safe and returns the same action.
 
-`approve` returns exit code 5 with a `code` in `--json` output when the
-version or the text changed (`version_changed`, `content_changed`), another
-person approved first (`already_approved`), the campaign is not active
+`approve` returns exit code 2 when the edit fails the draft check (`code` and
+`field` in the output: `draft_empty`, `draft_too_long`, `draft_placeholder`,
+`draft_link_in_note`). It returns exit code 5 with a `code` when the
+enrollment ended (`enrollment_ended`), the campaign is not active
 (`campaign_not_active`), the organization stopped Outreach
-(`organization_stopped`), or the Run does not wait yet (`approval_not_ready`;
-retry in a few seconds). Read the draft again before you retry.
+(`organization_stopped`), the person has no address now
+(`recipient_missing`), or the action is no longer pending
+(`action_not_pending`). Read the action again with `get` before you retry.
+
+`save` and `reject` still take the v2 draft ID, which is a decision ID. `save`
+prints the v2 draft text. A save after the approval returns exit code 5.
 
 `reject --mode regenerate` plans a new email at once. `--mode skip` sends
 nothing and looks again later. `--mode exit` ends the person's enrollment and
