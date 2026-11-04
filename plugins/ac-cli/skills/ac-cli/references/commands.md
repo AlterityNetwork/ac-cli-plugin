@@ -3681,6 +3681,51 @@ Without `--force`, a document that an offer or a sequence step attaches is refus
 
 Returns processing status including chunk count and any error messages.
 
+#### `ac resources share create <resource-id>`
+Gets or creates the public share link of a document and prints its URL. The link opens a hosted preview page that counts each open.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--expires-in-days` | int | none | Expire the link this many days from now (1 or more; the UI presets are 7, 30, 90). Omit for no expiry |
+| `--json` | flag | off | Raw JSON output |
+
+A document has one public link. When the link exists and is not revoked, the API returns it unchanged and ignores `--expires-in-days`; use `share update` to change the expiry. Insert `url` verbatim; never build it from `token`. 404 (exit 3) when the document is not in the organisation's vault.
+
+#### `ac resources share list <resource-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+Lists every link of the document, public and recipient, newest first. Columns: ID, kind (`public` or `recipient`), status (`active`, `expired`, `revoked`), opens, last opened, person (the CRM person of a recipient link), URL. A recipient link is the copy of the public link that one sent email carries.
+
+#### `ac resources share update <link-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--expires-in-days` | int | Expire the link this many days from now (1 or more) |
+| `--no-expiry` | flag | Remove the expiry |
+| `--json` | flag | Raw JSON output |
+
+Give `--expires-in-days` or `--no-expiry`, and not both (exit 2 otherwise). 404 (exit 3) for a revoked link.
+
+#### `ac resources share revoke <link-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--yes` | flag | Skip confirmation prompt |
+| `--json` | flag | Raw JSON output |
+
+The link stops working at once. Revoking a public link also revokes its recipient links. Idempotent.
+
+#### `ac resources share opens <link-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--limit` | int | 50 | Max results |
+| `--offset` | int | 0 | Skip results |
+| `--json` | flag | off | Raw JSON output |
+
+Lists the opens of one link, newest first: `opened_at`, `kind` (`view` for the preview page, `download` for the file) and `user_agent`.
+
 ---
 
 ### Profiles

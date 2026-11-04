@@ -503,6 +503,16 @@ ac resources delete <resource-id> [--force] [--yes]
                                         # 409 resource_in_use lists the offers and steps that attach it;
                                         # --force removes it from each, then deletes
 ac resources status <resource-id>
+ac resources share create <resource-id> [--expires-in-days 30]
+                                        # get or create the public link; prints the URL
+                                        # an existing link comes back unchanged (expiry ignored)
+ac resources share list <resource-id> [--limit 50] [--offset 0]
+                                        # public and recipient links: status, opens, person
+ac resources share update <link-id> (--expires-in-days 7 | --no-expiry)
+ac resources share revoke <link-id> [--yes]
+                                        # a public link also revokes its recipient links
+ac resources share opens <link-id> [--limit 50] [--offset 0]
+                                        # each view or download, newest first
 ```
 
 Formats: .pdf, .txt, .md, .docx (max 10 MB). `--name` is required.
