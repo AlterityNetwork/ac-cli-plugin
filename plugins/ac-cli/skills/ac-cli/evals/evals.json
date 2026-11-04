@@ -1624,6 +1624,18 @@
           "text": "`ac agentic outreach drafts list .*--status rejected.*--type email` (flags in any order)"
         }
       ]
+    },
+    {
+      "id": 114,
+      "prompt": "Make a share link for the vault document res-42 that expires in 30 days, so I can paste it into an email.",
+      "expected_output": "Runs `ac resources share create res-42 --expires-in-days 30` and gives back the `url` from the reply verbatim.",
+      "assertions": [
+        {
+          "name": "creates_link_with_expiry",
+          "type": "command_matches",
+          "text": "`ac resources share create .*res-42.*--expires-in-days 30` (flags in any order)"
+        }
+      ]
     }
   ]
 }
