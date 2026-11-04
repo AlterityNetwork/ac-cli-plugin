@@ -3034,14 +3034,13 @@ marks the rest `not_sent`. Running it again is safe.
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
 | `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
-Each row is the enrollment plus `person_name`, `email` and `last_decision`
-(`{id, type, status, outcome, executed_at, created_at}`, or null before the
-first decision). `type` is `email`, `linkedin_connection`, `linkedin_message`,
-`wait`, `stop` or null. `status` is `saved`, `invalid`, `error` or `discarded`.
-`outcome` is null except for an email draft review (`proposed`, `approved`,
-`rejected`, `sent` and so on). The Last action column shows the type and the
-status, or the outcome of a row with no status. `email` is the email of the
-person row; a Run can choose another address.
+Each row is the enrollment plus `person_name`, `email`, `last_decision`
+(`{id, type, status, created_at}`, or null before the first decision) and
+`awaiting_approval` (true while a proposed action of the enrollment waits in
+the Review queue). `type` is `email`, `linkedin_connection`,
+`linkedin_message`, `wait`, `stop` or null. `status` is `saved`, `invalid`,
+`error` or `discarded`. The Last action column shows the type and the status.
+`email` is the email of the person row; a Run can choose another address.
 
 #### `ac agentic outreach enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
