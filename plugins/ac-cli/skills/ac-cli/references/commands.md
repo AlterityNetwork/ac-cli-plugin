@@ -3100,7 +3100,6 @@ member). A repeated `stop` keeps the first stop time.
 ### Agentic Outreach Drafts
 
 `list`, `get`, `approve` and `reject` take the proposed action by action ID.
-`save` still takes the v2 draft ID, which is a decision ID.
 
 #### `ac agentic outreach drafts list`
 | Flag | Type | Default | Description |
@@ -3134,18 +3133,6 @@ the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
 LinkedIn message. A deleted person keeps the item, with a null name and a null
 `to`. An action of another organization returns exit code 3.
-
-#### `ac agentic outreach drafts save <draft-id>`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--subject` | str | no | New subject |
-| `--body` | str | no | New plain text body |
-| `--body-file` | path | no | Read the new body from a file. Not with `--body`. |
-| `--json` | flag | no | Raw review JSON: `context_version`, `content_hash`, `draft`, `reviewable`, `locked` |
-
-Give at least one field. A save changes the `content_hash` and keeps the
-`context_version`. After the approval the text is locked, and a save returns exit
-code 5 (`draft_locked`).
 
 #### `ac agentic outreach drafts approve <action-id>`
 | Flag | Type | Required | Description |

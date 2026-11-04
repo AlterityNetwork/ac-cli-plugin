@@ -249,7 +249,7 @@ enrollment has a draft that waits for review (`awaiting_approval`), an approved
 email waits to send (`run_in_progress`), the campaign is not active, the
 organization stopped, or the enrollment ended. `enrollments exit` ends the
 enrollment as `user_exit`,
-records the caller in `ended_by` and rejects a draft that waits for review.
+records the caller in `ended_by`. A draft that waits for review is not sent.
 
 `organization stop` stops Outreach for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
@@ -260,7 +260,6 @@ member gets exit code 4.
 ```bash
 ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
 ac agentic outreach drafts get <action-id>
-ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
 ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
 ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
 ```
@@ -310,10 +309,8 @@ when the enrollment ended (`enrollment_ended`) or the action is no longer
 pending (`action_not_pending`), and exit code 2 for a bad `--reason`. A paused
 campaign or a stopped organization does not block a reject.
 
-`save` still takes the v2 draft ID, which is a decision ID. `save` prints the
-v2 draft text. A save after the approval returns exit code 5. Do not approve
-an Outreach email with `ac agentic approvals`; that inbox refuses it with exit
-code 5.
+Do not approve an Outreach email with `ac agentic approvals`; that inbox
+refuses it with exit code 5.
 
 ## Organization Analytics
 
