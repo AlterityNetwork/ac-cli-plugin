@@ -3051,17 +3051,23 @@ person row; a Run can choose another address.
 #### `ac agentic outreach enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50. The newest rows of each kind are kept. |
-| `--order` | `desc` or `asc` | no | `desc` (default) lists the newest item first, `asc` the oldest |
-| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
+| `--limit` | int | no | The most rows of each kind, 1 to 100; default 50. The newest rows of each kind are kept. |
+| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, id, ...}]`. `kind` is `enrolled`, `decision`, `action`, `email`, `linkedin_message` or `ended`. |
 
-A `decision` item adds `type`, `status`, `rationale`, `objective`,
-`followup_days`, `goal_met`, `trigger_reason`, `failure_reason`,
-`reviewer_note`, `subject` and `outcome`. `type`, `status` and `outcome` take
-the values listed for `last_decision`. An `email` or `activity` item uses `status` for its own status. The table
-shows the type, the status and the subject of a decision. An item with no time
-is last in both orders. Exit code 3 for an enrollment of
-another organization.
+The list is newest first, with the `id` as the tie; at the same time `ended`
+comes before `enrolled`. An item with no time is last. `enrolled` and `ended`
+carry the enrollment id. Per kind:
+
+- `decision`: `type`, `status`, `trigger_reason`, `rationale`, `objective`,
+  `followup_days`, `goal_met`, `failure_reason`.
+- `action`: `type`, `status`, `decision_id`, `communication_id`,
+  `reject_reason`.
+- `email`: `direction`, `subject`, `status`, `text` (500 chars at most).
+- `linkedin_message`: `direction`, `text` (500 chars at most).
+- `ended`: `ended_reason`.
+
+The table shows a short line per item. No CRM activity is in the list. Exit
+code 3 for an enrollment of another organization.
 
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |

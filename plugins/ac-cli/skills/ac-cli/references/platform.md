@@ -182,7 +182,7 @@ ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|pros
 ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
 ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
-ac agentic outreach enrollments timeline <enrollment-id> [--limit 50] [--order desc|asc]
+ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic outreach enrollments exit <enrollment-id> [--yes]
 ac agentic outreach organization status|resume
@@ -235,11 +235,12 @@ the person, the email of the person row, the state and the last decision
 in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
-`enrollments timeline` lists what happened to one enrollment: the start, each
-decision with its type, status and subject (`--json` adds the rationale), the
-thread emails (a reply shows as an `inbound` email), the CRM activities, and
-the end. It is newest first by default, the left column of the review card. `--order asc` lists it oldest
-first, as the enrollment drawer shows it.
+`enrollments timeline` lists the Outreach items of one enrollment, newest
+first: the start, each decision, each proposed action, the thread emails (a
+reply shows as an `inbound` email), the LinkedIn messages, and the end. It
+holds no CRM activity; read those with `ac crm activities`. To merge it with
+the CRM emails, drop a CRM email whose id is the `id` of an `email` item or
+the `communication_id` of an `action`.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM
