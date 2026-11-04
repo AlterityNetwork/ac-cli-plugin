@@ -261,7 +261,7 @@ ac agentic outreach drafts list [--status pending_approval] [--campaign-id <camp
 ac agentic outreach drafts get <action-id>
 ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
 ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
-ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
+ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
 ```
 
 These commands review what an agentic Outreach campaign drafted. They are not
@@ -299,14 +299,20 @@ enrollment ended (`enrollment_ended`), the campaign is not active
 (`recipient_missing`), or the action is no longer pending
 (`action_not_pending`). Read the action again with `get` before you retry.
 
-`save` and `reject` still take the v2 draft ID, which is a decision ID. `save`
-prints the v2 draft text. A save after the approval returns exit code 5.
+`reject <action-id>` rejects one proposed action. `--then regenerate` asks
+for one new draft at once, and needs `--reason` (1 to 1000 characters): the
+next draft reads it. To say "not now", regenerate with a reason that says so.
+`--then stop` ends the person's enrollment and asks first; pass `--yes` to skip
+the question. With stop, `--reason` is optional. A retry of the same reject is
+safe and returns the same action. `reject` returns exit code 5 with a `code`
+when the enrollment ended (`enrollment_ended`) or the action is no longer
+pending (`action_not_pending`), and exit code 2 for a bad `--reason`. A paused
+campaign or a stopped organization does not block a reject.
 
-`reject --mode regenerate` plans a new email at once. `--mode skip` sends
-nothing and looks again later. `--mode exit` ends the person's enrollment and
-asks first; pass `--yes` to skip the question. `--note` is feedback that later
-Runs read. Do not approve an Outreach email with `ac agentic approvals`; that
-inbox refuses it with exit code 5.
+`save` still takes the v2 draft ID, which is a decision ID. `save` prints the
+v2 draft text. A save after the approval returns exit code 5. Do not approve
+an Outreach email with `ac agentic approvals`; that inbox refuses it with exit
+code 5.
 
 ## Organization Analytics
 

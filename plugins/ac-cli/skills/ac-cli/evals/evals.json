@@ -1343,13 +1343,35 @@
     },
     {
       "id": 97,
-      "prompt": "Reject the agentic Outreach draft d-79 and take the person out of the campaign. Note: wrong contact.",
-      "expected_output": "Runs `ac agentic outreach drafts reject d-79 --mode exit --note \"wrong contact\" --yes` (or answers the confirmation).",
+      "prompt": "Reject the agentic Outreach action a-79 and take the person out of the campaign. Reason: wrong contact.",
+      "expected_output": "Runs `ac agentic outreach drafts reject a-79 --then stop --reason \"wrong contact\" --yes` (or answers the confirmation).",
       "assertions": [
         {
-          "name": "reject_exit",
+          "name": "reject_stop",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts reject d-79 .*--mode exit`"
+          "text": "`ac agentic outreach drafts reject a-79 .*--then stop`"
+        },
+        {
+          "name": "no_v2_mode",
+          "type": "command_forbidden",
+          "text": "`--mode`"
+        }
+      ]
+    },
+    {
+      "id": 132,
+      "prompt": "The agentic Outreach draft a-80 is too long. Reject it and ask for a shorter one.",
+      "expected_output": "Runs `ac agentic outreach drafts reject a-80 --then regenerate --reason \"Shorter, please.\"` with a reason that asks for a shorter draft.",
+      "assertions": [
+        {
+          "name": "reject_regenerate",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts reject a-80 .*--then regenerate`"
+        },
+        {
+          "name": "reject_regenerate_reason",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts reject a-80 .*--reason`"
         }
       ]
     },
