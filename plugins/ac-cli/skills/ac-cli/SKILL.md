@@ -118,6 +118,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Domain | Covers | Reference |
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
+| Inbox (`ac inbox`) | one row per person for email and LinkedIn, timeline, done, read state, intent, reply, new message, AI draft, Sent/Drafts/Scheduled, badge counts | [`references/inbox.md`](references/inbox.md) |
 | Sequences (`ac envoy`) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
@@ -159,7 +160,8 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "who is low on credits" / "credit usage per organization" (admin) | `ac admin billing credit-usage [--attention]` | `ac profiles usage` (your own organization only) |
 | "daily email limit" / "send cap" for one organization (admin) | `ac admin limit-overrides set --org-id <id> --value <n>` · `list` · `clear` | `entitlement-grants` (keys, no numbers) · `subscription-plans update` (changes the plan for every organization on it) |
 | "credit balance" / "credits left" / "how many credits did we spend" | `ac profiles usage` (the Credits line; `--json` gives the `credits` block) | `ac admin ai-usage …` (token cost, not credits) · `ac admin credit-prices` (prices, not the balance) |
-| "how many threads in inbox" / "inbox count" | `ac envoy inbox-count` | `ac envoy inbox list --json \| jq length` — works but skill has dedicated cmd |
+| "reply to Ada" / "what needs a reply" / "inbox" (email and LinkedIn) | `ac inbox list --needs-reply` · `ac inbox show <thread-id>` · `ac inbox reply <thread-id> --channel email\|linkedin --body …` | `ac envoy inbox …` (sequence replies only) · `ac crm comms …` (raw email rows) |
+| "how many threads in the Sequences inbox" | `ac envoy inbox-count` | `ac inbox counts` is the badge of the whole inbox, not the Sequences tab |
 | "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
 | "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac envoy signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
 | "delete 3 companies c1,c2,c3" | `ac crm companies bulk-delete --ids c1,c2,c3` | looping `ac crm companies delete` per-id — non-atomic and slower |
