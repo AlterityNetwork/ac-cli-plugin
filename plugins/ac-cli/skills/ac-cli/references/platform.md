@@ -67,7 +67,8 @@ ac agentic prospects signal-types [--review-state new]
 ac agentic prospects get <prospect-id>
 ac agentic prospects people <prospect-id> [--cursor <cursor>] [--limit 50]
 ac agentic prospects signals <prospect-id> [--cursor <cursor>] [--limit 50]
-ac agentic prospects add-person <prospect-id> --name <name> [--linkedin-url <url>] [--title <title>] [--email <email>]
+ac agentic prospects add-person <prospect-id> --name <name> [--linkedin-url <url>] [--title <title>] [--email <email>] [--named-signal-id <signal-id>]
+ac agentic prospects edit-person <prospect-id> <person-id> [--name <name>] [--linkedin-url <url>] [--title <title> | --clear-title] [--email <email> | --clear-email] [--expected-updated-at <timestamp>]
 ac agentic prospects search-persona <prospect-id>
 ac agentic prospects find-people <prospect-id> [--title <title>]... [--department <department>]... [--seniority <level>]... [--country <code>]...
 ac agentic prospects find-people <prospect-id> --describe "<the people to find>"
@@ -76,6 +77,8 @@ ac agentic prospects dismiss <prospect-id>
 ac agentic prospects restore <prospect-id>
 ac agentic prospects dismiss-action <prospect-id>
 ac agentic prospects promote <prospect-id> [--person <id>]... [--signal <signal-id>]... [--list <list-id>] [--yes]
+ac agentic prospects bulk-curate <watch|dismiss|restore> <prospect-id>...
+ac agentic prospects bulk-promote <prospect-id>... [--person <prospect-id>:<person-id>]... [--yes]
 ac agentic prospects delete <prospect-id> [--yes]
 ```
 
@@ -105,9 +108,22 @@ keeps the first stamp.
 `add-person` and `find-people` give a company prospect more people. Neither
 works on a person prospect or a promoted prospect: both return exit code 5.
 `add-person` attaches one person you name. Only the name is required. The
-title and the email stay on the prospect, and each fills only a value the
-LinkedIn profile does not have. With no profile, the person stays on the
-prospect.
+title and the email stay on the prospect, and each is shown over the value
+the LinkedIn profile has. With no profile, the person stays on the prospect.
+`--named-signal-id` records the company signal that named the person, so the
+review lists them once.
+
+`edit-person` corrects one listed person. `<person-id>` is the prospect
+person ID that `people` shows. Only the options you give change.
+`--clear-title` and `--clear-email` remove the typed value, and the profile
+value shows again. A new `--linkedin-url` moves the person to that profile.
+The name of a person with a profile changes only with a new profile. It
+works on a promoted prospect, and a person in the CRM changes there too.
+Pass `--expected-updated-at` with the `updated_at` that `people --json` showed,
+so an edit made after another write changed the person is refused. A
+person prospect, a person changed since that read, a profile or a name the
+prospect already lists, and an email or LinkedIn URL another CRM person holds
+each return exit code 5.
 `find-people` starts one `people.search` Run for the company. With no option
 it looks for the decision makers that `search-persona` shows. The `--title`,
 `--department`, `--seniority` and `--country` options replace that persona.
@@ -158,14 +174,15 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
 ac agentic outreach campaigns get <campaign-id>
-ac agentic outreach campaigns create --name "Q4 intro" [--description "Heads of growth at Series A SaaS companies"]
-ac agentic outreach campaigns update <campaign-id> [--name "..."] [--description "..."]
+ac agentic outreach campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
+ac agentic outreach campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
-ac agentic outreach enrollments list --campaign-id <campaign-id> [--state active|awaiting_approval|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
+ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
+ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
-ac agentic outreach enrollments timeline <enrollment-id> [--limit 50] [--order desc|asc]
+ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic outreach enrollments exit <enrollment-id> [--yes]
 ac agentic outreach organization status|resume
@@ -175,13 +192,19 @@ ac agentic outreach organization stop [--yes]
 These commands run the agentic Outreach campaigns. They are not the legacy
 `ac envoy sequences`.
 
-A new campaign is a `draft`, and the caller owns it: the owner's mailbox sends
-its emails. A campaign has a name and an optional description, nothing more.
-The campaign has no fixed goal and no email limits. For each Run, the planner
-selects the next step from the latest context of the person. The description
-is context for the planner, not an instruction. The planner prompt holds the
-email cadence: with no reply, at most 4 emails, with gaps of about 3, then 5,
-then 7 days. `activate` and `resume` both set the campaign `active`; `pause`
+A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
+required goal, an optional description, the allowed channels, the touch and
+follow-up limits and a sender. The defaults are email only, 5 touches and a
+follow-up gap of 3 to 7 days. `--channel` repeats for both channels, and on
+`update` it replaces the list. `--max-touches` is 1 to 10, and `--min-days` and
+`--max-days` are 1 to 30 with the minimum at most the maximum; a bad value
+returns exit code 2. The sender is always the creator: the creator's mailbox
+sends, and no option changes it. For each Run, the planner selects
+the next step from the latest context of the person. The goal and the
+description are context for the planner, not instructions. The planner does
+not read the channels and the limits yet: its prompt still holds the email
+cadence, with no reply at most 4 emails, with gaps of about 3, then 5, then 7
+days. `activate` and `resume` both set the campaign `active`; `pause`
 sets it `paused`. While a campaign is paused, no new Run starts and no email is
 sent. A Run that started before the pause still finishes its decision, and its
 send is refused. `archive` is final and asks first. It ends every live
@@ -191,32 +214,42 @@ live.
 `enroll` adds one person and starts the first Run. A person can be live in
 one campaign only. Enrolling a person who is live in another campaign returns
 exit code 5 (`already_enrolled`), and the message names that campaign. A
-campaign holds at most 200 live enrollments (`campaign_full`). A prospect
+campaign holds at most 200 live enrollments (`campaign_full`). A person whose
+email address is on the organization do-not-contact list is refused
+(`opted_out`), whatever the case or spacing of the address. A prospect
 person that is already in the CRM enrolls as the CRM person.
 
+`enroll-batch` adds up to 200 people, in requests of 50, and prints one result
+per person, in order: `added`, `already_enrolled` (with the other campaign's name
+and status), `campaign_full`, `opted_out` or `not_found`. One refused person
+never blocks the others. Name each person as `kind:id` with `--person`, or put
+one per line in a `--file`.
+
 `campaigns list` and `campaigns get` show the live enrollments against the cap
-(`People 140/200`) and the count per state: active, awaiting a draft review,
-needing an email, and ended.
+(`People 140/200`) and the count per status: active, needing an email, and
+ended. A draft that waits for review is not a status; `drafts list` shows it.
 
 `enrollments list` shows one page of a campaign, newest first. Each row names
 the person, the email of the person row, the state and the last decision
-(action and outcome). `--search` keeps the people whose name holds the text,
+(type and status). `--search` keeps the people whose name holds the text,
 in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
-`enrollments timeline` lists what happened to one enrollment: the start, each
-decision with its outcome and reviewer note, the thread emails (a reply shows
-as an `inbound` email), the CRM activities, and the end. It is newest first by
-default, the left column of the review card. `--order asc` lists it oldest
-first, as the enrollment drawer shows it.
+`enrollments timeline` lists the Outreach items of one enrollment, newest
+first: the start, each decision, each proposed action, the thread emails (a
+reply shows as an `inbound` email), the LinkedIn messages, and the end. It
+holds no CRM activity; read those with `ac crm activities`. To merge it with
+the CRM emails, drop a CRM email whose id is the `id` of an `email` item or
+the `communication_id` of an `action`.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM
 person, because a CRM edit starts no Run. It returns exit code 5 when the
-enrollment waits for a draft review (`awaiting_approval`), a Run decides now
-(`run_in_progress`), the campaign is not active, the organization stopped, or
-the enrollment ended. `enrollments exit` ends the enrollment as `manual`,
-records the caller in `ended_by` and rejects a draft that waits for review.
+enrollment has a draft that waits for review (`awaiting_approval`), an approved
+email waits to send (`run_in_progress`), the campaign is not active, the
+organization stopped, or the enrollment ended. `enrollments exit` ends the
+enrollment as `user_exit`,
+records the caller in `ended_by`. A draft that waits for review is not sent.
 
 `organization stop` stops Outreach for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
@@ -225,40 +258,59 @@ member gets exit code 4.
 ## Agentic Outreach Drafts
 
 ```bash
-ac agentic outreach drafts list [--campaign-id <campaign-id>] [--limit 50] [--offset 0]
-ac agentic outreach drafts get <draft-id>
-ac agentic outreach drafts save <draft-id> [--subject "New subject"] [--body "Text" | --body-file body.txt]
-ac agentic outreach drafts approve <draft-id> --version <n> --content-hash <hash>
-ac agentic outreach drafts reject <draft-id> --mode regenerate|skip|exit [--note "Feedback"] [--yes]
+ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
+ac agentic outreach drafts get <action-id>
+ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
+ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
 ```
 
-These commands review the emails that an agentic Outreach campaign drafted.
-They are not the legacy `ac envoy outbox` drafts. The draft ID is the decision
-ID that `list` prints.
+These commands review what an agentic Outreach campaign drafted. They are not
+the legacy `ac envoy outbox` drafts.
 
-`list` prints one page: each draft names the person, the campaign and when its
-approval expires. The title shows the rows against the total, and a last line
-prints the next `--offset` while more drafts wait. Only the table output has
+`list` and `get` read the Review queue: the proposed actions (an email, a
+LinkedIn note or a LinkedIn message). `list` reads the `pending_approval`
+actions by default, oldest first, and prints the queue `total`. Filter with
+`--status`, `--campaign-id` and `--type`. The first column is the action ID
+that `get` takes. The title shows the rows against the total, and a last line
+prints the next `--offset` while more actions wait. Only the table output has
 that line: with `--json`, compute the next offset as `offset + length(data)`
 while `has_more` is true.
 
-`get` prints the draft text, the enrollment `version` and the `content_hash`.
-`approve` must send both values back. Save your edits first, then approve with
-the `version` and `content_hash` that `save` or a new `get` printed. The Run
-then sends that exact text once. A save after the approval returns exit code 5.
+`get <action-id>` prints the person, the company, the campaign and its status,
+the address read fresh (`to`: the email address, or the LinkedIn profile URL),
+the decision rationale and objective, the inbound message the draft answers
+(cut at 500 characters, a reply only), and the draft. It also prints the
+decision ID.
 
-`approve` returns exit code 5 with a `code` in `--json` output when the
-version or the text changed (`version_changed`, `content_changed`), another
-person approved first (`already_approved`), the campaign is not active
+`approve <action-id>` approves one proposed action. To approve the draft as it
+is, give no edit flag. To edit and approve in one step, give the field: an
+email takes `--subject` and `--body` (or `--body-file`), a LinkedIn note takes
+`--note`, a LinkedIn message takes `--message`. A reply email takes no
+`--subject`. Another flag returns exit code 2 and approves nothing. A field you
+leave out keeps its draft text. The approve freezes the text, the address read now, and their
+hash; a retry of the same approve is safe and returns the same action.
+
+`approve` returns exit code 2 when the edit fails the draft check (`code` and
+`field` in the output: `draft_empty`, `draft_too_long`, `draft_placeholder`,
+`draft_link_in_note`). It returns exit code 5 with a `code` when the
+enrollment ended (`enrollment_ended`), the campaign is not active
 (`campaign_not_active`), the organization stopped Outreach
-(`organization_stopped`), or the Run does not wait yet (`approval_not_ready`;
-retry in a few seconds). Read the draft again before you retry.
+(`organization_stopped`), the person has no address now
+(`recipient_missing`), or the action is no longer pending
+(`action_not_pending`). Read the action again with `get` before you retry.
 
-`reject --mode regenerate` plans a new email at once. `--mode skip` sends
-nothing and looks again later. `--mode exit` ends the person's enrollment and
-asks first; pass `--yes` to skip the question. `--note` is feedback that later
-Runs read. Do not approve an Outreach email with `ac agentic approvals`; that
-inbox refuses it with exit code 5.
+`reject <action-id>` rejects one proposed action. `--then regenerate` asks
+for one new draft at once, and needs `--reason` (1 to 1000 characters): the
+next draft reads it. To say "not now", regenerate with a reason that says so.
+`--then stop` ends the person's enrollment and asks first; pass `--yes` to skip
+the question. With stop, `--reason` is optional. A retry of the same reject is
+safe and returns the same action. `reject` returns exit code 5 with a `code`
+when the enrollment ended (`enrollment_ended`) or the action is no longer
+pending (`action_not_pending`), and exit code 2 for a bad `--reason`. A paused
+campaign or a stopped organization does not block a reject.
+
+Do not approve an Outreach email with `ac agentic approvals`; that inbox
+refuses it with exit code 5.
 
 ## Organization Analytics
 

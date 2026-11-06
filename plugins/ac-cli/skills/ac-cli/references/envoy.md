@@ -11,7 +11,7 @@ ac envoy sequences create --name "Q2 Outreach" [--description "..."] \
   [--writing-style-id <id>] [--playbook-id <id>] [--crm-list-id <id>]
 ac envoy sequences update <sequence-id> --name "Updated Name"
 ac envoy sequences update <sequence-id> --draft-feedback "Write in British English."
-ac envoy sequences update <sequence-id> --no-auto-enrich   # skip a recipient with no email or phone at once
+ac envoy sequences update <sequence-id> --no-auto-enrich   # skip a recipient with no email, phone or LinkedIn URL at once
 ac envoy sequences delete <sequence-id> [--yes]
 ac envoy sequences launch <sequence-id> --workflow-id <id>
 ac envoy sequences pause <sequence-id>
@@ -86,11 +86,14 @@ ac envoy inbox unarchive <thread-id>
 ac envoy inbox assign <thread-id> --user-id <id>
 ac envoy inbox snooze <thread-id> --until "2026-04-01T09:00:00"
 ac envoy inbox complete <thread-id>
+ac envoy inbox mark-read <thread-id>
 ac envoy inbox update-status <thread-id> --status resolved
 ac envoy inbox add-tags <thread-id> --tags "hot-lead,priority"
 ac envoy inbox remove-tags <thread-id> --tags "stale"
 ac envoy inbox reply <thread-id> --body "Thanks for your reply!"
 ```
+
+The list holds only threads with at least one reply from the prospect, by email or LinkedIn. A thread of sent emails only is not listed; read sent emails with `ac envoy sequences outputs <sequence-id>`. The Channel column is `email` or `linkedin`. Each item in `--json` carries `unread_count`: the received messages you have not read. `mark-read` clears it for you only. `reply` sends an email, so it refuses a LinkedIn thread: answer that person on LinkedIn.
 
 **Standard "read first thread + reply" recipe** — when the user asks to read messages then reply, chain all three steps in one call:
 

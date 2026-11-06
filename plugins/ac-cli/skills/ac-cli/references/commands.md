@@ -755,7 +755,7 @@ and status, and top clicked links.
 | `--playbook-id` | str | no | Playbook to guide messaging |
 | `--crm-list-id` | str | no | CRM list to source recipients from |
 | `--skip-non-working-days` / `--no-skip-non-working-days` | flag | no | Roll sends forward off weekends and bank holidays |
-| `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email or phone before a step that needs it. On by default |
+| `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email, phone or LinkedIn URL before a step that needs it. On by default |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac envoy sequences update <sequence-id>`
@@ -1055,6 +1055,13 @@ Returns all messages in a thread.
 | `--json` | flag | Raw JSON output |
 
 Marks the thread as complete.
+
+#### `ac envoy inbox mark-read <thread-id>`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+Marks every message of the thread as read by you. Other users keep their own read state.
 
 #### `ac envoy inbox update-status <thread-id>`
 | Flag | Type | Required | Description |
@@ -1597,6 +1604,89 @@ Super admin only. Bypasses soft-delete; unrecoverable. Refuse without explicit i
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation |
 | `--json` | flag | Raw JSON output |
+
+---
+
+### Agency Matching (read-only except the paid model calls)
+
+Super admin only. The responses hold CRM data of more than one agency. `scan-website`, `scan-websites` and `collaboration` start paid page fetches or model calls, so ask before you run them.
+
+#### `ac admin matching agencies`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Include demo organisations |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) for the best matches |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching algorithm`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the factors, their sources, the default weights, the competitor rule, the client size tiers, the service tags and what the matching leaves out.
+
+#### `ac admin matching collaboration <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Paid: the first call for a pair runs one model call. Shows three to five points, written by a model, on how the two agencies could work together: joint pitches, referrals, delivery for each other's clients or overflow work. Each point starts with the way of working. The note is cached for each pair until a profile, scan or tag changes.
+
+#### `ac admin matching profile <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the Company profile of an agency as its Memory page shows it: the Markdown and its gaps. It does not act as the agency.
+
+#### `ac admin matching pairs`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Include demo organisations |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching agency <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Rank demo organisations too |
+| `--lens` | str | "complementary" | Sort order: `complementary` or `similar` |
+| `--w-market` | float | 0.25 | Weight of market overlap (0 to 1) |
+| `--w-geography` | float | 0.15 | Weight of geography overlap (0 to 1) |
+| `--w-services` | float | 0.25 | Weight of the service factor (0 to 1) |
+| `--w-accounts` | float | 0.1 | Weight of shared CRM accounts (0 to 1) |
+| `--w-size` | float | 0.15 | Weight of client size fit (0 to 1) |
+| `--w-searches` | float | 0.1 | Weight of same search targets (0 to 1) |
+| `--json` | flag | | Raw JSON output |
+
+#### `ac admin matching scan-website <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Starts a scan of the homepage of one agency (a paid page fetch and model call that runs on the server), then waits for the result. The result is kept for 30 days.
+
+#### `ac admin matching scan-status <org-id>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--json` | flag | | Raw JSON output |
+
+Shows the status of the last scan (`none`, `pending`, `scanned`, `empty`, `failed`) and what it found.
+
+#### `ac admin matching scan-websites`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--include-demo` | flag | false | Scan demo organisations too |
+| `--json` | flag | | Raw JSON output |
+
+Lists the agencies, starts a scan for each one that has a website, then waits for every result.
+
+#### `ac admin matching pair <org-a> <org-b>`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--lens` | str | "complementary" | `complementary` or `similar` |
+| `--w-market`, `--w-searches`, `--w-geography`, `--w-services`, `--w-size`, `--w-accounts` | float | 0.25 / 0.1 / 0.15 / 0.25 / 0.15 / 0.1 | Factor weights (0 to 1) |
+| `--json` | flag | | Raw JSON output |
 
 ---
 
@@ -2692,6 +2782,7 @@ two types counts under both. A type that no prospect holds is not listed.
 | `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
 | `--title` | str | no | Current job title |
 | `--email` | str | no | Work email address |
+| `--named-signal-id` | str | no | The company signal that named the person |
 | `--json` | flag | no | Raw prospect person JSON |
 
 Adds one person you name to a company prospect. The answer is one prospect
@@ -2699,13 +2790,44 @@ person row, the same shape as one `people` item. The command sends `--title`
 `--email` and `--linkedin-url` only when you give them. With a LinkedIn
 profile, the person goes to global Intelligence by that profile. The title
 and the email stay on the prospect and never reach global Intelligence. Each
-fills only a value the profile does not have, so it never replaces a stored
-provider value. With no profile, the person stays on the prospect: the row holds the
-name, title and email, and a second add of the same name answers that row.
+is shown over the profile value, and promotion writes it to the CRM person.
+With no profile, the person stays on the prospect: the row holds the name,
+title and email, and a second add of the same name answers that row.
+`--named-signal-id` must name a signal the prospect holds. The review then
+lists the person once, also after a rename.
 The prospect `people_state` becomes `found`.
-A missing prospect returns exit code 3. A person prospect or a promoted
-prospect returns exit code 5. A profile URL that is not `/in/`, or an email
-that is not valid, returns exit code 2.
+A missing prospect returns exit code 3. A person prospect, a promoted
+prospect, or a signal the prospect does not hold returns exit code 5. A
+profile URL that is not `/in/`, or an email that is not valid, returns exit
+code 2.
+
+#### `ac agentic prospects edit-person <prospect-id> <person-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | no | Full name of the person |
+| `--linkedin-url` | str | no | LinkedIn profile URL. It must name an `/in/` profile. |
+| `--title` | str | no | Current job title |
+| `--clear-title` | flag | no | Remove the typed job title |
+| `--email` | str | no | Work email address |
+| `--clear-email` | flag | no | Remove the typed email |
+| `--expected-updated-at` | str | no | The `updated_at` of the person as you read it, from `people --json` |
+| `--json` | flag | no | Raw prospect person JSON |
+
+Corrects one person a company prospect lists. `<person-id>` is the prospect
+person ID, the `Person ID` column of `people`. The command sends a PATCH with
+only the options you give. A cleared title or email sends `null`, and the
+profile value shows again. A new `--linkedin-url` moves the row to the global
+person of that profile. The name of a person with a profile comes from the
+profile, so `--name` changes it only together with a new `--linkedin-url`.
+A promoted prospect takes the edit. When the person is in the CRM, the CRM
+person takes the values the review shows, in the same transaction.
+`--expected-updated-at` sends the version you read: when another write changed
+the person after that read, the edit is refused and nothing is written.
+Give at least one option, and never a value beside its clear: either is exit
+code 2. A missing prospect or person returns exit code 3. A person prospect,
+a profile or a name the prospect already lists, a person another write
+changed, and an email or LinkedIn URL another CRM person holds each return
+exit code 5.
 
 #### `ac agentic prospects search-persona <prospect-id>`
 | Flag | Type | Description |
@@ -2769,6 +2891,16 @@ Returns one watched or dismissed prospect to `new` and answers the durable
 detail. A prospect already at `new` exits 0 and writes nothing. A promoted
 prospect returns exit code 5, because promotion wrote CRM rows.
 
+#### `ac agentic prospects bulk-curate <intent> <prospect-id>...`
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+`<intent>` is `watch`, `dismiss` or `restore`. It takes 1 to 100 prospect ids
+with no repeats. The answer lists each prospect under one outcome: `updated`,
+`unchanged`, `promoted` or `not_found`. A promoted, missing or foreign
+prospect does not move and does not stop the others, so the command exits 0.
+
 #### `ac agentic prospects dismiss-action <prospect-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -2814,6 +2946,21 @@ row at the `identified` stage, and a person that holds no stage. A qualified lea
 customer keeps the stage it holds. Only a person can hold no stage, because a
 company always holds one.
 
+#### `ac agentic prospects bulk-promote <prospect-id>...`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person` | `<prospect-id>:<person-id>` | no | A prospect person to promote with its prospect. Repeat for each person. The prospect must be one of the ids the command names. |
+| `--yes` / `-y` | flag | no | Skip the confirmation. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw JSON output |
+
+Promotes 1 to 25 prospects into CRM, one after the other, as `promote` does
+for each. A prospect with no `--person` promotes the company alone, or the
+subject person of a person prospect. The answer holds one result for each
+prospect: `status` is `promoted` with the `promotion` references, or `failed`
+with the `error` reason. A failed prospect does not stop the others. To enrol
+the promoted people, pass their `crm_person_id` values to
+`ac envoy recipients add`.
+
 #### `ac agentic prospects delete <prospect-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -2842,8 +2989,7 @@ the review list.
 The table title names the page and the total, for example `1-50 of 120`. When
 more campaigns wait, the last line names the next `--offset`.
 
-`enrollment_counts` is `{active, awaiting_approval, needs_contact_data, ended,
-live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
+`enrollment_counts` is `{active, needs_contact_data, ended, live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 
 #### `ac agentic outreach campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
@@ -2854,16 +3000,27 @@ live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
+| `--goal` | str | yes | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. |
 | `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
-| `--json` | flag | no | Raw campaign JSON: `{id, name, description, status, created_by, created_at, updated_at}` |
+| `--channel` | `email` or `linkedin`, repeatable | no | The channels the campaign can use. Default `email` |
+| `--max-touches` | int | no | The most outbound touches per person, 1 to 10. Default 5 |
+| `--min-days` | int | no | The fewest days between two touches, 1 to 30. Default 3 |
+| `--max-days` | int | no | The most days between two touches, 1 to 30. Default 7 |
+| `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at}` |
 
-The campaign starts as `draft`, and the caller owns it. A description longer
-than 2000 characters returns exit code 2.
+The campaign starts as `draft`. The caller owns it and is its sender, read
+only: `sender_user_id` is always the creator. A description or goal longer
+than 2000 characters, a blank goal, a value out of range or `--min-days`
+above `--max-days` returns exit code 2 with no call.
 
 #### `ac agentic outreach campaigns update <campaign-id>`
-Takes `--name`, `--description` and `--json`, all optional. Give at least one.
-Pass `--description ""` to clear the description. An archived campaign returns
-exit code 5 (`campaign_archived`).
+Takes `--name`, `--goal`, `--description`, `--channel`, `--max-touches`,
+`--min-days`, `--max-days` and `--json`, all optional, with the
+checks of `create`. Give at least one. Pass `--description ""` to clear the
+description. `--channel` replaces the channel list. One of `--min-days` or
+`--max-days` alone past the stored other bound returns exit code 2 (422). An
+archived campaign returns exit code 5 (`campaign_archived`). The sender does
+not change.
 
 #### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
 | Flag | Type | Required | Description |
@@ -2881,7 +3038,8 @@ draft, or any move of an archived campaign, returns exit code 5
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw campaign JSON |
 
-Archived is final. Every live enrollment ends as `manual`, in the background.
+Archived is final. Every live enrollment ends as `campaign_archived`, in the
+background.
 
 #### `ac agentic outreach campaigns enroll <campaign-id>`
 | Flag | Type | Required | Description |
@@ -2891,39 +3049,73 @@ Archived is final. Every live enrollment ends as `manual`, in the background.
 | `--json` | flag | no | Raw enrollment JSON |
 
 Exit code 5 with `already_enrolled` (`context.campaign_name` names the other
-campaign), `campaign_full` (200 live enrollments) or `campaign_archived`.
+campaign), `campaign_full` (200 live enrollments), `opted_out` (the email
+address is on the do-not-contact list) or `campaign_archived`.
 Exit code 3 for a person of another organization. A repeat in the same
 campaign answers the same enrollment.
+
+#### `ac agentic outreach campaigns enroll-batch <campaign-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--person` | `kind:id` | one of these two | One person, such as `crm.person:<id>` or `prospect.person:<id>`. Repeat it for each person. |
+| `--file` | path | one of these two | One `kind:id` per line. Blank lines and `#` comments are skipped. |
+| `--json` | flag | no | Raw JSON: `{"results": [...]}` |
+
+Enrolls 1 to 200 people. The CLI sends them in requests of 50 (the API
+limit per request), one after another. It refuses more than 200, an empty
+list, and a malformed line with exit code 2 before any call. The table prints
+one row per person, in the order given: the person, the outcome and a
+detail. The outcome is `added`, `already_enrolled` (the detail names the other
+campaign and its status), `campaign_full`, `opted_out` or `not_found`. One
+refused person never blocks the others. A person already in this campaign
+answers `added` with the same enrollment. An archived campaign returns exit
+code 5 (`campaign_archived`); an unknown campaign returns exit code 3. When a
+request fails, the run stops: the table shows the people already sent and
+marks the rest `not_sent`. Running it again is safe.
 
 #### `ac agentic outreach enrollments list`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign-id` | str | yes | The campaign |
-| `--state` | `active`, `awaiting_approval`, `needs_contact_data` or `ended` | no | Only the enrollments in this state; default all |
+| `--status` | `active`, `needs_contact_data` or `ended` | no | Only the enrollments in this status; default all |
 | `--search` | str | no | Only the people whose name holds this text, in any case; at most 100 characters |
 | `--limit` | int | no | How many enrollments, 1 to 200; default 100 |
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
 | `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
-Each row is the enrollment plus `person_name`, `email` and `last_decision`
-(`{id, action_type, outcome, executed_at, created_at}`, or null before the
-first decision). `email` is the email of the person row; a Run can choose
-another address.
+Each row is the enrollment plus `person_name`, `email`, `last_decision`
+(`{id, type, status, created_at}`, or null before the first decision) and
+`awaiting_approval` (true while a proposed action of the enrollment waits in
+the Review queue). `type` is `email`, `linkedin_connection`,
+`linkedin_message`, `wait`, `stop` or null. `status` is `saved`, `invalid`,
+`error` or `discarded`. The Last action column shows the type and the status.
+`email` is the email of the person row; a Run can choose another address.
 
 #### `ac agentic outreach enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw enrollment JSON: `state`, `ended_reason`, `next_due_at`, `active_run_id`, `version` |
+| `--json` | flag | no | Raw enrollment JSON: `status`, `ended_reason`, `next_check_at`, `touch_count`, `context_version` |
 
 #### `ac agentic outreach enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--limit` | int | no | The most decisions, emails and activities, each, 1 to 100; default 50. The newest rows of each kind are kept. |
-| `--order` | `desc` or `asc` | no | `desc` (default) lists the newest item first, `asc` the oldest |
-| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, ...}]`. Each item has `kind` (`enrolled`, `decision`, `email`, `activity`, `ended`) and `at`. |
+| `--limit` | int | no | The most rows of each kind, 1 to 100; default 50. The newest rows of each kind are kept. |
+| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, id, ...}]`. `kind` is `enrolled`, `decision`, `action`, `email`, `linkedin_message` or `ended`. |
 
-An item with no time is last in both orders. Exit code 3 for an enrollment of
-another organization.
+The list is newest first, with the `id` as the tie; at the same time `ended`
+comes before `enrolled`. An item with no time is last. `enrolled` and `ended`
+carry the enrollment id. Per kind:
+
+- `decision`: `type`, `status`, `trigger_reason`, `rationale`, `objective`,
+  `followup_days`, `goal_met`, `failure_reason`.
+- `action`: `type`, `status`, `decision_id`, `communication_id`,
+  `reject_reason`.
+- `email`: `direction`, `subject`, `status`, `text` (500 chars at most).
+- `linkedin_message`: `direction`, `text` (500 chars at most).
+- `ended`: `ended_reason`.
+
+The table shows a short line per item. No CRM activity is in the list. Exit
+code 3 for an enrollment of another organization.
 
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |
@@ -2939,7 +3131,7 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
-| `--json` | flag | no | Raw enrollment JSON: `state` is `ended`, `ended_reason` is `manual`, `ended_by` is the caller |
+| `--json` | flag | no | Raw enrollment JSON: `status` is `ended`, `ended_reason` is `user_exit`, `ended_by` is the caller |
 
 An enrollment that ended for another reason returns exit code 5
 (`enrollment_ended`).
@@ -2955,60 +3147,78 @@ member). A repeated `stop` keeps the first stop time.
 
 ### Agentic Outreach Drafts
 
+`list`, `get`, `approve` and `reject` take the proposed action by action ID.
+
 #### `ac agentic outreach drafts list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--campaign-id` | str | None | Only the drafts of this campaign |
-| `--limit` | int | 50 | How many drafts, 1 to 100 |
-| `--offset` | int | 0 | How many drafts to skip first |
+| `--status` | `pending_approval`, `approved`, `sending`, `executed`, `rejected`, `invalidated` or `failed` | None (the API reads `pending_approval`) | Only the actions in this status |
+| `--campaign-id` | str | None | Only the actions of this campaign |
+| `--type` | `email`, `linkedin_connection` or `linkedin_message` | None | Only the actions of this type |
+| `--limit` | int | 50 | How many actions, 1 to 100 |
+| `--offset` | int | 0 | How many actions to skip first |
 | `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
-Lists the drafts that wait for review, newest first. The first column is the
-draft ID, which is the decision ID every other command takes. Each row adds
-`person_name`, `campaign_name`, `campaign_status` (JSON only, not a column) and
-`expires_at`. The list
-holds `proposed` drafts and `approved` drafts that wait for the send; the
-`outcome` field tells them apart. `expires_at` is when the pending approval
-expires, and it is null for an approved draft. Columns: Draft ID, Person
-(`person_name`, or the address when the person is gone), Subject (`subject`), Outcome
-(`outcome`), Campaign (`campaign_name`), Expires (`expires_at`). The title reads "Outreach drafts
-<from>-<to> of <total>". In table output a last line prints the next `--offset` while
-`has_more` is true. With `--json`, the next offset is `offset` plus the length of `data`.
+Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
+LinkedIn message), oldest first, with the id as the tie. The first column is
+the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
+the address when the person has no name), Type, To, Campaign (`campaign.name`),
+Status, Created. `to` is the current email address, or the current LinkedIn profile URL
+for a LinkedIn action, read fresh. The title reads "Outreach actions
+<from>-<to> of <total>"; `total` is the queue count. In table output a last line
+prints the next `--offset` while `has_more` is true. With `--json`, the next
+offset is `offset` plus the length of `data`.
 
-#### `ac agentic outreach drafts get <draft-id>`
+#### `ac agentic outreach drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`} or null, `draft_payload` |
 
-#### `ac agentic outreach drafts save <draft-id>`
+Reads one action by its action ID: the same item as `list`. The detail shows
+the decision ID, the person, the company, the campaign and its status, `to`,
+the `rationale` as Why and the `objective`. Then it prints the inbound message
+the draft answers (Replying to, cut at 500 characters, a reply only) and the
+draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
+LinkedIn message. A deleted person keeps the item, with a null name and a null
+`to`. An action of another organization returns exit code 3.
+
+#### `ac agentic outreach drafts approve <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--subject` | str | no | New subject |
-| `--body` | str | no | New plain text body |
-| `--body-file` | path | no | Read the new body from a file. Not with `--body`. |
-| `--json` | flag | no | Raw review JSON: `version`, `content_hash`, `draft`, `reviewable`, `locked` |
+| `--subject` | str | no | New email subject |
+| `--body` | str | no | New plain text email body |
+| `--body-file` | path | no | Read the new email body from a file |
+| `--note` | str | no | New LinkedIn connection note |
+| `--message` | str | no | New LinkedIn message. Give one of `--body`, `--body-file` and `--message`. |
+| `--json` | flag | no | Raw item JSON, the same shape as `get`: `status` is `approved` on success |
 
-Give at least one field. A save changes the `content_hash` and keeps the
-`version`. After the approval the text is locked, and a save returns exit
-code 5 (`draft_locked`).
+With no edit flag the draft is approved as it is, and no payload is sent. An
+edit flag reads the action first and sends the draft with the edited fields
+over it, so `--subject` alone keeps the body. A flag the action type does not
+take returns exit code 2 before the approve: `--subject` fits a new email only,
+`--body` and `--body-file` an email, `--note` a LinkedIn note, `--message` a
+LinkedIn message. The API checks the edit, reads the address now, and freezes
+the text, the address and their hash. Nothing sends until the Execution
+workflow picks the action up.
 
-#### `ac agentic outreach drafts approve <draft-id>`
+A retry of the same approve returns exit code 0 and the same action. An edit
+that fails the draft check returns exit code 2 with the `code`
+(`draft_empty`, `draft_too_long`, `draft_placeholder`, `draft_link_in_note`)
+and the `field`. Exit code 5 carries `code`: `enrollment_ended`,
+`campaign_not_active`, `organization_stopped`, `recipient_missing` (the person
+has no email address or LinkedIn URL now), or `action_not_pending` (the action
+left the queue, or a retry changed the edit or the address). An impersonated
+session returns exit code 4.
+
+#### `ac agentic outreach drafts reject <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--version` | int | yes | The `version` that `get` or `save` printed |
-| `--content-hash` | str | yes | The 64 character `content_hash` of the text you read |
-| `--json` | flag | no | Raw review JSON: `outcome` is `approved` and `locked` is `true` on success |
+| `--then` | `regenerate` or `stop` | yes | Ask for one new draft now, or end the enrollment |
+| `--reason` | str, 1 to 1000 chars | for `regenerate` | What the next draft must change. The next decision reads it. Optional for `stop`. |
+| `--yes` / `-y` | flag | no | Skip the question that `--then stop` asks. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw action JSON, now `rejected` |
 
-A mismatch, a second reviewer, a paused campaign or a stopped organization
-returns exit code 5, and `--json` carries the reason in `context.code`.
-
-#### `ac agentic outreach drafts reject <draft-id>`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--mode` | `regenerate`, `skip` or `exit` | yes | Plan a new email now, send nothing and look later, or end the enrollment |
-| `--note` | str | no | Feedback that later Runs read |
-| `--yes` / `-y` | flag | no | Skip the question that `--mode exit` asks. `AC_YES=1` does the same. |
-| `--json` | flag | no | Raw review JSON: `outcome` is `rejected` and `reviewer_note` holds the note |
+Exit code 5 with `code`: `enrollment_ended` or `action_not_pending`. A retry of the same reject returns the same action.
 
 ### Agentic Conversations
 
