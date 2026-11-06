@@ -1697,6 +1697,28 @@
           "text": "`ac admin subscription-plans update` `ac admin entitlement-grants create`"
         }
       ]
+    },
+    {
+      "id": 136,
+      "prompt": "Show me the people in my inbox who are waiting for a reply on LinkedIn, then reply to thread 6a1f0c2e-1111-4222-8333-444455556666 on LinkedIn with: Tuesday after 2pm works for me.",
+      "expected_output": "Runs `ac inbox list --needs-reply --channel linkedin`, then `ac inbox reply 6a1f0c2e-1111-4222-8333-444455556666 --channel linkedin --body \"Tuesday after 2pm works for me.\"`. It does not use the Sequences inbox or a CRM email command.",
+      "assertions": [
+        {
+          "name": "lists the people who wait on LinkedIn",
+          "type": "command_matches",
+          "text": "`ac inbox list` `--needs-reply` `--channel[ =]linkedin`"
+        },
+        {
+          "name": "replies on LinkedIn in the inbox",
+          "type": "command_matches",
+          "text": "`ac inbox reply 6a1f0c2e-1111-4222-8333-444455556666` `--channel[ =]linkedin`"
+        },
+        {
+          "name": "not the Sequences inbox or CRM email",
+          "type": "command_forbidden",
+          "text": "`ac envoy inbox reply` `ac crm comms` `ac nylas send`"
+        }
+      ]
     }
   ]
 }

@@ -4,7 +4,7 @@ Complete flag reference for all `ac` CLI commands. All commands require
 authentication (`ac login`) unless noted otherwise.
 
 For domain-scoped quick references (just the common commands per domain), see:
-- [`crm.md`](./crm.md) · [`envoy.md`](./envoy.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
+- [`crm.md`](./crm.md) · [`envoy.md`](./envoy.md) · [`inbox.md`](./inbox.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
 
 ## Table of Contents
 
@@ -1197,6 +1197,25 @@ Returns sales signals for a specific recipient.
 Returns total inbox thread count.
 
 ---
+
+
+## Inbox (`ac inbox`)
+
+| Command | Flags |
+|---|---|
+| `ac inbox list` | `--view inbox\|done` · `--owner me\|all\|<user-id>` · `--channel email\|linkedin` (repeat) · `--needs-reply` · `--unread` · `--intent interested\|not_interested\|out_of_office\|none` (repeat) · `--kind message\|connection\|engagement` (repeat) · `--sequence any\|none\|<id>` · `--since <date>` · `--q <text>` · `--limit 1-100` · `--offset` · `--json` |
+| `ac inbox messages` | `--view sent\|drafts\|scheduled` (required) · `--owner` · `--channel` · `--limit` · `--offset` · `--json` |
+| `ac inbox resolve` | one of `--message-id` · `--comm-id` · `--contact-id` · `--json` |
+| `ac inbox show <thread-id>` | `--json` |
+| `ac inbox read <thread-id>` / `unread <thread-id>` | `--json` |
+| `ac inbox status <thread-id>` | `--status open\|done\|snoozed` · `--until <iso>` (snoozed) · `--json` |
+| `ac inbox intent <thread-id>` | `--intent interested\|not_interested\|out_of_office\|none` · `--json` |
+| `ac inbox bulk` | `--ids <id>,<id>` · `--action done\|read\|unread` · `--json` |
+| `ac inbox reply <thread-id>` | `--channel email\|linkedin` · `--body` · `--subject` · `--cc` · `--bcc` · `--send-at <iso>` (email) · `--json` |
+| `ac inbox send` | `--contact-id` · `--channel email\|linkedin` · `--body` · `--subject` (email) · `--cc` · `--bcc` · `--send-at` (email) · `--json` |
+| `ac inbox ai-draft <thread-id>` | `--channel email\|linkedin` · `--regenerate` · `--wait` · `--json` |
+| `ac inbox ask-to-reply <thread-id>` | `--json` |
+| `ac inbox counts` | `--json` |
 
 ## Workflows
 
