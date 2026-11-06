@@ -17,7 +17,9 @@ description: >
 when_to_use: >
   Fires on: "ac"/"AgencyCore"; CRM verbs on companies/contacts/deals/activities;
   "draft/approve/reject email", "cold email"; "sequence", "Sequences", "Envoy", "Outreach", "playbook",
-  "battlecard", "signal"; "schedule workflow", "cron", "preset", "discovered",
+  "battlecard", "signal"; "inbox", "needs a reply", "waiting for a reply",
+  "reply on LinkedIn", "reply by email", "AI draft a reply", "mark done";
+  "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
   "knowledge base", "upload PDF", "writing style",
