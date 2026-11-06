@@ -518,22 +518,30 @@ ac notifications read-all
 ac notifications preferences                       # List type/channel preferences
 ac notifications set-preference --type mention --channel email --enabled
 ac notifications set-preference --type mention --channel in_app --disabled
+ac notifications signals-settings                  # Minimum score and Signals saved searches
+ac notifications set-signals-settings --min-score 70
+ac notifications set-signals-settings --mute-search <saved-search-id> --unmute-search <saved-search-id>
 ```
 
 Channel enum: `in_app`, `email`.
+
+Signals notifications go to every member for every Signals saved search the member did not mute. They name the prospects with a new signal at or above the member's minimum score (0 to 100, default 50, shown as 5/10).
 
 ## Profiles
 
 ```bash
 ac profiles me                                    # View your profile
 ac profiles update [--first-name "Jane"] [--last-name "Smith"] [--bio "..."] \
-  [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"]
+  [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"] \
+  [--notification-email "alerts@example.com" | --clear-notification-email]
 ac profiles members [--limit 50] [--offset 0]     # List org members
 ac profiles set-organization <org-id>             # Switch active org (per-user)
 ac profiles set-password                          # Mark password as set (post-magic-link)
 ac profiles subscription                          # View current org subscription
 ac profiles usage                                 # Period usage per action (calls, tokens) and the credit balance
 ```
+
+> **"Send my notification emails somewhere else" → `ac profiles update --notification-email <address>`.** Every member can set it. It changes where notification emails and the daily digest go, not the login email.
 
 > **"Switch active organization" → `ac profiles set-organization <org-id>`**, NOT `ac env use` (env is local/staging/production) and NOT `ac admin orgs` (which manages org records, not user's active org).
 

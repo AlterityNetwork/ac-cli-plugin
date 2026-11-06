@@ -3708,7 +3708,7 @@ Returns processing status including chunk count and any error messages.
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-Returns the current user's profile details (name, email, job title, bio, superadmin status, organization).
+Returns the current user's profile details (name, email, notification email, job title, bio, superadmin status, organization).
 
 #### `ac profiles update`
 | Flag | Type | Description |
@@ -3719,9 +3719,11 @@ Returns the current user's profile details (name, email, job title, bio, superad
 | `--job-title` | str | Job title |
 | `--avatar-url` | str | Avatar URL |
 | `--email` | str | Email address |
+| `--notification-email` | str | Where notification emails and the daily digest go |
+| `--clear-notification-email` | flag | Send notification emails to the account email again |
 | `--json` | flag | Raw JSON output |
 
-At least one field is required.
+At least one field is required. `--notification-email` and `--clear-notification-email` cannot be used together.
 
 #### `ac profiles members`
 | Flag | Type | Default | Description |
@@ -3807,6 +3809,25 @@ List type/channel preferences.
 | `--channel` | enum (`in_app`\|`email`) | yes | Channel |
 | `--enabled` / `--disabled` | flag | yes | Enable or disable the channel |
 | `--json` | flag | no | Raw JSON output |
+
+#### `ac notifications signals-settings`
+Show your Signals notification settings: the minimum prospect score and each Signals saved search with whether it notifies you. Calls `GET /api/v1/notifications/signals-settings`.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output |
+
+#### `ac notifications set-signals-settings`
+Change your Signals notification settings. Calls `PUT /api/v1/notifications/signals-settings`. A flag you leave out keeps its value.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--min-score` | int (0-100) | Lowest prospect score that notifies you. 50 shows as 5/10 |
+| `--mute-search` | str (repeatable) | Saved search id to stop notifying on |
+| `--unmute-search` | str (repeatable) | Saved search id to notify on again |
+| `--json` | flag | Raw JSON output |
+
+At least one flag is required. An id that is not a Signals saved search of the organization exits 1.
 
 ---
 
