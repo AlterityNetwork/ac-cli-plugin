@@ -3106,8 +3106,9 @@ Each row is the enrollment plus `person_name`, `email`, `last_decision`
 (`{id, type, status, created_at}`, or null before the first decision) and
 `awaiting_approval` (true while a proposed action of the enrollment waits in
 the Review queue). `type` is `email`, `linkedin_connection`,
-`linkedin_message`, `wait`, `stop` or null. `status` is `saved`, `invalid`,
-`error` or `discarded`. The Last action column shows the type and the status.
+`linkedin_message`, `wait`, `stop`, `opt_out` or null. `status` is `saved`,
+`invalid`, `error` or `discarded`. The Last action column shows the type and
+the status.
 `email` is the email of the person row; a Run can choose another address.
 
 #### `ac agentic outreach enrollments get <enrollment-id>`
