@@ -141,11 +141,11 @@ the `people.signals` Runs in one page, and the title of each.
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
 `api` or `workflow_step`. A schedule starts `trigger` Runs.
 
-Each Run carries a `title`: the name a person gave the Run (`custom_title`),
-else the name of its saved search (`saved_search_name`). On a list that names
-`signals.search`, `people.signals`, or both, a Run with neither takes the first
-sales-signal criterion, the ICP, or the target-company text. Every other Run
-with neither answers `title: null`. `saved_search_id` is null for a manual
+Each Run carries a `title`: the name a person gave the Run (`custom_title`).
+On a list that names `signals.search`, `people.signals`, or both, a Run with no
+name takes the name of its saved search, else the first sales-signal
+criterion, the ICP, or the target-company text. Every other Run with no name
+answers `title: null`. `saved_search_id` is null for a manual
 search. `saved_search_name` is null for a manual search and for a saved search
 that was deleted.
 
