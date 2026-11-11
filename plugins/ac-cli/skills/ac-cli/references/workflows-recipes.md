@@ -18,10 +18,10 @@ ac crm engagement-dashboard --json | jq '{open_rate, click_rate, reply_rate}'
 ## Sequences: Manage inbox
 
 ```bash
-ac envoy inbox list --status open --json
-ac envoy inbox messages <thread-id>
-ac envoy inbox reply <thread-id> --body "Thanks for your interest!"
-ac envoy inbox complete <thread-id>
+ac sequences inbox list --status open --json
+ac sequences inbox messages <thread-id>
+ac sequences inbox reply <thread-id> --body "Thanks for your interest!"
+ac sequences inbox complete <thread-id>
 ```
 
 ## Workflows: Trigger and monitor a run

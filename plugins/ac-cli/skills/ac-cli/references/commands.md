@@ -4,7 +4,7 @@ Complete flag reference for all `ac` CLI commands. All commands require
 authentication (`ac login`) unless noted otherwise.
 
 For domain-scoped quick references (just the common commands per domain), see:
-- [`crm.md`](./crm.md) · [`envoy.md`](./envoy.md) · [`inbox.md`](./inbox.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
+- [`crm.md`](./crm.md) · [`sequences.md`](./sequences.md) · [`inbox.md`](./inbox.md) · [`workflows.md`](./workflows.md) · [`admin.md`](./admin.md) · [`platform.md`](./platform.md) · [`auth-env.md`](./auth-env.md) · [`workflows-recipes.md`](./workflows-recipes.md)
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Import](#import)
    - [Search & Dashboard](#search--dashboard)
    - [Engagement Dashboard](#engagement-dashboard)
-2. [Sequences (`ac envoy`)](#sequences-ac-envoy)
+2. [Sequences (`ac sequences`)](#sequences-ac-sequences)
    - [Sequences](#sequences)
    - [Steps](#steps)
    - [Recipients](#recipients)
@@ -650,7 +650,7 @@ before committing.
 
 ### Signals (buying signals)
 
-CRUD on standalone buying-signal records attached to companies/people. Distinct from `ac envoy signals <recipient-id>` which returns recipient-scoped sales signals from an active sequence.
+CRUD on standalone buying-signal records attached to companies/people. Distinct from `ac sequences signals <recipient-id>` which returns recipient-scoped sales signals from an active sequence.
 
 #### `ac crm signals list`
 | Flag | Type | Default | Description |
@@ -730,22 +730,22 @@ and status, and top clicked links.
 
 ---
 
-## Sequences (`ac envoy`)
+## Sequences (`ac sequences`)
 
 ### Sequences
 
-#### `ac envoy sequences list`
+#### `ac sequences sequences list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--status` | str | None | Filter by sequence status |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy sequences get <sequence-id>`
+#### `ac sequences sequences get <sequence-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy sequences create`
+#### `ac sequences sequences create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Sequence name |
@@ -758,41 +758,41 @@ and status, and top clicked links.
 | `--auto-enrich` / `--no-auto-enrich` | flag | no | Look up a recipient's missing email, phone or LinkedIn URL before a step that needs it. On by default |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences update <sequence-id>`
+#### `ac sequences sequences update <sequence-id>`
 Same optional flags as `create`. Only provided fields are updated.
 
-#### `ac envoy sequences delete <sequence-id>`
+#### `ac sequences sequences delete <sequence-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy sequences launch <sequence-id>`
+#### `ac sequences sequences launch <sequence-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--workflow-id` | str | yes | Workflow to use for execution |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences pause <sequence-id>`
+#### `ac sequences sequences pause <sequence-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Pauses a running sequence. No new steps will execute until resumed.
 
-#### `ac envoy sequences resume <sequence-id>`
+#### `ac sequences sequences resume <sequence-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--workflow-id` | str | yes | Workflow to use for resumed execution |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences duplicate <sequence-id>`
+#### `ac sequences sequences duplicate <sequence-id>`
 Duplicate a sequence (copies steps + recipients).
 
-#### `ac envoy sequences archive <sequence-id>` / `restore <sequence-id>`
+#### `ac sequences sequences archive <sequence-id>` / `restore <sequence-id>`
 Soft-archive or restore. Archived sequences won't run.
 
-#### `ac envoy sequences impact-preview <sequence-id>`
+#### `ac sequences sequences impact-preview <sequence-id>`
 Preview affected recipients/drafts before deleting steps.
 
 | Flag | Type | Required | Description |
@@ -800,7 +800,7 @@ Preview affected recipients/drafts before deleting steps.
 | `--step-id` | str (repeatable) | yes | Step IDs about to delete |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences bulk-remove-recipients <sequence-id>`
+#### `ac sequences sequences bulk-remove-recipients <sequence-id>`
 Soft-delete a batch of recipients.
 
 | Flag | Type | Required | Description |
@@ -808,10 +808,10 @@ Soft-delete a batch of recipients.
 | `--recipient-id` | str (repeatable) | yes | Recipient IDs to remove |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences classify-step-subtype <instruction>`
+#### `ac sequences sequences classify-step-subtype <instruction>`
 Classify a step subtype from instruction text. Returns `{subtype}`.
 
-#### `ac envoy sequences outputs <sequence-id>`
+#### `ac sequences sequences outputs <sequence-id>`
 List sequence outputs (generated drafts/results).
 
 | Flag | Type | Default | Description |
@@ -820,7 +820,7 @@ List sequence outputs (generated drafts/results).
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy sequences generate-drafts <sequence-id> <step-id>`
+#### `ac sequences sequences generate-drafts <sequence-id> <step-id>`
 Trigger draft generation for a step.
 
 | Flag | Type | Required | Description |
@@ -828,7 +828,7 @@ Trigger draft generation for a step.
 | `--workflow-id` | str | yes | Workflow under which drafts run |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy sequences for-prospect <prospect-id>`
+#### `ac sequences sequences for-prospect <prospect-id>`
 Lists sequences that include the given prospect (person ID).
 
 | Flag | Type | Description |
@@ -839,7 +839,7 @@ Lists sequences that include the given prospect (person ID).
 
 ### Steps
 
-#### `ac envoy steps create <sequence-id>`
+#### `ac sequences steps create <sequence-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--type` | str | yes | Step type (message, delay, task) |
@@ -850,7 +850,7 @@ Lists sequences that include the given prospect (person ID).
 | `--delay-unit` | str | no | Delay unit (days, hours, minutes) |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy steps update <sequence-id> <step-id>`
+#### `ac sequences steps update <sequence-id> <step-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--message-template` | str | Update email template |
@@ -859,19 +859,19 @@ Lists sequences that include the given prospect (person ID).
 | `--delay-unit` | str | Update delay unit |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy steps delete <sequence-id> <step-id>`
+#### `ac sequences steps delete <sequence-id> <step-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy steps reorder <sequence-id>`
+#### `ac sequences steps reorder <sequence-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--step-ids` | str | yes | Comma-separated step IDs in desired order |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy steps stats <sequence-id>`
+#### `ac sequences steps stats <sequence-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
@@ -882,14 +882,14 @@ Shows execution statistics for each step in the sequence.
 
 ### Recipients
 
-#### `ac envoy recipients list <sequence-id>`
+#### `ac sequences recipients list <sequence-id>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--status` | str | None | Filter by recipient status |
 | `--step-id` | str | None | Filter by current step |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy recipients add <sequence-id>`
+#### `ac sequences recipients add <sequence-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--prospect-ids` / `-p` | str | no | Comma-separated prospect IDs (mutually exclusive with --crm-list-id and --source) |
@@ -904,7 +904,7 @@ One of `--prospect-ids`, `--crm-list-id`, or `--source` is required. Returns
 reactivated with `--reenroll` (or by confirming the prompt; `AC_YES=1`
 auto-confirms).
 
-#### `ac envoy recipients history <sequence-id> <recipient-id>`
+#### `ac sequences recipients history <sequence-id> <recipient-id>`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--json` | flag | off | Raw JSON output |
@@ -932,7 +932,7 @@ Step `status` values:
 | `skipped` | The step was skipped; `skip_reason` holds the reason |
 | `failed` | The step failed |
 
-#### `ac envoy recipients remove <sequence-id> <recipient-id>`
+#### `ac sequences recipients remove <sequence-id> <recipient-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
@@ -942,7 +942,7 @@ Step `status` values:
 
 ### Outbox
 
-#### `ac envoy outbox pending`
+#### `ac sequences outbox pending`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--sequence-id` | str | None | Filter by sequence |
@@ -953,7 +953,7 @@ Step `status` values:
 
 Lists drafts awaiting approval.
 
-#### `ac envoy outbox sent`
+#### `ac sequences outbox sent`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--sequence-id` | str | None | Filter by sequence |
@@ -962,7 +962,7 @@ Lists drafts awaiting approval.
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy outbox step-drafts`
+#### `ac sequences outbox step-drafts`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--sequence-id` | str | yes | Sequence ID |
@@ -973,14 +973,14 @@ Lists drafts awaiting approval.
 
 Lists all drafts for a specific step.
 
-#### `ac envoy outbox update-draft <draft-id>`
+#### `ac sequences outbox update-draft <draft-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--subject` | str | New subject line |
 | `--body` | str | New email body |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy outbox approve <draft-id>`
+#### `ac sequences outbox approve <draft-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--subject` | str | Override subject before sending |
@@ -989,14 +989,14 @@ Lists all drafts for a specific step.
 
 Approves and sends the draft.
 
-#### `ac envoy outbox reject <draft-id>`
+#### `ac sequences outbox reject <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--action` | str | yes | What to do next: `regenerate`, `remove_recipient`, `skip_send`, or `manual_edit` |
 | `--reason` | str | no | Reason for rejection (used as AI context for regeneration) |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy outbox regenerate <draft-id>`
+#### `ac sequences outbox regenerate <draft-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--instruction` | str | no | Feedback for the new draft |
@@ -1009,7 +1009,7 @@ Approves and sends the draft.
 
 ### Inbox
 
-#### `ac envoy inbox list`
+#### `ac sequences inbox list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--status` | str | None | Filter by thread status |
@@ -1020,68 +1020,68 @@ Approves and sends the draft.
 | `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy inbox messages <thread-id>`
+#### `ac sequences inbox messages <thread-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Returns all messages in a thread.
 
-#### `ac envoy inbox archive <thread-id>`
+#### `ac sequences inbox archive <thread-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy inbox unarchive <thread-id>`
+#### `ac sequences inbox unarchive <thread-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy inbox assign <thread-id>`
+#### `ac sequences inbox assign <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--user-id` | str | yes | User ID to assign the thread to |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy inbox snooze <thread-id>`
+#### `ac sequences inbox snooze <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--until` | str | yes | ISO datetime to snooze until (e.g. 2026-04-01T09:00:00) |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy inbox complete <thread-id>`
+#### `ac sequences inbox complete <thread-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Marks the thread as complete.
 
-#### `ac envoy inbox mark-read <thread-id>`
+#### `ac sequences inbox mark-read <thread-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Marks every message of the thread as read by you. Other users keep their own read state.
 
-#### `ac envoy inbox update-status <thread-id>`
+#### `ac sequences inbox update-status <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--status` | str | yes | New thread status |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy inbox add-tags <thread-id>`
+#### `ac sequences inbox add-tags <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--tags` | str | yes | Comma-separated tags to add |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy inbox remove-tags <thread-id>`
+#### `ac sequences inbox remove-tags <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--tags` | str | yes | Comma-separated tags to remove |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy inbox reply <thread-id>`
+#### `ac sequences inbox reply <thread-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--body` | str | yes | Reply message body |
@@ -1092,19 +1092,19 @@ Marks every message of the thread as read by you. Other users keep their own rea
 
 ### Battlecards
 
-#### `ac envoy battlecards list`
+#### `ac sequences battlecards list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--query` / `-q` | str | None | Search by name or content |
 | `--limit` | int | None | Max results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy battlecards get <battlecard-id>`
+#### `ac sequences battlecards get <battlecard-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy battlecards create`
+#### `ac sequences battlecards create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Battlecard name |
@@ -1113,16 +1113,16 @@ Marks every message of the thread as read by you. Other users keep their own rea
 | `--status` | str | no | Battlecard status |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy battlecards update <battlecard-id>`
+#### `ac sequences battlecards update <battlecard-id>`
 Same optional flags as `create`. Only provided fields are updated.
 
-#### `ac envoy battlecards delete <battlecard-id>`
+#### `ac sequences battlecards delete <battlecard-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy battlecards duplicate <battlecard-id>`
+#### `ac sequences battlecards duplicate <battlecard-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
@@ -1133,19 +1133,19 @@ Creates a copy of the battlecard.
 
 ### Playbooks
 
-#### `ac envoy playbooks list`
+#### `ac sequences playbooks list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--query` / `-q` | str | None | Search by name or content |
 | `--limit` | int | None | Max results |
 | `--json` | flag | off | Raw JSON output |
 
-#### `ac envoy playbooks get <playbook-id>`
+#### `ac sequences playbooks get <playbook-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy playbooks create`
+#### `ac sequences playbooks create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Playbook name |
@@ -1155,16 +1155,16 @@ Creates a copy of the battlecard.
 | `--icp-id` | str | no | Target an ideal customer profile; repeat for several profiles |
 | `--json` | flag | no | Raw JSON output |
 
-#### `ac envoy playbooks update <playbook-id>`
+#### `ac sequences playbooks update <playbook-id>`
 Same optional flags as `create`. Only provided fields are updated.
 
-#### `ac envoy playbooks delete <playbook-id>`
+#### `ac sequences playbooks delete <playbook-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skip confirmation prompt |
 | `--json` | flag | Raw JSON output |
 
-#### `ac envoy playbooks duplicate <playbook-id>`
+#### `ac sequences playbooks duplicate <playbook-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
@@ -1175,21 +1175,21 @@ Creates a copy of the playbook.
 
 ### Dashboard, Signals & Inbox Count
 
-#### `ac envoy dashboard`
+#### `ac sequences dashboard`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Shows outreach dashboard statistics (sequences active, emails sent, replies, etc.).
 
-#### `ac envoy signals <recipient-id>`
+#### `ac sequences signals <recipient-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Returns sales signals for a specific recipient.
 
-#### `ac envoy inbox-count`
+#### `ac sequences inbox-count`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
@@ -2978,7 +2978,7 @@ subject person of a person prospect. The answer holds one result for each
 prospect: `status` is `promoted` with the `promotion` references, or `failed`
 with the `error` reason. A failed prospect does not stop the others. To enrol
 the promoted people, pass their `crm_person_id` values to
-`ac envoy recipients add`.
+`ac sequences recipients add`.
 
 #### `ac agentic prospects delete <prospect-id>`
 | Flag | Type | Required | Description |

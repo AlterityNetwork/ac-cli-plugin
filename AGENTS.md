@@ -24,11 +24,11 @@ inlined so Codex stays under its default project-instruction size limit.
 
 # AgencyCore CLI Plugin
 
-Claude Code marketplace plugin providing AgencyCore management skills (CRM, admin, envoy, platform, workflows) powered by the AgencyCore CLI (`ac`). Configuration-driven — no compiled code, just JSON metadata + Markdown skill definitions.
+Claude Code marketplace plugin providing AgencyCore management skills (CRM, admin, sequences, platform, workflows) powered by the AgencyCore CLI (`ac`). Configuration-driven — no compiled code, just JSON metadata + Markdown skill definitions.
 
 ## Critical Rules (Always Apply)
 
-1. **No application code**: This repo is JSON config + Markdown docs only — one unified skill covering CRM, admin, envoy, platform, and workflows. No TypeScript, no build step.
+1. **No application code**: This repo is JSON config + Markdown docs only — one unified skill covering CRM, admin, sequences, platform, and workflows. No TypeScript, no build step.
 2. **Version sync**: `plugin.json` and `marketplace.json` must always have the same version. The pre-commit hook handles this automatically.
 3. **Kebab-case names**: Plugin names must use kebab-case (e.g., `agencycore-cli`) to pass Cowork validation.
 4. **SKILL.md is the product**: The skill file is what Claude reads at runtime — keep it accurate, complete, and tested against the latest CLI.
@@ -46,7 +46,7 @@ plugins/ac-cli/
   .claude-plugin/
     plugin.json          → Plugin manifest (name, version, metadata)
   skills/
-    ac-cli/              → Unified skill (CRM, admin, envoy, platform, workflows)
+    ac-cli/              → Unified skill (CRM, admin, sequences, platform, workflows)
       SKILL.md           → Quick reference guide (≤ 500 lines)
       references/            → Per-domain quick refs + commands.md flag tables (ls to enumerate; roles in .claude/rules/02-skill-authoring.md)
       evals/
@@ -61,7 +61,7 @@ scripts/
 
 - **Marketplace registration**: `.claude-plugin/marketplace.json` defines the `agencycore-plugins` namespace and lists available plugins
 - **Plugin manifest**: `plugins/ac-cli/.claude-plugin/plugin.json` provides metadata for marketplace display
-- **Skill execution**: `SKILL.md` frontmatter defines trigger conditions and allowed tools (Bash only). The body is Claude's runtime guide for executing CRM, admin, envoy, platform, and workflow commands
+- **Skill execution**: `SKILL.md` frontmatter defines trigger conditions and allowed tools (Bash only). The body is Claude's runtime guide for executing CRM, admin, sequences, platform, and workflow commands
 - **CLI dependency**: All operations delegate to the `agencycore-cli` Python package (installed from PyPI at runtime)
 
 ## Versioning

@@ -76,6 +76,6 @@ Without `--wait` the command prints the draft id. The API answers the draft at
 
 ## Inbox or Sequences inbox
 
-`ac envoy inbox` is the Sequences inbox: sequence replies only. `ac inbox` holds
+`ac sequences inbox` is the Sequences inbox: sequence replies only. `ac inbox` holds
 every conversation with a CRM person. Use `ac inbox` unless the user names the
 Sequences inbox.

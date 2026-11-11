@@ -61,24 +61,24 @@
     {
       "id": 4,
       "prompt": "Add 3 prospects (IDs: p1, p2, p3) to our Q2 Enterprise outreach sequence (ID: seq-123).",
-      "expected_output": "Uses `ac envoy recipients add seq-123 --prospect-ids p1,p2,p3`.",
+      "expected_output": "Uses `ac sequences recipients add seq-123 --prospect-ids p1,p2,p3`.",
       "assertions": [
         {
           "name": "uses_prospect_ids_flag",
           "type": "command_matches",
-          "text": "`ac envoy recipients add seq-123` with `--prospect-ids p1,p2,p3` (NOT raw `--source` JSON)"
+          "text": "`ac sequences recipients add seq-123` with `--prospect-ids p1,p2,p3` (NOT raw `--source` JSON)"
         }
       ]
     },
     {
       "id": 74,
       "prompt": "Re-add prospect p1, who I previously removed, back into sequence seq-123 even though they were contacted before.",
-      "expected_output": "Uses `ac envoy recipients add seq-123 --prospect-ids p1 --reenroll` (or --force).",
+      "expected_output": "Uses `ac sequences recipients add seq-123 --prospect-ids p1 --reenroll` (or --force).",
       "assertions": [
         {
           "name": "uses_reenroll_flag",
           "type": "command_matches",
-          "text": "`ac envoy recipients add seq-123` with `--prospect-ids p1` and `--reenroll` (or `--force`) to reactivate a previously-removed prospect"
+          "text": "`ac sequences recipients add seq-123` with `--prospect-ids p1` and `--reenroll` (or `--force`) to reactivate a previously-removed prospect"
         }
       ]
     },
@@ -90,7 +90,7 @@
         {
           "name": "inbox_three_step_sequence",
           "type": "command_sequence",
-          "text": "Sequence: `ac envoy inbox list .*--status open`, `ac envoy inbox messages`, `ac envoy inbox reply .*--body`"
+          "text": "Sequence: `ac sequences inbox list .*--status open`, `ac sequences inbox messages`, `ac sequences inbox reply .*--body`"
         }
       ]
     },
@@ -252,7 +252,7 @@
         {
           "name": "creates_sequence",
           "type": "command_matches",
-          "text": "`ac envoy sequences create` with `--name .*Enterprise Q3`, `--writing-style-id style-abc`, `--playbook-id pb-123`"
+          "text": "`ac sequences sequences create` with `--name .*Enterprise Q3`, `--writing-style-id style-abc`, `--playbook-id pb-123`"
         },
         {
           "name": "three_steps_in_order",
@@ -262,7 +262,7 @@
         {
           "name": "launch_with_workflow",
           "type": "command_matches",
-          "text": "`ac envoy sequences launch` with `--workflow-id wf-999`"
+          "text": "`ac sequences sequences launch` with `--workflow-id wf-999`"
         }
       ]
     },
@@ -274,12 +274,12 @@
         {
           "name": "pending_first",
           "type": "command_sequence",
-          "text": "Sequence: `ac envoy outbox pending`, `ac envoy outbox (approve|reject)`"
+          "text": "Sequence: `ac sequences outbox pending`, `ac sequences outbox (approve|reject)`"
         },
         {
           "name": "reject_action_regenerate",
           "type": "command_matches",
-          "text": "`ac envoy outbox reject` with `--action regenerate` and `--reason` mentioning formal/tone"
+          "text": "`ac sequences outbox reject` with `--action regenerate` and `--reason` mentioning formal/tone"
         }
       ]
     },
@@ -640,12 +640,12 @@
     {
       "id": 46,
       "prompt": "Look up battlecards mentioning 'Salesforce'.",
-      "expected_output": "Runs `ac envoy battlecards list --query Salesforce`.",
+      "expected_output": "Runs `ac sequences battlecards list --query Salesforce`.",
       "assertions": [
         {
           "name": "battlecards_query",
           "type": "command_matches",
-          "text": "`ac envoy battlecards list` with `--query .*Salesforce`"
+          "text": "`ac sequences battlecards list` with `--query .*Salesforce`"
         }
       ]
     },
@@ -657,19 +657,19 @@
         {
           "name": "playbook_create_then_duplicate",
           "type": "command_sequence",
-          "text": "Sequence: `ac envoy playbooks create --name .Enterprise Outreach.`, `ac envoy playbooks duplicate`"
+          "text": "Sequence: `ac sequences playbooks create --name .Enterprise Outreach.`, `ac sequences playbooks duplicate`"
         }
       ]
     },
     {
       "id": 48,
       "prompt": "Show me sales signals for recipient r-123.",
-      "expected_output": "Runs `ac envoy signals r-123`.",
+      "expected_output": "Runs `ac sequences signals r-123`.",
       "assertions": [
         {
           "name": "signals_for_recipient",
           "type": "command_any",
-          "text": "Either `ac envoy signals r-123` (positional, preferred) OR `ac envoy signals.*--recipient-id r-123`"
+          "text": "Either `ac sequences signals r-123` (positional, preferred) OR `ac sequences signals.*--recipient-id r-123`"
         }
       ]
     },
@@ -681,19 +681,19 @@
         {
           "name": "pause_then_resume",
           "type": "command_sequence",
-          "text": "Sequence: `ac envoy sequences pause seq-77`, `ac envoy sequences resume seq-77 --workflow-id wf-99`"
+          "text": "Sequence: `ac sequences sequences pause seq-77`, `ac sequences sequences resume seq-77 --workflow-id wf-99`"
         }
       ]
     },
     {
       "id": 50,
       "prompt": "Before launching sequence seq-50, simulate the impact of removing step st-3.",
-      "expected_output": "Uses `ac envoy sequences impact-preview seq-50 --step-id st-3` before any launch.",
+      "expected_output": "Uses `ac sequences sequences impact-preview seq-50 --step-id st-3` before any launch.",
       "assertions": [
         {
           "name": "impact_preview_before_launch",
           "type": "command_matches",
-          "text": "`ac envoy sequences impact-preview seq-50 --step-id st-3`"
+          "text": "`ac sequences sequences impact-preview seq-50 --step-id st-3`"
         }
       ]
     },
@@ -895,24 +895,24 @@
     {
       "id": 68,
       "prompt": "Tell me how many threads are in my outreach inbox right now.",
-      "expected_output": "Runs `ac envoy inbox-count`.",
+      "expected_output": "Runs `ac sequences inbox-count`.",
       "assertions": [
         {
           "name": "inbox_count",
           "type": "command_matches",
-          "text": "`ac envoy inbox-count`"
+          "text": "`ac sequences inbox-count`"
         }
       ]
     },
     {
       "id": 69,
       "prompt": "Show the Outreach dashboard with overall outreach stats.",
-      "expected_output": "Runs `ac envoy dashboard`.",
+      "expected_output": "Runs `ac sequences dashboard`.",
       "assertions": [
         {
           "name": "envoy_dashboard",
           "type": "command_matches",
-          "text": "`ac envoy dashboard`"
+          "text": "`ac sequences dashboard`"
         }
       ]
     },
@@ -931,24 +931,24 @@
     {
       "id": 71,
       "prompt": "Generate the drafts for step st-2 of sequence seq-1 using workflow wf-9.",
-      "expected_output": "Runs `ac envoy sequences generate-drafts seq-1 st-2 --workflow-id wf-9`.",
+      "expected_output": "Runs `ac sequences sequences generate-drafts seq-1 st-2 --workflow-id wf-9`.",
       "assertions": [
         {
           "name": "sequences_generate_drafts",
           "type": "command_matches",
-          "text": "`ac envoy sequences generate-drafts seq-1 st-2` with `--workflow-id wf-9`"
+          "text": "`ac sequences sequences generate-drafts seq-1 st-2` with `--workflow-id wf-9`"
         }
       ]
     },
     {
       "id": 72,
       "prompt": "Archive the Q1 outreach sequence seq-99.",
-      "expected_output": "Runs `ac envoy sequences archive seq-99`.",
+      "expected_output": "Runs `ac sequences sequences archive seq-99`.",
       "assertions": [
         {
           "name": "sequences_archive",
           "type": "command_matches",
-          "text": "`ac envoy sequences archive seq-99`"
+          "text": "`ac sequences sequences archive seq-99`"
         }
       ]
     },
@@ -1310,7 +1310,7 @@
     {
       "id": 95,
       "prompt": "Show me the Envoy action a-77 that waits for review.",
-      "expected_output": "Reads the action with `ac agentic outreach drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac envoy outbox`.",
+      "expected_output": "Reads the action with `ac agentic outreach drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac sequences outbox`.",
       "assertions": [
         {
           "name": "reads_the_action",
@@ -1320,7 +1320,7 @@
         {
           "name": "not_the_platform_inbox",
           "type": "command_forbidden",
-          "text": "`ac agentic approvals` or `ac envoy outbox`"
+          "text": "`ac agentic approvals` or `ac sequences outbox`"
         }
       ]
     },
@@ -1578,12 +1578,12 @@
     {
       "id": 108,
       "prompt": "Mark the first thread in my outreach inbox as read.",
-      "expected_output": "Lists the Sequences inbox, then runs `ac envoy inbox mark-read` on the first thread id. Does not use `ac crm comms mark-read` or `ac notifications read`.",
+      "expected_output": "Lists the Sequences inbox, then runs `ac sequences inbox mark-read` on the first thread id. Does not use `ac crm comms mark-read` or `ac notifications read`.",
       "assertions": [
         {
           "name": "marks a Sequences inbox thread read",
           "type": "command_sequence",
-          "text": "Sequence: `ac envoy inbox list`, `ac envoy inbox mark-read`"
+          "text": "Sequence: `ac sequences inbox list`, `ac sequences inbox mark-read`"
         }
       ]
     },
@@ -1716,14 +1716,14 @@
         {
           "name": "not the Sequences inbox or CRM email",
           "type": "command_forbidden",
-          "text": "`ac envoy inbox reply` `ac crm comms` `ac nylas send`"
+          "text": "`ac sequences inbox reply` `ac crm comms` `ac nylas send`"
         }
       ]
     },
     {
       "id": 137,
       "prompt": "What drafts are waiting in my Envoy review queue?",
-      "expected_output": "Envoy is the agent app, so it runs `ac agentic outreach drafts list`. It does not use the Sequences outbox (`ac envoy outbox`), which is a different app.",
+      "expected_output": "Envoy is the agent app, so it runs `ac agentic outreach drafts list`. It does not use the Sequences outbox (`ac sequences outbox`), which is a different app.",
       "assertions": [
         {
           "name": "lists_the_envoy_review_queue",
@@ -1733,7 +1733,7 @@
         {
           "name": "not_the_sequences_outbox",
           "type": "command_forbidden",
-          "text": "`ac envoy outbox`"
+          "text": "`ac sequences outbox`"
         }
       ]
     }
