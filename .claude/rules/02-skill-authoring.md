@@ -50,7 +50,7 @@ The body is Claude's runtime guide. Target structure:
 
 - **`SKILL.md` ≤ 500 lines.** Anthropic's guidance is to keep the always-loaded skill body small; per-domain detail belongs in `references/`. Current target: ~350 lines.
 - **References ≤ 1 level deep from `SKILL.md`.** Do NOT chain references (SKILL → A → B). Reference files may link to each other for cross-reference, but the skill must not require multi-hop traversal.
-- One reference file per domain (`crm.md`, `envoy.md`, `workflows.md`, `admin.md`, `platform.md`, `auth-env.md`). The exhaustive flag table stays in `references/commands.md`.
+- One reference file per domain (`crm.md`, `sequences.md`, `workflows.md`, `admin.md`, `platform.md`, `auth-env.md`). The exhaustive flag table stays in `references/commands.md`.
 
 ## Rules for Editing SKILL.md
 
@@ -68,7 +68,7 @@ Layout and roles:
 |------|------|---------------|
 | `commands.md` | Exhaustive flag tables, all 220+ commands | CLI adds/removes/renames a flag |
 | `crm.md` | Quick reference for CRM commands (companies, people, deals, activities, comms, lists, import, search, dashboards) | CRM CLI surface changes |
-| `envoy.md` | Quick reference for outreach commands | Envoy CLI surface changes |
+| `sequences.md` | Quick reference for outreach commands | Sequences CLI surface changes |
 | `workflows.md` | Quick reference for workflow commands | Workflows CLI surface changes |
 | `admin.md` | Quick reference for admin commands (requires `superadmin`) | Admin CLI surface changes |
 | `platform.md` | Quick reference for files, apps, styles, Nylas, hooks, messaging, chat, resources, profiles | Platform CLI surface changes |

@@ -122,7 +122,7 @@ For the command list of a domain, **read the matching reference file** before co
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
 | Inbox (`ac inbox`) | one row per person for email and LinkedIn, timeline, done, read state, intent, reply, new message, AI draft, Sent/Drafts/Scheduled, badge counts | [`references/inbox.md`](references/inbox.md) |
-| Sequences (`ac envoy`; the old name is Outreach, and it is not Envoy) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
+| Sequences (`ac sequences`; the old name is Outreach, and it is not Envoy) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/sequences.md`](references/sequences.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, Envoy agent app campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
@@ -163,23 +163,23 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "who is low on credits" / "credit usage per organization" (admin) | `ac admin billing credit-usage [--attention]` | `ac profiles usage` (your own organization only) |
 | "daily email limit" / "send cap" for one organization (admin) | `ac admin limit-overrides set --org-id <id> --value <n>` · `list` · `clear` | `entitlement-grants` (keys, no numbers) · `subscription-plans update` (changes the plan for every organization on it) |
 | "credit balance" / "credits left" / "how many credits did we spend" | `ac profiles usage` (the Credits line; `--json` gives the `credits` block) | `ac admin ai-usage …` (token cost, not credits) · `ac admin credit-prices` (prices, not the balance) |
-| "reply to Ada" / "what needs a reply" / "inbox" (email and LinkedIn) | `ac inbox list --needs-reply` · `ac inbox show <thread-id>` · `ac inbox reply <thread-id> --channel email\|linkedin --body …` | `ac envoy inbox …` (sequence replies only) · `ac crm comms …` (raw email rows) |
-| "how many threads in the Sequences inbox" | `ac envoy inbox-count` | `ac inbox counts` is the badge of the whole inbox, not the Sequences tab |
-| "signals for recipient X" | `ac envoy signals X` (positional) | `ac envoy signals list --recipient-id` · `ac envoy signals for X` — neither exists |
-| "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac envoy signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
+| "reply to Ada" / "what needs a reply" / "inbox" (email and LinkedIn) | `ac inbox list --needs-reply` · `ac inbox show <thread-id>` · `ac inbox reply <thread-id> --channel email\|linkedin --body …` | `ac sequences inbox …` (sequence replies only) · `ac crm comms …` (raw email rows) |
+| "how many threads in the Sequences inbox" | `ac sequences inbox-count` | `ac inbox counts` is the badge of the whole inbox, not the Sequences tab |
+| "signals for recipient X" | `ac sequences signals X` (positional) | `ac sequences signals list --recipient-id` · `ac sequences signals for X` — neither exists |
+| "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac sequences signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
 | "delete 3 companies c1,c2,c3" | `ac crm companies bulk-delete --ids c1,c2,c3` | looping `ac crm companies delete` per-id — non-atomic and slower |
 | "remove 5 people from list L" | `ac crm lists bulk-remove-members L --member-type person --ids p1,p2,p3,p4,p5` | looping `ac crm lists remove-member` per-id |
 | "move people from list A to list B" | `ac crm lists bulk-move-members A --target-list-id B --member-type person --ids p1,p2` | composing `add-members` + `bulk-remove-members` (the move command is one call and reports duplicates) |
-| "sequences containing prospect P" | `ac envoy sequences for-prospect P` | `ac envoy sequences list \| grep` — does not filter by prospect |
+| "sequences containing prospect P" | `ac sequences sequences for-prospect P` | `ac sequences sequences list \| grep` — does not filter by prospect |
 | "hard delete / nuke company in DB" (super admin) | `ac admin crm hard-delete-company <id> --yes` | `ac crm companies delete` (soft-delete only, recoverable) |
-| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference / signals-settings / set-signals-settings) | `ac chat …` / Sequences inbox (`ac envoy inbox`): different surfaces |
+| "in-app notifications" / "mark all read" / "notification preferences" | `ac notifications …` (list / unread-count / read / read-all / preferences / set-preference / signals-settings / set-signals-settings) | `ac chat …` / Sequences inbox (`ac sequences inbox`): different surfaces |
 | "remember that I …" / "add to my memory" / "my standing instructions" | `ac settings memory add --text "…"` (`--applies-to email` for the email writer only); `list` / `edit` / `remove` | `ac settings dossier …` (a read-only summary of what the apps know, not your own memory lines) |
 | "what has the app learned from my edits" / "memory suggestions" | `ac settings memory suggestions list`; `accept <id>` (`--text` to change it) / `dismiss <id> --yes`; `refresh` reads the recent edits again | `ac settings memory list` (only the lines you already keep) |
 | "web chat conversation" / "AI chat thread" (user-facing) | `ac agentic conversations …` | `ac chat …` was removed; admin chat triage no longer exists |
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
 | "cache stats" / "cache hit rate" / "cache hit ratio" | `ac admin cache-stats` (top-level admin command) | `ac admin ai-usage summary` (token cache) is not the same — `cache-stats` covers platform cache, ai-usage covers Anthropic prompt cache |
-| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts; `ac agentic outreach drafts approve` for Envoy campaign drafts | three surfaces — match the user's context; `ac agentic approvals` refuses an Envoy draft (exit 5) |
+| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac sequences outbox approve` for sequence drafts; `ac agentic outreach drafts approve` for Envoy campaign drafts | three surfaces — match the user's context; `ac agentic approvals` refuses an Envoy draft (exit 5) |
 
 ## Co-required flags
 
@@ -195,8 +195,8 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac admin limit-overrides set` | `--org-id` AND `--value` |
 | `ac admin credit-prices create` | `--action-key` AND `--unit` AND `--credits` (`--effective-from` at least 60 seconds from now when given) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
-| `ac envoy steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
-| `ac envoy outbox reject` | `--action` (`regenerate`, `remove_recipient`, `skip_send`, or `manual_edit`) |
+| `ac sequences steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
+| `ac sequences outbox reject` | `--action` (`regenerate`, `remove_recipient`, `skip_send`, or `manual_edit`) |
 | `ac files images upload` | path AND `--category` |
 | `ac resources upload` | path AND `--name` |
 | `ac admin legal-docs create` | `--document-type` AND `--version` AND `--title` |
@@ -271,7 +271,7 @@ Before any irreversible mutation, prefer the preview/list command first.
 |----------|---------------|
 | `ac crm import commit --preview-id <id>` | `ac crm import preview --file <path>` |
 | `ac workflows schedules create ... --cron "..."` | `ac workflows schedules preview ... --cron "..." --count 5` |
-| `ac envoy sequences launch <id>` | `ac envoy sequences impact-preview <id> --step-id <id>` |
+| `ac sequences sequences launch <id>` | `ac sequences sequences impact-preview <id> --step-id <id>` |
 | `ac workflows run-people add-to-crm` | `ac workflows run-people company-match-preview` |
 | Any `delete` | `get` / `list` to confirm target id |
 
@@ -366,32 +366,32 @@ ac crm import commit --preview-id <id-from-preview>
 
 ```bash
 # 1. Create
-ac envoy sequences create --name "Q2 Enterprise" \
+ac sequences sequences create --name "Q2 Enterprise" \
   --writing-style-id <style-id> --playbook-id <playbook-id> --json
 
 # 2. Steps
-ac envoy steps create <sequence-id> --type message \
+ac sequences steps create <sequence-id> --type message \
   --prompt "Write a cold intro email" --step-order 1
-ac envoy steps create <sequence-id> --type delay \
+ac sequences steps create <sequence-id> --type delay \
   --delay-value 3 --delay-unit days --step-order 2
-ac envoy steps create <sequence-id> --type message \
+ac sequences steps create <sequence-id> --type message \
   --prompt "Write a follow-up" --step-order 3
 
-# 3. Recipients (re-adding someone previously removed needs --reenroll; see references/envoy.md)
-ac envoy recipients add <sequence-id> --prospect-ids id1,id2,id3
+# 3. Recipients (re-adding someone previously removed needs --reenroll; see references/sequences.md)
+ac sequences recipients add <sequence-id> --prospect-ids id1,id2,id3
 
 # 4. Launch
-ac envoy sequences launch <sequence-id> --workflow-id <workflow-id>
+ac sequences sequences launch <sequence-id> --workflow-id <workflow-id>
 ```
 
 ### Sequences: Review and approve drafts
 
 ```bash
-ac envoy outbox pending --json
-ac envoy outbox approve <draft-id>
+ac sequences outbox pending --json
+ac sequences outbox approve <draft-id>
 # OR
-ac envoy outbox reject <draft-id> --action regenerate --reason "Too formal"
-ac envoy outbox sent --json
+ac sequences outbox reject <draft-id> --action regenerate --reason "Too formal"
+ac sequences outbox sent --json
 ```
 
 ### Workflows: Schedule a recurring run

@@ -191,7 +191,7 @@ ac agentic outreach organization stop [--yes]
 
 These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
 CLI group keeps the name `ac agentic outreach`. They are not the legacy
-Sequences app (`ac envoy sequences`).
+Sequences app (`ac sequences sequences`).
 
 A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
 required goal, an optional description, the allowed channels, the touch and
@@ -266,7 +266,7 @@ ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "
 ```
 
 These commands review what an Envoy campaign drafted. They are not
-the legacy `ac envoy outbox` drafts.
+the legacy `ac sequences outbox` drafts.
 
 `list` and `get` read the Review queue: the proposed actions (an email, a
 LinkedIn note or a LinkedIn message). `list` reads the `pending_approval`

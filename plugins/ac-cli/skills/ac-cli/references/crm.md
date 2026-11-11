@@ -182,4 +182,4 @@ ac crm signals delete <signal-id> [--yes]
 
 `signal_type` enum: `hiring`, `tech_stack`, `funding`, `content`, `leadership`, `growth`, `competitor`, `compliance`, `event`, `news`, `product`, `expansion`, `partnership`.
 
-> **`crm signals` vs `envoy signals`**: `ac crm signals` is the CRM signals store (CRUD on standalone signal records attached to companies/people). `ac envoy signals <recipient-id>` returns sales signals for a sequence recipient. Different APIs — do not conflate.
+> **`crm signals` vs `sequences signals`**: `ac crm signals` is the CRM signals store (CRUD on standalone signal records attached to companies/people). `ac sequences signals <recipient-id>` returns sales signals for a sequence recipient. Different APIs — do not conflate.
