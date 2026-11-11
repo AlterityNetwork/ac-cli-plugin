@@ -9,16 +9,17 @@ description: >
   organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
   usage, cross-org Sonar (legacy)/Headhunter (legacy) searches, legal docs, subscriptions);
   platform (file/image upload, knowledge base PDF resources, apps,
-  agentic saved searches, prospect review, web chat conversations, writing styles, Nylas email, profiles,
+  agentic saved searches, prospect review, Envoy agent campaigns, web chat conversations, writing styles, Nylas email, profiles,
   environment switching). Use when user mentions "ac"/"AgencyCore", any record
   (deal, contact, sequence, draft, queue), wants to draft a cold email, schedule
   a workflow, upload a PDF to the knowledge base, install an app, switch envs,
   check queue health, onboard a customer, or script AgencyCore with JSON+jq.
 when_to_use: >
   Fires on: "ac"/"AgencyCore"; CRM verbs on companies/contacts/deals/activities;
-  "draft/approve/reject email", "cold email"; "sequence", "Sequences", "Envoy", "Outreach", "playbook",
+  "draft/approve/reject email", "cold email"; "sequence", "Sequences", "Outreach" (the old name of Sequences), "playbook",
   "battlecard", "signal"; "inbox", "needs a reply", "waiting for a reply",
   "reply on LinkedIn", "reply by email", "AI draft a reply", "mark done";
+  "Envoy", "Envoy campaign", "enrollment", "Review queue";
   "schedule workflow", "cron", "preset", "discovered",
   "csv parse"; admin ops on users/orgs/queues/onboarding/usage/searches/legal/
   subscriptions; "saved search", "prospect review", "watch prospect", "dismiss prospect",
@@ -121,10 +122,10 @@ For the command list of a domain, **read the matching reference file** before co
 |--------|--------|-----------|
 | CRM | companies, people, deals, activities, communications, lists, import, search, dashboards, signals (buying signals) | [`references/crm.md`](references/crm.md) |
 | Inbox (`ac inbox`) | one row per person for email and LinkedIn, timeline, done, read state, intent, reply, new message, AI draft, Sent/Drafts/Scheduled, badge counts | [`references/inbox.md`](references/inbox.md) |
-| Sequences (`ac envoy`) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
+| Sequences (`ac envoy`; the old name is Outreach, and it is not Envoy) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/envoy.md`](references/envoy.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
 | Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
-| Platform | agentic saved searches, prospect review, agentic Outreach campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
+| Platform | agentic saved searches, prospect review, Envoy agent app campaigns, enrollments, the organization stop and email drafts (`ac agentic outreach campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Agentic Capabilities and Runs | Start stable product IDs; start one definition; read Run identity, detail and children on agentic-platform | [`references/agentic-runs.md`](references/agentic-runs.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
@@ -178,7 +179,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "switch environment" (deployment) | `ac env use staging\|production\|local` then `ac login` | not the same as switching active org (above) |
 | "platform-activity sort by activity" | `--sort total_events` (exact string) | `--sort event_count` / `--sort events` / `--sort activity` |
 | "cache stats" / "cache hit rate" / "cache hit ratio" | `ac admin cache-stats` (top-level admin command) | `ac admin ai-usage summary` (token cache) is not the same — `cache-stats` covers platform cache, ai-usage covers Anthropic prompt cache |
-| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts; `ac agentic outreach drafts approve` for agentic Outreach campaign drafts | three surfaces — match the user's context; `ac agentic approvals` refuses an agentic Outreach draft (exit 5) |
+| "approve email draft" (CRM-side) | `ac crm comms approve` for CRM-side awaiting_approval; `ac envoy outbox approve` for sequence drafts; `ac agentic outreach drafts approve` for Envoy campaign drafts | three surfaces — match the user's context; `ac agentic approvals` refuses an Envoy draft (exit 5) |
 
 ## Co-required flags
 
