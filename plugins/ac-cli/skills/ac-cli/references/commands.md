@@ -677,7 +677,7 @@ CRUD on standalone buying-signal records attached to companies/people. Distinct 
 | `--source-url` | str | no | Source URL |
 | `--snippet` | str | no | Source snippet |
 | `--workflow-run-id` | str | no | Originating workflow run |
-| `--source-agent` | str | no | `sonar` / `sequences` / `manual` (default `manual`) |
+| `--source-agent` | str | no | `sonar` / `envoy` / `manual` (default `manual`) |
 | `--attach-score` | int | no | Relevance score 0-100 |
 | `--json` | flag | no | Output raw JSON |
 
