@@ -918,7 +918,7 @@
     },
     {
       "id": 70,
-      "prompt": "List my Outreach campaigns.",
+      "prompt": "List my Envoy campaigns.",
       "expected_output": "Runs `ac agentic outreach campaigns list`.",
       "assertions": [
         {
@@ -1309,7 +1309,7 @@
     },
     {
       "id": 95,
-      "prompt": "Show me the agentic Outreach action a-77 that waits for review.",
+      "prompt": "Show me the Envoy action a-77 that waits for review.",
       "expected_output": "Reads the action with `ac agentic outreach drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac envoy outbox`.",
       "assertions": [
         {
@@ -1326,7 +1326,7 @@
     },
     {
       "id": 96,
-      "prompt": "The agentic Outreach action a-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
+      "prompt": "The Envoy action a-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
       "expected_output": "Edits and approves in one command: `ac agentic outreach drafts approve a-78 --body \"Hi Jane, quick question about Q4.\"`. No v2 save and no version or hash flags.",
       "assertions": [
         {
@@ -1717,6 +1717,23 @@
           "name": "not the Sequences inbox or CRM email",
           "type": "command_forbidden",
           "text": "`ac envoy inbox reply` `ac crm comms` `ac nylas send`"
+        }
+      ]
+    },
+    {
+      "id": 137,
+      "prompt": "What drafts are waiting in my Envoy review queue?",
+      "expected_output": "Envoy is the agent app, so it runs `ac agentic outreach drafts list`. It does not use the Sequences outbox (`ac envoy outbox`), which is a different app.",
+      "assertions": [
+        {
+          "name": "lists_the_envoy_review_queue",
+          "type": "command_matches",
+          "text": "`ac agentic outreach drafts list`"
+        },
+        {
+          "name": "not_the_sequences_outbox",
+          "type": "command_forbidden",
+          "text": "`ac envoy outbox`"
         }
       ]
     }

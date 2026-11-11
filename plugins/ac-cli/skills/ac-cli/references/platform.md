@@ -169,7 +169,7 @@ person to `prospect`. It moves a row at the `identified` stage, and a person
 that holds no stage. A qualified lead or a customer keeps the stage it holds.
 A company always holds a stage, so only a person can hold none.
 
-## Agentic Outreach Campaigns
+## Envoy Campaigns
 
 ```bash
 ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
@@ -189,8 +189,9 @@ ac agentic outreach organization status|resume
 ac agentic outreach organization stop [--yes]
 ```
 
-These commands run the agentic Outreach campaigns. They are not the legacy
-`ac envoy sequences`.
+These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
+CLI group keeps the name `ac agentic outreach`. They are not the legacy
+Sequences app (`ac envoy sequences`).
 
 A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
 required goal, an optional description, the allowed channels, the touch and
@@ -235,7 +236,7 @@ the person, the email of the person row, the state and the last decision
 in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
-`enrollments timeline` lists the Outreach items of one enrollment, newest
+`enrollments timeline` lists the Envoy items of one enrollment, newest
 first: the start, each decision, each proposed action, the thread emails (a
 reply shows as an `inbound` email), the LinkedIn messages, and the end. It
 holds no CRM activity; read those with `ac crm activities`. To merge it with
@@ -251,11 +252,11 @@ organization stopped, or the enrollment ended. `enrollments exit` ends the
 enrollment as `user_exit`,
 records the caller in `ended_by`. A draft that waits for review is not sent.
 
-`organization stop` stops Outreach for every campaign of the organization,
+`organization stop` stops Envoy for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
 member gets exit code 4.
 
-## Agentic Outreach Drafts
+## Envoy Drafts
 
 ```bash
 ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
@@ -264,7 +265,7 @@ ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body
 ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
 ```
 
-These commands review what an agentic Outreach campaign drafted. They are not
+These commands review what an Envoy campaign drafted. They are not
 the legacy `ac envoy outbox` drafts.
 
 `list` and `get` read the Review queue: the proposed actions (an email, a
@@ -294,7 +295,7 @@ hash; a retry of the same approve is safe and returns the same action.
 `field` in the output: `draft_empty`, `draft_too_long`, `draft_placeholder`,
 `draft_link_in_note`). It returns exit code 5 with a `code` when the
 enrollment ended (`enrollment_ended`), the campaign is not active
-(`campaign_not_active`), the organization stopped Outreach
+(`campaign_not_active`), the organization stopped Envoy
 (`organization_stopped`), the person has no address now
 (`recipient_missing`), or the action is no longer pending
 (`action_not_pending`). Read the action again with `get` before you retry.
@@ -309,7 +310,7 @@ when the enrollment ended (`enrollment_ended`) or the action is no longer
 pending (`action_not_pending`), and exit code 2 for a bad `--reason`. A paused
 campaign or a stopped organization does not block a reject.
 
-Do not approve an Outreach email with `ac agentic approvals`; that inbox
+Do not approve an Envoy email with `ac agentic approvals`; that inbox
 refuses it with exit code 5.
 
 ## Organization Analytics

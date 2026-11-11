@@ -53,8 +53,8 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Limit Overrides](#limit-overrides)
    - [Credit Prices](#credit-prices)
 5. [Platform](#platform)
-   - [Agentic Outreach Campaigns](#agentic-outreach-campaigns)
-   - [Agentic Outreach Drafts](#agentic-outreach-drafts)
+   - [Envoy Campaigns](#envoy-campaigns)
+   - [Envoy Drafts](#envoy-drafts)
    - [Organization Analytics](#organization-analytics)
    - [Launchpad](#launchpad)
    - [Settings](#settings)
@@ -2995,7 +2995,7 @@ The delete keeps no record of the company. A later run that finds the same
 company writes a new prospect at `new`. Use `dismiss` to keep a company out of
 the review list.
 
-### Agentic Outreach Campaigns
+### Envoy Campaigns
 
 #### `ac agentic outreach campaigns list`
 | Flag | Type | Default | Description |
@@ -3165,7 +3165,7 @@ An enrollment that ended for another reason returns exit code 5
 `stop` and `resume` are organization admin only (exit code 4 for another
 member). A repeated `stop` keeps the first stop time.
 
-### Agentic Outreach Drafts
+### Envoy Drafts
 
 `list`, `get`, `approve` and `reject` take the proposed action by action ID.
 
