@@ -25,7 +25,8 @@ ac inbox resolve --message-id thread_<id> | --comm-id <id> | --contact-id <perso
 - `--kind` is `message`, `connection` (accepted and received requests) or
   `engagement` (comments and reactions).
 - `--sequence` is `any`, `none` or a sequence id.
-- `--intent none` keeps people with no intent.
+- `--intent` is `interested`, `referral`, `out_of_office`, `unclear`,
+  `not_interested` or `opted_out`. `--intent none` keeps people with no intent.
 
 ## Shared state
 
@@ -38,7 +39,7 @@ ac inbox status <thread-id> --status snoozed --until 2026-11-09T09:00:00Z
 ac inbox status <thread-id> --status open
 ac inbox read <thread-id>
 ac inbox unread <thread-id>
-ac inbox intent <thread-id> --intent interested|not_interested|out_of_office|none
+ac inbox intent <thread-id> --intent interested|referral|out_of_office|unclear|not_interested|opted_out|none
 ac inbox bulk --ids <id>,<id> --action done|read|unread
 ```
 

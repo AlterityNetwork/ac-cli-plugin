@@ -1209,13 +1209,13 @@ Returns total inbox thread count.
 
 | Command | Flags |
 |---|---|
-| `ac inbox list` | `--view inbox\|done` · `--owner me\|all\|<user-id>` · `--channel email\|linkedin` (repeat) · `--needs-reply` · `--unread` · `--intent interested\|not_interested\|out_of_office\|none` (repeat) · `--kind message\|connection\|engagement` (repeat) · `--sequence any\|none\|<id>` · `--since <date>` · `--q <text>` · `--limit 1-100` · `--offset` · `--json` |
+| `ac inbox list` | `--view inbox\|done` · `--owner me\|all\|<user-id>` · `--channel email\|linkedin` (repeat) · `--needs-reply` · `--unread` · `--intent interested\|referral\|out_of_office\|unclear\|not_interested\|opted_out\|none` (repeat) · `--kind message\|connection\|engagement` (repeat) · `--sequence any\|none\|<id>` · `--since <date>` · `--q <text>` · `--limit 1-100` · `--offset` · `--json` |
 | `ac inbox messages` | `--view sent\|drafts\|scheduled` (required) · `--owner` · `--channel` · `--limit` · `--offset` · `--json` |
 | `ac inbox resolve` | one of `--message-id` · `--comm-id` · `--contact-id` · `--json` |
 | `ac inbox show <thread-id>` | `--json` |
 | `ac inbox read <thread-id>` / `unread <thread-id>` | `--json` |
 | `ac inbox status <thread-id>` | `--status open\|done\|snoozed` · `--until <iso>` (snoozed) · `--json` |
-| `ac inbox intent <thread-id>` | `--intent interested\|not_interested\|out_of_office\|none` · `--json` |
+| `ac inbox intent <thread-id>` | `--intent interested\|referral\|out_of_office\|unclear\|not_interested\|opted_out\|none` · `--json` |
 | `ac inbox bulk` | `--ids <id>,<id>` · `--action done\|read\|unread` · `--json` |
 | `ac inbox reply <thread-id>` | `--channel email\|linkedin` · `--body` · `--subject` · `--cc` · `--bcc` · `--send-at <iso>` (email) · `--json` |
 | `ac inbox send` | `--contact-id` · `--channel email\|linkedin` · `--body` · `--subject` (email) · `--cc` · `--bcc` · `--send-at` (email) · `--json` |
@@ -3296,6 +3296,20 @@ positional argument. There is no `--message` flag and no single-conversation
 
 Shows Signals, Sequences, CRM, and account-activity output for the active organization,
 and ranks the launched sequences by their lifetime reply rate.
+
+#### `ac analytics replies`
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--period-days` | int | 30 | Reporting window from 1 to 365 days |
+| `--scope` | str | `replies` | `replies`: the prospects behind the Replies tile. `touches`: the prospects touched on `--channel` in the period |
+| `--channel` | str | none | `email` or `linkedin`. Needed for `--scope touches` |
+| `--category` | str | none | `interested`, `referral`, `out_of_office`, `unclear`, `not_interested`, `opted_out`, or `no_response` (touches scope) |
+| `--limit` | int | 500 | Most prospects to list, 1 to 500 |
+| `--json` | flag | off | Raw JSON output |
+
+Shows the count per reply category, then the replies. Automatic replies and
+bounces show on separate lines and are not counted in Replies.
 
 ---
 

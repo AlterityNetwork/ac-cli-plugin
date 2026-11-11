@@ -322,6 +322,24 @@ ac analytics overview [--period-days 30] [--json]
 Shows cross-product output for the active organization. The reporting window
 must be between 1 and 365 days.
 
+```bash
+ac analytics replies [--period-days 30] [--json]
+ac analytics replies --category out_of_office
+ac analytics replies --scope touches --channel email --category interested
+```
+
+Shows the replies of the period by category, then each reply with its person,
+company, channel, category, excerpt and time. With no `--channel`, the total
+equals the Replies tile of `ac analytics overview`.
+
+- The categories are `interested`, `referral`, `out_of_office`, `unclear`,
+  `not_interested` and `opted_out`. `--category` lists one of them.
+- `--scope touches` lists the prospects touched on `--channel` in the period,
+  by their reply. It matches one bar of the Outputs by channel chart, and it
+  needs `--channel`. In this scope `--category no_response` is also valid.
+- Automatic replies and bounces show on their own lines. They are not counted
+  in Replies.
+
 ## Settings
 
 The copilot approval framework and Memory of the active organization.
