@@ -912,7 +912,10 @@ auto-confirms).
 Returns `{recipient_id, steps, messages, tasks}`. `steps` lists every step of the
 sequence with its `status` for this recipient, `skip_reason` for a skipped step, the
 template, the AI instructions, and `awaiting_approval_count`: the drafts of the step that wait
-for approval across all recipients. `messages` is the email thread in date order:
+for approval across all recipients. A LinkedIn connection request step also has
+`connection_status` (`waiting`, `accepted` or `not_accepted`, null when not known) and
+`connection_accepted_at`. A request the rep sent by hand reads `accepted` only when the rep's
+LinkedIn account is connected and reported the new connection. `messages` is the email thread in date order:
 the sent steps and the replies. `tasks` lists the completed task steps that sent no message,
 in date order: a CRM task the rep completed (a LinkedIn task, a call, an SMS or a custom task),
 with `activity_id`, `activity_type`, `title`, `outcome` and `suggested_message`, or an
