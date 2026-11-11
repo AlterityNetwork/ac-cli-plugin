@@ -172,25 +172,25 @@ A company always holds a stage, so only a person can hold none.
 ## Envoy Campaigns
 
 ```bash
-ac agentic outreach campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
-ac agentic outreach campaigns get <campaign-id>
-ac agentic outreach campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
-ac agentic outreach campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
-ac agentic outreach campaigns activate|pause|resume <campaign-id>
-ac agentic outreach campaigns archive <campaign-id> [--yes]
-ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
-ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
-ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
-ac agentic outreach enrollments get <enrollment-id>
-ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
-ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
-ac agentic outreach enrollments exit <enrollment-id> [--yes]
-ac agentic outreach organization status|resume
-ac agentic outreach organization stop [--yes]
+ac agentic envoy campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
+ac agentic envoy campaigns get <campaign-id>
+ac agentic envoy campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
+ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
+ac agentic envoy campaigns activate|pause|resume <campaign-id>
+ac agentic envoy campaigns archive <campaign-id> [--yes]
+ac agentic envoy campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
+ac agentic envoy campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
+ac agentic envoy enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
+ac agentic envoy enrollments get <enrollment-id>
+ac agentic envoy enrollments timeline <enrollment-id> [--limit 50]
+ac agentic envoy enrollments evaluate <enrollment-id> [--request-id <id>]
+ac agentic envoy enrollments exit <enrollment-id> [--yes]
+ac agentic envoy organization status|resume
+ac agentic envoy organization stop [--yes]
 ```
 
 These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
-CLI group keeps the name `ac agentic outreach`. They are not the legacy
+CLI group keeps the name `ac agentic envoy`. They are not the legacy
 Sequences app (`ac sequences sequences`).
 
 A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
@@ -259,10 +259,10 @@ member gets exit code 4.
 ## Envoy Drafts
 
 ```bash
-ac agentic outreach drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
-ac agentic outreach drafts get <action-id>
-ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
-ac agentic outreach drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
+ac agentic envoy drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
+ac agentic envoy drafts get <action-id>
+ac agentic envoy drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
+ac agentic envoy drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
 ```
 
 These commands review what an Envoy campaign drafted. They are not

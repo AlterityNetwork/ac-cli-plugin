@@ -2997,7 +2997,7 @@ the review list.
 
 ### Envoy Campaigns
 
-#### `ac agentic outreach campaigns list`
+#### `ac agentic envoy campaigns list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
@@ -3010,12 +3010,12 @@ more campaigns wait, the last line names the next `--offset`.
 
 `enrollment_counts` is `{active, needs_contact_data, ended, live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 
-#### `ac agentic outreach campaigns get <campaign-id>`
+#### `ac agentic envoy campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` |
 
-#### `ac agentic outreach campaigns create`
+#### `ac agentic envoy campaigns create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
@@ -3032,7 +3032,7 @@ only: `sender_user_id` is always the creator. A description or goal longer
 than 2000 characters, a blank goal, a value out of range or `--min-days`
 above `--max-days` returns exit code 2 with no call.
 
-#### `ac agentic outreach campaigns update <campaign-id>`
+#### `ac agentic envoy campaigns update <campaign-id>`
 Takes `--name`, `--goal`, `--description`, `--channel`, `--max-touches`,
 `--min-days`, `--max-days` and `--json`, all optional, with the
 checks of `create`. Give at least one. Pass `--description ""` to clear the
@@ -3041,7 +3041,7 @@ description. `--channel` replaces the channel list. One of `--min-days` or
 archived campaign returns exit code 5 (`campaign_archived`). The sender does
 not change.
 
-#### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
+#### `ac agentic envoy campaigns activate|pause|resume <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw campaign JSON |
@@ -3051,7 +3051,7 @@ not change.
 draft, or any move of an archived campaign, returns exit code 5
 (`invalid_status_change`). A repeat of the current status succeeds.
 
-#### `ac agentic outreach campaigns archive <campaign-id>`
+#### `ac agentic envoy campaigns archive <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
@@ -3060,7 +3060,7 @@ draft, or any move of an archived campaign, returns exit code 5
 Archived is final. Every live enrollment ends as `campaign_archived`, in the
 background.
 
-#### `ac agentic outreach campaigns enroll <campaign-id>`
+#### `ac agentic envoy campaigns enroll <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--person-kind` | `crm.person` or `prospect.person` | yes | The kind of the person ID |
@@ -3073,7 +3073,7 @@ address is on the do-not-contact list) or `campaign_archived`.
 Exit code 3 for a person of another organization. A repeat in the same
 campaign answers the same enrollment.
 
-#### `ac agentic outreach campaigns enroll-batch <campaign-id>`
+#### `ac agentic envoy campaigns enroll-batch <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--person` | `kind:id` | one of these two | One person, such as `crm.person:<id>` or `prospect.person:<id>`. Repeat it for each person. |
@@ -3092,7 +3092,7 @@ code 5 (`campaign_archived`); an unknown campaign returns exit code 3. When a
 request fails, the run stops: the table shows the people already sent and
 marks the rest `not_sent`. Running it again is safe.
 
-#### `ac agentic outreach enrollments list`
+#### `ac agentic envoy enrollments list`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign-id` | str | yes | The campaign |
@@ -3111,12 +3111,12 @@ the Review queue). `type` is `email`, `linkedin_connection`,
 the status.
 `email` is the email of the person row; a Run can choose another address.
 
-#### `ac agentic outreach enrollments get <enrollment-id>`
+#### `ac agentic envoy enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw enrollment JSON: `status`, `ended_reason`, `next_check_at`, `touch_count`, `context_version` |
 
-#### `ac agentic outreach enrollments timeline <enrollment-id>`
+#### `ac agentic envoy enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--limit` | int | no | The most rows of each kind, 1 to 100; default 50. The newest rows of each kind are kept. |
@@ -3137,7 +3137,7 @@ carry the enrollment id. Per kind:
 The table shows a short line per item. No CRM activity is in the list. Exit
 code 3 for an enrollment of another organization.
 
-#### `ac agentic outreach enrollments evaluate <enrollment-id>`
+#### `ac agentic envoy enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--request-id` | str | no | Your id for the request. A repeat with the same id starts no second Run. |
@@ -3147,7 +3147,7 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 `awaiting_approval`, `run_in_progress`, `campaign_not_active`,
 `organization_stopped` or `enrollment_ended`.
 
-#### `ac agentic outreach enrollments exit <enrollment-id>`
+#### `ac agentic envoy enrollments exit <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
@@ -3156,7 +3156,7 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 An enrollment that ended for another reason returns exit code 5
 (`enrollment_ended`).
 
-#### `ac agentic outreach organization status|stop|resume`
+#### `ac agentic envoy organization status|stop|resume`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--yes` / `-y` | flag | no | `stop` only: skip the question |
@@ -3169,7 +3169,7 @@ member). A repeated `stop` keeps the first stop time.
 
 `list`, `get`, `approve` and `reject` take the proposed action by action ID.
 
-#### `ac agentic outreach drafts list`
+#### `ac agentic envoy drafts list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--status` | `pending_approval`, `approved`, `sending`, `executed`, `rejected`, `invalidated` or `failed` | None (the API reads `pending_approval`) | Only the actions in this status |
@@ -3184,12 +3184,12 @@ LinkedIn message), oldest first, with the id as the tie. The first column is
 the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
 the address when the person has no name), Type, To, Campaign (`campaign.name`),
 Status, Created. `to` is the current email address, or the current LinkedIn profile URL
-for a LinkedIn action, read fresh. The title reads "Outreach actions
+for a LinkedIn action, read fresh. The title reads "Envoy actions
 <from>-<to> of <total>"; `total` is the queue count. In table output a last line
 prints the next `--offset` while `has_more` is true. With `--json`, the next
 offset is `offset` plus the length of `data`.
 
-#### `ac agentic outreach drafts get <action-id>`
+#### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`} or null, `draft_payload` |
@@ -3202,7 +3202,7 @@ draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
 LinkedIn message. A deleted person keeps the item, with a null name and a null
 `to`. An action of another organization returns exit code 3.
 
-#### `ac agentic outreach drafts approve <action-id>`
+#### `ac agentic envoy drafts approve <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--subject` | str | no | New email subject |
@@ -3230,7 +3230,7 @@ has no email address or LinkedIn URL now), or `action_not_pending` (the action
 left the queue, or a retry changed the edit or the address). An impersonated
 session returns exit code 4.
 
-#### `ac agentic outreach drafts reject <action-id>`
+#### `ac agentic envoy drafts reject <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--then` | `regenerate` or `stop` | yes | Ask for one new draft now, or end the enrollment |
