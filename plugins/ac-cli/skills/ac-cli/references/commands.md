@@ -3928,6 +3928,8 @@ Requires the `agentic-platform` API and CLI until cutover.
 |---|---|---|---|
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
 | `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
+| `--title` | String | No | Name of the search, up to 200 characters. Not part of the request identity. |
+| `--saved-search-id` | String | No | The saved search this start came from. The Run lists under it. The saved search keeps its last Run and its diff. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
@@ -3946,6 +3948,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 | `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
 | `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. The command refuses a value that is not a JSON object, and sends no request. |
 | `--idempotency-key` | String | No | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--title` | String | No | Name of the Run, up to 200 characters. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
@@ -3953,6 +3956,22 @@ The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
 409. A start names the Run, the definition and the status. A duplicate key names
 the Run that key already started and its status, and starts no second execution.
 See `agentic-runs.md` for the worked example.
+
+
+#### `ac agentic runs rename <run-id>`
+
+Stores the name of one Run. It does not rename the saved search the Run came
+from.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--title` | String | One of the two | The new name, up to 200 characters. |
+| `--clear` | Boolean | One of the two | Remove the stored name. The derived title comes back. |
+| `--json` | Boolean | No | Print the raw Run detail or structured error. |
+
+The command patches `/api/v1/agentic/runs/{run_id}`. Give exactly one of
+`--title` and `--clear`; the CLI refuses both, neither, or a name over 200
+characters before it calls the API. A Run of another organization returns 404.
 
 
 #### `ac agentic runs progress <run-id>`

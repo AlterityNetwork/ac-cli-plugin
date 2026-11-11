@@ -51,6 +51,20 @@ ac agentic capabilities start people.signals \
 Input is limited to 32 KiB. The server applies the published schema and preserves
 omitted fields; it does not insert schema defaults.
 
+`--title` names the search, up to 200 characters. `--saved-search-id` names the
+saved search the request came from: the Run then lists under that saved search,
+and a list or a detail names it. The link is for display only. The saved search
+keeps its last Run and its diff. A link to a saved search that no longer exists
+is dropped, and a link to a saved search of another capability returns 422.
+Neither flag is part of the request identity.
+
+```bash
+ac agentic capabilities start signals.search \
+  --input '{"source":"discovery","brief":{"icp":"Raised a seed round"}}' \
+  --title "Joyvie lookalikes" --saved-search-id <saved-search-id> \
+  --idempotency-key signals-named-42 --json
+```
+
 Reuse the same key and request after a timeout. A matching replay returns the
 original Run, even after a binding change. A changed capability or input
 with that key returns `idempotency_conflict` (409). Use a new key for a new request.
@@ -125,13 +139,21 @@ list request answers the results of many Runs. Without it, `result` is null.
 the `people.signals` Runs in one page, and the title of each.
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
-`api` or `workflow_step`. A schedule starts `trigger` Runs. On a list that
-names `signals.search`, `people.signals`, or both, each Run also
-carries a `title`: the saved-search name, else the first sales-signal criterion,
-the ICP, or the target-company text. Every other list answers `title: null`.
+`api` or `workflow_step`. A schedule starts `trigger` Runs.
 
-`--saved-search-id` lists the Runs one saved search started, from Run now or
-from its schedule, for every capability. Runs a saved search started before the
+Each Run carries a `title`: the name a person gave the Run (`custom_title`),
+else the name of its saved search (`saved_search_name`). On a list that names
+`signals.search`, `people.signals`, or both, a Run with neither takes the first
+sales-signal criterion, the ICP, or the target-company text. Every other Run
+with neither answers `title: null`. `saved_search_id` is null for a manual
+search. `saved_search_name` is null for a manual search and for a saved search
+that was deleted.
+
+Rename a Run with `ac agentic runs rename <run-id> --title "New name"`, or
+remove the name with `--clear`. A rename does not rename the saved search.
+
+`--saved-search-id` lists the Runs one saved search started, from Run now, from
+its schedule, or from the form after Load search, for every capability. Runs a saved search started before the
 filter existed list only for Signals, because only a Signals Run input named
 its saved search.
 
