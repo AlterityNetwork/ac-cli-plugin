@@ -919,12 +919,12 @@
     {
       "id": 70,
       "prompt": "List my Envoy campaigns.",
-      "expected_output": "Runs `ac agentic outreach campaigns list`.",
+      "expected_output": "Runs `ac agentic envoy campaigns list`.",
       "assertions": [
         {
           "name": "campaigns_list",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns list`"
+          "text": "`ac agentic envoy campaigns list`"
         }
       ]
     },
@@ -1310,12 +1310,12 @@
     {
       "id": 95,
       "prompt": "Show me the Envoy action a-77 that waits for review.",
-      "expected_output": "Reads the action with `ac agentic outreach drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac sequences outbox`.",
+      "expected_output": "Reads the action with `ac agentic envoy drafts get a-77`, which takes an action ID and prints the person, the address, the reply and the draft. It does not use `ac agentic approvals` or `ac sequences outbox`.",
       "assertions": [
         {
           "name": "reads_the_action",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts get a-77`"
+          "text": "`ac agentic envoy drafts get a-77`"
         },
         {
           "name": "not_the_platform_inbox",
@@ -1327,12 +1327,12 @@
     {
       "id": 96,
       "prompt": "The Envoy action a-78 is too long. Shorten the body to 'Hi Jane, quick question about Q4.' and then approve it.",
-      "expected_output": "Edits and approves in one command: `ac agentic outreach drafts approve a-78 --body \"Hi Jane, quick question about Q4.\"`. No v2 save and no version or hash flags.",
+      "expected_output": "Edits and approves in one command: `ac agentic envoy drafts approve a-78 --body \"Hi Jane, quick question about Q4.\"`. No v2 save and no version or hash flags.",
       "assertions": [
         {
           "name": "approve_with_the_edit",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts approve a-78 .*--body`"
+          "text": "`ac agentic envoy drafts approve a-78 .*--body`"
         },
         {
           "name": "no_v2_flags",
@@ -1344,12 +1344,12 @@
     {
       "id": 97,
       "prompt": "Reject the Envoy action a-79 and take the person out of the campaign. Reason: wrong contact.",
-      "expected_output": "Runs `ac agentic outreach drafts reject a-79 --then stop --reason \"wrong contact\" --yes` (or answers the confirmation).",
+      "expected_output": "Runs `ac agentic envoy drafts reject a-79 --then stop --reason \"wrong contact\" --yes` (or answers the confirmation).",
       "assertions": [
         {
           "name": "reject_stop",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts reject a-79 .*--then stop`"
+          "text": "`ac agentic envoy drafts reject a-79 .*--then stop`"
         },
         {
           "name": "no_v2_mode",
@@ -1361,85 +1361,85 @@
     {
       "id": 132,
       "prompt": "The Envoy draft a-80 is too long. Reject it and ask for a shorter one.",
-      "expected_output": "Runs `ac agentic outreach drafts reject a-80 --then regenerate --reason \"Shorter, please.\"` with a reason that asks for a shorter draft.",
+      "expected_output": "Runs `ac agentic envoy drafts reject a-80 --then regenerate --reason \"Shorter, please.\"` with a reason that asks for a shorter draft.",
       "assertions": [
         {
           "name": "reject_regenerate",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts reject a-80 .*--then regenerate`"
+          "text": "`ac agentic envoy drafts reject a-80 .*--then regenerate`"
         },
         {
           "name": "reject_regenerate_reason",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts reject a-80 .*--reason`"
+          "text": "`ac agentic envoy drafts reject a-80 .*--reason`"
         }
       ]
     },
     {
       "id": 98,
       "prompt": "Create an Envoy campaign called 'Q4 intro' with the goal 'Book a 20 min intro call' and the description 'Heads of growth at Series A SaaS companies', enroll CRM person p-11 in it, and start it.",
-      "expected_output": "Runs `ac agentic outreach campaigns create --name \"Q4 intro\" --goal \"Book a 20 min intro call\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic outreach campaigns activate <campaign-id>`.",
+      "expected_output": "Runs `ac agentic envoy campaigns create --name \"Q4 intro\" --goal \"Book a 20 min intro call\" --description \"Heads of growth at Series A SaaS companies\"`, then `ac agentic envoy campaigns enroll <campaign-id> --person-kind crm.person --person-id p-11`, then `ac agentic envoy campaigns activate <campaign-id>`.",
       "assertions": [
         {
           "name": "creates_the_campaign",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns create .*(--name|--description).*(--name|--description)`"
+          "text": "`ac agentic envoy campaigns create .*(--name|--description).*(--name|--description)`"
         },
         {
           "name": "names_the_goal",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns create .*--goal`"
+          "text": "`ac agentic envoy campaigns create .*--goal`"
         },
         {
           "name": "enrolls_the_crm_person",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns enroll .*(--person-kind crm.person|--person-id p-11).*(--person-kind crm.person|--person-id p-11)`"
+          "text": "`ac agentic envoy campaigns enroll .*(--person-kind crm.person|--person-id p-11).*(--person-kind crm.person|--person-id p-11)`"
         },
         {
           "name": "activates",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns activate`"
+          "text": "`ac agentic envoy campaigns activate`"
         }
       ]
     },
     {
       "id": 99,
       "prompt": "Pause the Envoy campaign c-21 and stop Envoy for the whole organization.",
-      "expected_output": "Runs `ac agentic outreach campaigns pause c-21` and `ac agentic outreach organization stop --yes` (or answers the confirmation).",
+      "expected_output": "Runs `ac agentic envoy campaigns pause c-21` and `ac agentic envoy organization stop --yes` (or answers the confirmation).",
       "assertions": [
         {
           "name": "pauses",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns pause c-21`"
+          "text": "`ac agentic envoy campaigns pause c-21`"
         },
         {
           "name": "stops_the_organization",
           "type": "command_matches",
-          "text": "`ac agentic outreach organization stop`"
+          "text": "`ac agentic envoy organization stop`"
         }
       ]
     },
     {
       "id": 100,
       "prompt": "I added an email address for the person in Envoy enrollment e-31. Make Envoy try again.",
-      "expected_output": "Runs `ac agentic outreach enrollments evaluate e-31`, because a CRM edit starts no Run.",
+      "expected_output": "Runs `ac agentic envoy enrollments evaluate e-31`, because a CRM edit starts no Run.",
       "assertions": [
         {
           "name": "evaluates",
           "type": "command_matches",
-          "text": "`ac agentic outreach enrollments evaluate e-31`"
+          "text": "`ac agentic envoy enrollments evaluate e-31`"
         }
       ]
     },
     {
       "id": 101,
       "prompt": "Is Jane enrolled in Envoy campaign c-41? Show her state and what Envoy decided last.",
-      "expected_output": "Runs `ac agentic outreach enrollments list --campaign-id c-41 --search Jane`, and reads the state and the last decision from the row.",
+      "expected_output": "Runs `ac agentic envoy enrollments list --campaign-id c-41 --search Jane`, and reads the state and the last decision from the row.",
       "assertions": [
         {
           "name": "searches the campaign",
           "type": "command_matches",
-          "text": "`ac agentic outreach enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
+          "text": "`ac agentic envoy enrollments list .*(--campaign-id c-41.*--search [\"']?[Jj]ane|--search [\"']?[Jj]ane.*--campaign-id c-41)`"
         }
       ]
     },
@@ -1590,12 +1590,12 @@
     {
       "id": 109,
       "prompt": "Enroll the CRM people p-1, p-2 and p-3 in the Envoy campaign c-41 in one go, and tell me who could not be added.",
-      "expected_output": "Runs `ac agentic outreach campaigns enroll-batch c-41 --person crm.person:p-1 --person crm.person:p-2 --person crm.person:p-3` (one request, not three `campaigns enroll` calls), then reports each person whose outcome is not `added`.",
+      "expected_output": "Runs `ac agentic envoy campaigns enroll-batch c-41 --person crm.person:p-1 --person crm.person:p-2 --person crm.person:p-3` (one request, not three `campaigns enroll` calls), then reports each person whose outcome is not `added`.",
       "assertions": [
         {
           "name": "one_batch_request",
           "type": "command_matches",
-          "text": "`ac agentic outreach campaigns enroll-batch c-41 .*--person crm.person:p-1`"
+          "text": "`ac agentic envoy campaigns enroll-batch c-41 .*--person crm.person:p-1`"
         }
       ]
     },
@@ -1626,24 +1626,24 @@
     {
       "id": 112,
       "prompt": "Which LinkedIn connection notes wait for review in the Envoy campaign c-9?",
-      "expected_output": "Runs `ac agentic outreach drafts list --campaign-id c-9 --type linkedin_connection`. The default status is pending_approval, so it needs no `--status`.",
+      "expected_output": "Runs `ac agentic envoy drafts list --campaign-id c-9 --type linkedin_connection`. The default status is pending_approval, so it needs no `--status`.",
       "assertions": [
         {
           "name": "filters_campaign_and_type",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts list .*--campaign-id c-9.*--type linkedin_connection` (flags in any order)"
+          "text": "`ac agentic envoy drafts list .*--campaign-id c-9.*--type linkedin_connection` (flags in any order)"
         }
       ]
     },
     {
       "id": 113,
       "prompt": "Show me the Envoy emails that a reviewer rejected.",
-      "expected_output": "Runs `ac agentic outreach drafts list --status rejected --type email`.",
+      "expected_output": "Runs `ac agentic envoy drafts list --status rejected --type email`.",
       "assertions": [
         {
           "name": "filters_status_and_type",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts list .*--status rejected.*--type email` (flags in any order)"
+          "text": "`ac agentic envoy drafts list .*--status rejected.*--type email` (flags in any order)"
         }
       ]
     },
@@ -1723,12 +1723,12 @@
     {
       "id": 137,
       "prompt": "What drafts are waiting in my Envoy review queue?",
-      "expected_output": "Envoy is the agent app, so it runs `ac agentic outreach drafts list`. It does not use the Sequences outbox (`ac sequences outbox`), which is a different app.",
+      "expected_output": "Envoy is the agent app, so it runs `ac agentic envoy drafts list`. It does not use the Sequences outbox (`ac sequences outbox`), which is a different app.",
       "assertions": [
         {
           "name": "lists_the_envoy_review_queue",
           "type": "command_matches",
-          "text": "`ac agentic outreach drafts list`"
+          "text": "`ac agentic envoy drafts list`"
         },
         {
           "name": "not_the_sequences_outbox",
