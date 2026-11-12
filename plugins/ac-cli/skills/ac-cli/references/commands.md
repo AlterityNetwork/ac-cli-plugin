@@ -3018,7 +3018,7 @@ the review list.
 The table title names the page and the total, for example `1-50 of 120`. When
 more campaigns wait, the last line names the next `--offset`.
 
-`enrollment_counts` is `{active, needs_contact_data, ended, live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
+`enrollment_counts` is `{active, needs_contact_data, ended, live, cap, awaiting, in_progress}`. `live` is every enrollment that did not end, and `cap` is 200. `awaiting` and `in_progress` split `active`: `awaiting` counts the active enrollments with a draft that waits in the Review queue, and `in_progress` counts the others.
 
 `outcome_counts` is `{to_review, contacted, replied, ended_by_reason, sent, failed, last_activity_at}`.
 `to_review` counts the drafts that wait in the Review queue. `contacted` counts the people with one
@@ -3122,7 +3122,7 @@ marks the rest `not_sent`. Running it again is safe.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign-id` | str | yes | The campaign |
-| `--status` | `active`, `needs_contact_data` or `ended` | no | Only the enrollments in this status; default all |
+| `--status` | `active`, `needs_contact_data`, `ended`, `awaiting` or `in_progress` | no | Only the enrollments in this status; default all. `awaiting` is an active enrollment with a draft in the Review queue; `in_progress` is an active enrollment without one |
 | `--search` | str | no | Only the people whose name holds this text, in any case; at most 100 characters |
 | `--limit` | int | no | How many enrollments, 1 to 200; default 100 |
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
@@ -3136,6 +3136,17 @@ the Review queue). `type` is `email`, `linkedin_connection`,
 `invalid`, `error` or `discarded`. The Last action column shows the type and
 the status.
 `email` is the email of the person row; a Run can choose another address.
+
+Each row also holds:
+
+- `job_title` and `company_name` of the person, or null.
+- `last_touch`: `{channel, kind, at}` of the newest sent action, or null. `channel` is `email` or `linkedin`. `kind` is `intro`, `follow_up`, `reply`, `connection` or `message`. A draft that was never sent does not count.
+- `reply`: `{state, at}`. `state` is `none`, `replied` or `booked`; `booked` means the enrollment ended with its goal met.
+- `needs_email_reason`: for a `needs_contact_data` row, `missing`, `bounced`, `invalid` or `unsubscribed`; null when the email is not the gap, and on every other row.
+
+The table adds a Role column (title · company), a Last touch column and a
+Reply column, and the Status cell names the needs-email reason, for example
+`needs_contact_data (bounced)`.
 
 #### `ac agentic envoy enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |

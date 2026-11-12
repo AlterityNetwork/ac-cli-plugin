@@ -181,7 +181,7 @@ ac agentic envoy campaigns activate|pause|resume <campaign-id>
 ac agentic envoy campaigns archive <campaign-id> [--yes]
 ac agentic envoy campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
 ac agentic envoy campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
-ac agentic envoy enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended] [--search "jane"] [--limit 100] [--offset 0]
+ac agentic envoy enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended|awaiting|in_progress] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic envoy enrollments get <enrollment-id>
 ac agentic envoy enrollments timeline <enrollment-id> [--limit 50]
 ac agentic envoy enrollments evaluate <enrollment-id> [--request-id <id>]
