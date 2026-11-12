@@ -3006,7 +3006,7 @@ the review list.
 #### `ac agentic envoy campaigns list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
+| `--status` | `active`, `paused` or `archived` | None | Only the campaigns in this status |
 | `--limit` | int | 50 | How many campaigns, 1 to 100 |
 | `--offset` | int | 0 | How many campaigns to skip first |
 | `--json` | flag | off | Raw `{"items": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON. Each campaign holds `enrollment_counts`. |
@@ -3025,7 +3025,7 @@ more campaigns wait, the last line names the next `--offset`.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
-| `--goal` | str | yes | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. |
+| `--goal` | str | no | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. Left out, the campaign has no goal. |
 | `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
 | `--channel` | `email` or `linkedin`, repeatable | no | The channels the campaign can use. Default `email` |
 | `--max-touches` | int | no | The most outbound touches per person, 1 to 10. Default 5 |
@@ -3033,7 +3033,7 @@ more campaigns wait, the last line names the next `--offset`.
 | `--max-days` | int | no | The most days between two touches, 1 to 30. Default 7 |
 | `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at}` |
 
-The campaign starts as `draft`. The caller owns it and is its sender, read
+The campaign starts as `paused`. The caller owns it and is its sender, read
 only: `sender_user_id` is always the creator. A description or goal longer
 than 2000 characters, a blank goal, a value out of range or `--min-days`
 above `--max-days` returns exit code 2 with no call.
@@ -3052,10 +3052,10 @@ not change.
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw campaign JSON |
 
-`activate` and `resume` send the same request: set the campaign `active`, from
-`draft` or `paused`. `pause` sets an `active` campaign `paused`. Pausing a
-draft, or any move of an archived campaign, returns exit code 5
-(`invalid_status_change`). A repeat of the current status succeeds.
+`activate` and `resume` send the same request: set a `paused` campaign
+`active`. `pause` sets an `active` campaign `paused`. Any move of an archived
+campaign returns exit code 5 (`invalid_status_change`). A repeat of the current
+status succeeds.
 
 #### `ac agentic envoy campaigns archive <campaign-id>`
 | Flag | Type | Required | Description |
@@ -3942,6 +3942,8 @@ Requires the `agentic-platform` API and CLI until cutover.
 |---|---|---|---|
 | `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
 | `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
+| `--title` | String | No | Name of the search, up to 200 characters. Not part of the request identity. |
+| `--saved-search-id` | String | No | The saved search this start came from. The Run lists under it. The saved search keeps its last Run and its diff. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
@@ -3960,6 +3962,7 @@ Requires the `agentic-platform` API and CLI until cutover.
 | `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
 | `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. The command refuses a value that is not a JSON object, and sends no request. |
 | `--idempotency-key` | String | No | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
+| `--title` | String | No | Name of the Run, up to 200 characters. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
 The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
@@ -3967,6 +3970,22 @@ The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
 409. A start names the Run, the definition and the status. A duplicate key names
 the Run that key already started and its status, and starts no second execution.
 See `agentic-runs.md` for the worked example.
+
+
+#### `ac agentic runs rename <run-id>`
+
+Stores the name of one Run. It does not rename the saved search the Run came
+from.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--title` | String | One of the two | The new name, up to 200 characters. |
+| `--clear` | Boolean | One of the two | Remove the stored name. The derived title comes back. |
+| `--json` | Boolean | No | Print the raw Run detail or structured error. |
+
+The command patches `/api/v1/agentic/runs/{run_id}`. Give exactly one of
+`--title` and `--clear`; the CLI refuses both, neither, or a name over 200
+characters before it calls the API. A Run of another organization returns 404.
 
 
 #### `ac agentic runs progress <run-id>`
