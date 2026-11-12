@@ -174,7 +174,7 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
 ac agentic envoy campaigns get <campaign-id>
-ac agentic envoy campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
+ac agentic envoy campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
 ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
 ac agentic envoy campaigns activate|pause|resume <campaign-id>
 ac agentic envoy campaigns archive <campaign-id> [--yes]
@@ -193,8 +193,8 @@ These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
 CLI group keeps the name `ac agentic envoy`. They are not the legacy
 Sequences app (`ac sequences sequences`).
 
-A new campaign is `paused`, and the caller owns it. A campaign has a name, a
-required goal, an optional description, the allowed channels, the touch and
+A new campaign is `paused`, and the caller owns it. A campaign has a name, an
+optional goal, an optional description, the allowed channels, the touch and
 follow-up limits and a sender. The defaults are email only, 5 touches and a
 follow-up gap of 3 to 7 days. `--channel` repeats for both channels, and on
 `update` it replaces the list. `--max-touches` is 1 to 10, and `--min-days` and
@@ -202,7 +202,8 @@ follow-up gap of 3 to 7 days. `--channel` repeats for both channels, and on
 returns exit code 2. The sender is always the creator: the creator's mailbox
 sends, and no option changes it. For each Run, the planner selects
 the next step from the latest context of the person. The goal and the
-description are context for the planner, not instructions. The planner does
+description are context for the planner, not instructions. A campaign with
+no goal shows the planner no goal line. The planner does
 not read the channels and the limits yet: its prompt still holds the email
 cadence, with no reply at most 4 emails, with gaps of about 3, then 5, then 7
 days. `activate` and `resume` both set the campaign `active`; `pause`

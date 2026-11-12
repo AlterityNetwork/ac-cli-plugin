@@ -3025,7 +3025,7 @@ more campaigns wait, the last line names the next `--offset`.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
-| `--goal` | str | yes | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. |
+| `--goal` | str | no | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. Left out, the campaign has no goal. |
 | `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
 | `--channel` | `email` or `linkedin`, repeatable | no | The channels the campaign can use. Default `email` |
 | `--max-touches` | int | no | The most outbound touches per person, 1 to 10. Default 5 |
