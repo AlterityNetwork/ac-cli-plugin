@@ -172,7 +172,7 @@ A company always holds a stage, so only a person can hold none.
 ## Envoy Campaigns
 
 ```bash
-ac agentic envoy campaigns list [--status draft|active|paused|archived] [--limit 50] [--offset 0]
+ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
 ac agentic envoy campaigns get <campaign-id>
 ac agentic envoy campaigns create --name "Q4 intro" --goal "Book a 20 min intro call" [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
 ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
@@ -193,7 +193,7 @@ These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
 CLI group keeps the name `ac agentic envoy`. They are not the legacy
 Sequences app (`ac sequences sequences`).
 
-A new campaign is a `draft`, and the caller owns it. A campaign has a name, a
+A new campaign is `paused`, and the caller owns it. A campaign has a name, a
 required goal, an optional description, the allowed channels, the touch and
 follow-up limits and a sender. The defaults are email only, 5 touches and a
 follow-up gap of 3 to 7 days. `--channel` repeats for both channels, and on
@@ -212,7 +212,9 @@ send is refused. `archive` is final and asks first. It ends every live
 enrollment in the background, so for a few seconds a person can still read as
 live.
 
-`enroll` adds one person and starts the first Run. A person can be live in
+`enroll` adds one person. In an active campaign it starts the first Run. In
+a paused campaign the person waits, and the first Run starts within 5 minutes
+of `activate` or `resume`. A person can be live in
 one campaign only. Enrolling a person who is live in another campaign returns
 exit code 5 (`already_enrolled`), and the message names that campaign. A
 campaign holds at most 200 live enrollments (`campaign_full`). A person whose
