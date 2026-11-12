@@ -3006,7 +3006,7 @@ the review list.
 #### `ac agentic envoy campaigns list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--status` | `draft`, `active`, `paused` or `archived` | None | Only the campaigns in this status |
+| `--status` | `active`, `paused` or `archived` | None | Only the campaigns in this status |
 | `--limit` | int | 50 | How many campaigns, 1 to 100 |
 | `--offset` | int | 0 | How many campaigns to skip first |
 | `--json` | flag | off | Raw `{"items": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON. Each campaign holds `enrollment_counts`. |
@@ -3033,7 +3033,7 @@ more campaigns wait, the last line names the next `--offset`.
 | `--max-days` | int | no | The most days between two touches, 1 to 30. Default 7 |
 | `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at}` |
 
-The campaign starts as `draft`. The caller owns it and is its sender, read
+The campaign starts as `paused`. The caller owns it and is its sender, read
 only: `sender_user_id` is always the creator. A description or goal longer
 than 2000 characters, a blank goal, a value out of range or `--min-days`
 above `--max-days` returns exit code 2 with no call.
@@ -3052,10 +3052,10 @@ not change.
 |------|------|----------|-------------|
 | `--json` | flag | no | Raw campaign JSON |
 
-`activate` and `resume` send the same request: set the campaign `active`, from
-`draft` or `paused`. `pause` sets an `active` campaign `paused`. Pausing a
-draft, or any move of an archived campaign, returns exit code 5
-(`invalid_status_change`). A repeat of the current status succeeds.
+`activate` and `resume` send the same request: set a `paused` campaign
+`active`. `pause` sets an `active` campaign `paused`. Any move of an archived
+campaign returns exit code 5 (`invalid_status_change`). A repeat of the current
+status succeeds.
 
 #### `ac agentic envoy campaigns archive <campaign-id>`
 | Flag | Type | Required | Description |
