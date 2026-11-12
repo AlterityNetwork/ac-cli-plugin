@@ -1740,17 +1740,12 @@
     {
       "id": 138,
       "prompt": "Which of my sequence replies this month were out-of-office messages?",
-      "expected_output": "It runs `ac analytics replies` with the `out_of_office` category. It does not read the overview, which has no category list.",
+      "expected_output": "It runs `ac analytics replies` with the `out_of_office` category.",
       "assertions": [
         {
-          "name": "lists_replies_by_category",
+          "name": "filters_replies_by_out_of_office",
           "type": "command_matches",
-          "text": "`ac analytics replies`"
-        },
-        {
-          "name": "filters_out_of_office",
-          "type": "contains",
-          "text": "out_of_office"
+          "text": "`ac analytics replies.*out_of_office`"
         }
       ]
     }
