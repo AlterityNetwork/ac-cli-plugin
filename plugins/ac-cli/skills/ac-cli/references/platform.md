@@ -174,6 +174,7 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
 ac agentic envoy campaigns get <campaign-id>
+ac agentic envoy campaigns summary
 ac agentic envoy campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
 ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
 ac agentic envoy campaigns activate|pause|resume <campaign-id>
@@ -231,7 +232,12 @@ one per line in a `--file`.
 
 `campaigns list` and `campaigns get` show the live enrollments against the cap
 (`People 140/200`) and the count per status: active, needing an email, and
-ended. A draft that waits for review is not a status; `drafts list` shows it.
+ended. A draft that waits for review is not a status; `drafts list` shows it,
+and the list counts it under `To review`. `campaigns get` adds the outcomes:
+contacted, replied, ended per reason, sends per channel, failed sends and the
+last activity. `campaigns summary` shows the organization totals: live people,
+sends in the last 7 days, and replies and goals met in the last 30 days, with
+their rates.
 
 `enrollments list` shows one page of a campaign, newest first. Each row names
 the person, the email of the person row, the state and the last decision

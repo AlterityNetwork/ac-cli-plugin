@@ -1748,6 +1748,18 @@
           "text": "`ac analytics replies.*out_of_office`"
         }
       ]
+    },
+    {
+      "id": 139,
+      "prompt": "What are our Envoy reply and goal-met rates for the last 30 days?",
+      "expected_output": "Runs `ac agentic envoy campaigns summary`.",
+      "assertions": [
+        {
+          "name": "campaigns_summary",
+          "type": "command_matches",
+          "text": "`ac agentic envoy campaigns summary`"
+        }
+      ]
     }
   ]
 }
