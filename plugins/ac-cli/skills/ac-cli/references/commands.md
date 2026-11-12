@@ -915,7 +915,11 @@ template, the AI instructions, and `awaiting_approval_count`: the drafts of the 
 for approval across all recipients. A LinkedIn connection request step also has
 `connection_status` (`waiting`, `accepted` or `not_accepted`, null when not known) and
 `connection_accepted_at`. A request the rep sent by hand reads `accepted` only when the rep's
-LinkedIn account is connected and reported the new connection. `messages` is the email thread in date order:
+LinkedIn account is connected and reported the new connection. A `task_created` task step also has
+`task_done`: `true` when it has a completed CRM task, `false` when its task is open, cancelled or
+deleted, null on every other step. `task_completed_at` is when that task completed. An old step can
+be `task_created` while its task is open, so read `task_done` to know if a task step is done.
+`messages` is the email thread in date order:
 the sent steps and the replies. `tasks` lists the completed task steps that sent no message,
 in date order: a CRM task the rep completed (a LinkedIn task, a call, an SMS or a custom task),
 with `activity_id`, `activity_type`, `title`, `outcome` and `suggested_message`, or an
@@ -933,7 +937,7 @@ Step `status` values:
 | `draft_approved` | The draft is approved and the send has not finished |
 | `sent` | The email is sent |
 | `awaiting_task` | A task step waits for its task |
-| `task_created` | The task of a task step is created |
+| `task_created` | The rep completed the task of a task step; `task_done` says if the task is still done |
 | `completed` | A delay step ended |
 | `skipped` | The step was skipped; `skip_reason` holds the reason |
 | `failed` | The step failed |
