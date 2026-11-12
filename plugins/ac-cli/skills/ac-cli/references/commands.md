@@ -3013,17 +3013,33 @@ the review list.
 | `--status` | `active`, `paused` or `archived` | None | Only the campaigns in this status |
 | `--limit` | int | 50 | How many campaigns, 1 to 100 |
 | `--offset` | int | 0 | How many campaigns to skip first |
-| `--json` | flag | off | Raw `{"items": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON. Each campaign holds `enrollment_counts`. |
+| `--json` | flag | off | Raw `{"items": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON. Each campaign holds `enrollment_counts` and `outcome_counts`. |
 
 The table title names the page and the total, for example `1-50 of 120`. When
 more campaigns wait, the last line names the next `--offset`.
 
 `enrollment_counts` is `{active, needs_contact_data, ended, live, cap}`. `live` is every enrollment that did not end, and `cap` is 200.
 
+`outcome_counts` is `{to_review, contacted, replied, ended_by_reason, sent, failed, last_activity_at}`.
+`to_review` counts the drafts that wait in the Review queue. `contacted` counts the people with one
+touch or more, and `replied` the people with one real reply or more. `ended_by_reason` holds one count
+per end reason (`goal_met`, `opted_out`, `max_touches`, `stalled`, ...). `sent` is `{email, linkedin}`.
+`failed` counts the sends that failed. `last_activity_at` is the newest send or reply, else the last
+campaign update. The table shows `To review`; `campaigns get` shows the rest.
+
 #### `ac agentic envoy campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` |
+| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` and `outcome_counts` |
+
+#### `ac agentic envoy campaigns summary`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw `{active_campaigns, live, cap, sent_7d: {email, linkedin}, contacted_30d, replied_30d, reply_rate_30d, goal_met_30d, goal_met_rate_30d}` JSON |
+
+The organization totals for the summary strip. `cap` is 200 per active campaign. Each rate counts only
+the people contacted in the last 30 days, so it stays between 0 and 1. It is not `replied_30d`
+divided by `contacted_30d`.
 
 #### `ac agentic envoy campaigns create`
 | Flag | Type | Required | Description |
