@@ -3030,7 +3030,15 @@ campaign update. The table shows `To review`; `campaigns get` shows the rest.
 #### `ac agentic envoy campaigns get <campaign-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts` and `outcome_counts` |
+| `--json` | flag | no | Raw campaign JSON, with `enrollment_counts`, `outcome_counts` and `remembered_feedback` (newest first) |
+
+#### `ac agentic envoy campaigns forget <campaign-id> <feedback-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
+| `--json` | flag | no | `{"ok", "id", "action": "forget"}` |
+
+Deletes one remembered reject reason; the feedback id comes from `campaigns get`. The later drafts no longer follow it. Exit code 3 for an unknown id.
 
 #### `ac agentic envoy campaigns summary`
 | Flag | Type | Required | Description |
@@ -3281,6 +3289,7 @@ session returns exit code 4.
 |------|------|----------|-------------|
 | `--then` | `regenerate` or `stop` | yes | Ask for one new draft now, or end the enrollment |
 | `--reason` | str, 1 to 1000 chars | for `regenerate` | What the next draft must change. The next decision reads it. Optional for `stop`. |
+| `--remember` | flag | no | `regenerate` only: the campaign keeps the reason (newest 20), and each later draft of every person in it follows it. Refused with `stop`. |
 | `--yes` / `-y` | flag | no | Skip the question that `--then stop` asks. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw action JSON, now `rejected` |
 
