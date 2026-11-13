@@ -268,7 +268,7 @@ member gets exit code 4.
 ## Envoy Drafts
 
 ```bash
-ac agentic envoy drafts list [--status pending_approval] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--limit 50] [--offset 0]
+ac agentic envoy drafts list [--status pending_approval ...] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--since <iso-time>] [--sort oldest|newest_decided] [--limit 50] [--offset 0]
 ac agentic envoy drafts get <action-id>
 ac agentic envoy drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
 ac agentic envoy drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
@@ -281,7 +281,18 @@ the legacy `ac sequences outbox` drafts.
 LinkedIn note or a LinkedIn message). `list` reads the `pending_approval`
 actions by default, oldest first, and prints the queue `total`. Filter with
 `--status`, `--campaign-id` and `--type`. The first column is the action ID
-that `get` takes. The title shows the rows against the total, and a last line
+that `get` takes.
+
+The handled drafts of the last 7 days, newest decision first, in one read:
+
+```bash
+ac agentic envoy drafts list --status approved --status sending --status executed \
+  --status rejected --status failed --since <now minus 7 days, ISO 8601 UTC> --sort newest_decided
+```
+
+`--status` repeats, and each value is literal. `--since` keeps the actions
+decided at or after the time. `--sort newest_decided` needs a `--since` of the
+last 31 days. Each row shows Decided and the reject or failure reason. The title shows the rows against the total, and a last line
 prints the next `--offset` while more actions wait. Only the table output has
 that line: with `--json`, compute the next offset as `offset + length(data)`
 while `has_more` is true.

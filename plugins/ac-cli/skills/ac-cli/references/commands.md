@@ -3209,18 +3209,22 @@ member). A repeated `stop` keeps the first stop time.
 #### `ac agentic envoy drafts list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--status` | `pending_approval`, `approved`, `sending`, `executed`, `rejected`, `invalidated` or `failed` | None (the API reads `pending_approval`) | Only the actions in this status |
+| `--status` | `pending_approval`, `approved`, `sending`, `executed`, `rejected`, `invalidated` or `failed`; repeatable | None (the API reads `pending_approval`) | Only the actions in these statuses. Each value is literal: `approved` does not add `sending` |
 | `--campaign-id` | str | None | Only the actions of this campaign |
 | `--type` | `email`, `linkedin_connection` or `linkedin_message` | None | Only the actions of this type |
 | `--limit` | int | 50 | How many actions, 1 to 100 |
 | `--offset` | int | 0 | How many actions to skip first |
+| `--since` | ISO 8601 with a time zone | None | Only the actions decided at or after this time |
+| `--sort` | `oldest` or `newest_decided` | None (the API reads `oldest`) | `newest_decided` puts the newest decision first, the id as the tie; it needs a `--since` of the last 31 days, else exit code 2 |
 | `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
 Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
 LinkedIn message), oldest first, with the id as the tie. The first column is
 the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
 the address when the person has no name), Type, To, Campaign (`campaign.name`),
-Touch, Sentiment, Status, Created. Touch reads `3 of 5`: `touch_number` of
+Touch, Sentiment, Status, Created, Decided, Reason. Decided is `decided_at`:
+the latest of the approve, reject and send times, or the failure time of a
+failed action. Reason is `reject_reason`, else `failure_reason`. Touch reads `3 of 5`: `touch_number` of
 `campaign.max_touches`, or the number alone when the campaign is deleted.
 `touch_number` is 1 plus the earlier sends of the enrollment, so a sent action
 keeps its number. Sentiment is `replying_to.sentiment`, empty for a non-reply or
@@ -3233,11 +3237,12 @@ offset is `offset` plus the length of `data`.
 #### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload` |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply) |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
 the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
-the `rationale` as Why and the `objective`. Then it prints the inbound message
+Decided, Decided by, Then (`reject_then`), Reason, the `rationale` as Why and
+the `objective`. Then it prints the inbound message
 the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
 LinkedIn message. A deleted person keeps the item, with a null name and a null
