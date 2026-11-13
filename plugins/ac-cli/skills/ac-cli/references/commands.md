@@ -3220,7 +3220,11 @@ Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
 LinkedIn message), oldest first, with the id as the tie. The first column is
 the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
 the address when the person has no name), Type, To, Campaign (`campaign.name`),
-Status, Created. `to` is the current email address, or the current LinkedIn profile URL
+Touch, Sentiment, Status, Created. Touch reads `3 of 5`: `touch_number` of
+`campaign.max_touches`, or the number alone when the campaign is deleted.
+`touch_number` is 1 plus the earlier sends of the enrollment, so a sent action
+keeps its number. Sentiment is `replying_to.sentiment`, empty for a non-reply or
+an unclassified reply. `to` is the current email address, or the current LinkedIn profile URL
 for a LinkedIn action, read fresh. The title reads "Envoy actions
 <from>-<to> of <total>"; `total` is the queue count. In table output a last line
 prints the next `--offset` while `has_more` is true. With `--json`, the next
@@ -3229,10 +3233,10 @@ offset is `offset` plus the length of `data`.
 #### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`} or null, `draft_payload` |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload` |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
-the decision ID, the person, the company, the campaign and its status, `to`,
+the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
 the `rationale` as Why and the `objective`. Then it prints the inbound message
 the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
