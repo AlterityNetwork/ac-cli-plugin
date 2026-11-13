@@ -287,7 +287,7 @@ The handled drafts of the last 7 days, newest decision first, in one read:
 
 ```bash
 ac agentic envoy drafts list --status approved --status sending --status executed \
-  --status rejected --status failed --since 2026-11-06T00:00:00Z --sort newest_decided
+  --status rejected --status failed --since <now minus 7 days, ISO 8601 UTC> --sort newest_decided
 ```
 
 `--status` repeats, and each value is literal. `--since` keeps the actions
