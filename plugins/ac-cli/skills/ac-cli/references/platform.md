@@ -174,6 +174,7 @@ A company always holds a stage, so only a person can hold none.
 ```bash
 ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
 ac agentic envoy campaigns get <campaign-id>
+ac agentic envoy campaigns forget <campaign-id> <feedback-id> [--yes]
 ac agentic envoy campaigns summary
 ac agentic envoy campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
 ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
@@ -235,7 +236,9 @@ one per line in a `--file`.
 ended. A draft that waits for review is not a status; `drafts list` shows it,
 and the list counts it under `To review`. `campaigns get` adds the outcomes:
 contacted, replied, ended per reason, sends per channel, failed sends and the
-last activity. `campaigns summary` shows the organization totals: live people,
+last activity, and the reject reasons the campaign remembers, newest first,
+each with its id. `campaigns forget` deletes one remembered reason, so the
+later drafts no longer follow it. `campaigns summary` shows the organization totals: live people,
 sends in the last 7 days, and replies and goals met in the last 30 days, with
 their rates.
 
@@ -271,7 +274,7 @@ member gets exit code 4.
 ac agentic envoy drafts list [--status pending_approval ...] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--since <iso-time>] [--sort oldest|newest_decided] [--limit 50] [--offset 0]
 ac agentic envoy drafts get <action-id>
 ac agentic envoy drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
-ac agentic envoy drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--yes]
+ac agentic envoy drafts reject <action-id> --then regenerate|stop [--reason "Feedback"] [--remember] [--yes]
 ```
 
 These commands review what an Envoy campaign drafted. They are not
@@ -322,7 +325,9 @@ enrollment ended (`enrollment_ended`), the campaign is not active
 
 `reject <action-id>` rejects one proposed action. `--then regenerate` asks
 for one new draft at once, and needs `--reason` (1 to 1000 characters): the
-next draft reads it. To say "not now", regenerate with a reason that says so.
+next draft reads it. Add `--remember` to keep the reason for the whole
+campaign: each later draft of every person in it follows the reason. The
+campaign keeps the newest 20. `--remember` is refused with stop. To say "not now", regenerate with a reason that says so.
 `--then stop` ends the person's enrollment and asks first; pass `--yes` to skip
 the question. With stop, `--reason` is optional. A retry of the same reject is
 safe and returns the same action. `reject` returns exit code 5 with a `code`
