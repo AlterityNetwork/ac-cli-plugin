@@ -1789,6 +1789,30 @@
           "text": "`ac agentic envoy campaigns summary`"
         }
       ]
+    },
+    {
+      "id": 142,
+      "prompt": "Show me only the replies in Envoy campaign c-12, newest first.",
+      "expected_output": "Runs `ac agentic envoy campaigns activity c-12 --kind reply`.",
+      "assertions": [
+        {
+          "name": "campaign_activity_replies",
+          "type": "command_matches",
+          "text": "`ac agentic envoy campaigns activity c-12 .*--kind reply`"
+        }
+      ]
+    },
+    {
+      "id": 143,
+      "prompt": "Which touch number gets the most replies in Envoy campaign c-12?",
+      "expected_output": "Runs `ac agentic envoy campaigns results c-12` and reads the reply rate of each touch.",
+      "assertions": [
+        {
+          "name": "campaign_results",
+          "type": "command_matches",
+          "text": "`ac agentic envoy campaigns results c-12`"
+        }
+      ]
     }
   ]
 }

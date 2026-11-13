@@ -175,6 +175,8 @@ A company always holds a stage, so only a person can hold none.
 ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
 ac agentic envoy campaigns get <campaign-id>
 ac agentic envoy campaigns forget <campaign-id> <feedback-id> [--yes]
+ac agentic envoy campaigns activity <campaign-id> [--kind send|reply|decision] [--channel email|linkedin] [--limit 50] [--cursor <next>]
+ac agentic envoy campaigns results <campaign-id> [--days 30]
 ac agentic envoy campaigns summary
 ac agentic envoy campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
 ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
@@ -238,7 +240,15 @@ and the list counts it under `To review`. `campaigns get` adds the outcomes:
 contacted, replied, ended per reason, sends per channel, failed sends and the
 last activity, and the reject reasons the campaign remembers, newest first,
 each with its id. `campaigns forget` deletes one remembered reason, so the
-later drafts no longer follow it. `campaigns summary` shows the organization totals: live people,
+later drafts no longer follow it. `campaigns activity` lists the sends,
+replies and decisions of one campaign, newest first, one page at a time. A
+send is an executed action, a reply is a `reply_received` decision, and a
+decision is any other decision. `--channel` drops the decisions with no
+channel, for example `wait`. When more items wait, the command prints the
+`--cursor` of the next page. `campaigns results` shows the sends of each UTC
+day for the last `--days` days (1 to 90), and the sends, replies and reply
+rate of each touch number, of all time. A reply counts for the newest touch
+before it. `campaigns summary` shows the organization totals: live people,
 sends in the last 7 days, and replies and goals met in the last 30 days, with
 their rates.
 
