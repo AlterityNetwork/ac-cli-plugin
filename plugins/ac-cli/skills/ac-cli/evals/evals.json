@@ -1813,6 +1813,18 @@
           "text": "`ac agentic envoy campaigns results c-12`"
         }
       ]
+    },
+    {
+      "id": 144,
+      "prompt": "Move the Envoy enrollments e-1 and e-2 to the campaign c-7 in one go, and tell me which did not move.",
+      "expected_output": "Runs `ac agentic envoy enrollments move e-1 e-2 --campaign c-7` (one request, not an exit and an enroll per person), then reports each enrollment whose outcome is not `moved`.",
+      "assertions": [
+        {
+          "name": "one_move_request",
+          "type": "command_matches",
+          "text": "`ac agentic envoy enrollments move e-1 e-2 .*--campaign c-7`"
+        }
+      ]
     }
   ]
 }

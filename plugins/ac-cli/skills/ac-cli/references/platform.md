@@ -189,6 +189,7 @@ ac agentic envoy enrollments get <enrollment-id>
 ac agentic envoy enrollments timeline <enrollment-id> [--limit 50]
 ac agentic envoy enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic envoy enrollments exit <enrollment-id> [--yes]
+ac agentic envoy enrollments move <enrollment-id>... --campaign <campaign-id>
 ac agentic envoy organization status|resume
 ac agentic envoy organization stop [--yes]
 ```
@@ -273,6 +274,16 @@ email waits to send (`run_in_progress`), the campaign is not active, the
 organization stopped, or the enrollment ended. `enrollments exit` ends the
 enrollment as `user_exit`,
 records the caller in `ended_by`. A draft that waits for review is not sent.
+
+`enrollments move` moves 1 to 50 enrollments to another campaign, in one
+request. Each old enrollment ends as `moved`, records the caller in
+`ended_by`, and links to the new enrollment in `moved_to_enrollment_id`. Its
+drafts that wait for review are not sent. The person is enrolled in the
+target with the refusals of an enroll. The table prints one row per
+enrollment, in order: `moved` (with the new enrollment), `not_found`,
+`enrollment_ended`, `same_campaign`, `campaign_archived`, `opted_out`,
+`campaign_full`, `already_enrolled` or `run_in_progress`. One refused
+enrollment never blocks the others.
 
 `organization stop` stops Envoy for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another

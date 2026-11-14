@@ -3220,6 +3220,26 @@ Re-evaluate, retry, or retry after an added email. Exit code 5 with
 An enrollment that ended for another reason returns exit code 5
 (`enrollment_ended`).
 
+#### `ac agentic envoy enrollments move <enrollment-id>...`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--campaign` | str | yes | The target campaign |
+| `--json` | flag | no | One id: the raw new enrollment JSON. Several ids: raw `{"results": [{enrollment_id, outcome, moved_to_enrollment_id}]}` |
+
+Moves 1 to 50 enrollments to another campaign. The CLI refuses a malformed
+id and more than 50 ids with exit code 2 before any call. Each old
+enrollment ends as `moved`: `ended_by` is the caller and
+`moved_to_enrollment_id` names the new enrollment. Its open drafts are not
+sent. The person is enrolled in the target with the refusals of `campaigns
+enroll`. The table prints one row per enrollment, in the order given: the
+enrollment, the outcome and a detail. The outcome is `moved` (the detail
+names the new enrollment), `not_found`, `enrollment_ended`, `same_campaign`,
+`campaign_archived`, `opted_out`, `campaign_full`, `already_enrolled` or
+`run_in_progress`. One refused enrollment never blocks the others. With one
+id, a refusal returns exit code 5 and an unknown enrollment, campaign or
+person returns exit code 3. With several ids, an archived target returns
+exit code 5 and an unknown target exit code 3, for the whole request.
+
 #### `ac agentic envoy organization status|stop|resume`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
