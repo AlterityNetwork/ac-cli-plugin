@@ -75,7 +75,7 @@ Layout and roles:
 | `auth-env.md` | Auth + environment commands and recovery patterns | Auth/env behavior changes |
 | `workflows-recipes.md` | Multi-step recipes that don't make the SKILL.md core 6 | New common multi-step pattern emerges |
 
-The source of truth for flags is `ac-cli`'s Typer command definitions in `ac-cli/src/agencycore_cli/commands/`.
+The source of truth for flags is `ac-cli`'s Typer command definitions in `ac-cli/src/ac_cli/commands/`.
 
 ## Evals
 

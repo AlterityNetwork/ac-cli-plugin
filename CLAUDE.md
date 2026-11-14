@@ -26,7 +26,7 @@ plugins/ac-cli/
       SKILL.md           → Quick reference guide (≤ 500 lines)
       references/            → Per-domain quick refs + commands.md flag tables (ls to enumerate; roles in .claude/rules/02-skill-authoring.md)
       evals/
-        evals.json       → Skill evaluation test cases (~70 scenarios)
+        evals.json       → Skill evaluation test cases
         run.py           → Eval runner (claude -p, grades assertions)
         README.md        → Eval vocab + runner usage
 scripts/
