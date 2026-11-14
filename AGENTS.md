@@ -68,7 +68,7 @@ scripts/
 
 Patch version auto-bumps on every commit via the pre-commit hook (`scripts/bump-version.sh`). The hook updates both `plugin.json` and `marketplace.json` and stages the changes.
 
-For minor/major bumps, edit both files manually before committing (the hook will not double-bump if versions already differ from what it reads).
+For minor/major bumps, set the same `X.Y.0` in both files before committing; the hook then bumps the patch, so the commit lands as `X.Y.1`.
 
 ## Installation (for users)
 
