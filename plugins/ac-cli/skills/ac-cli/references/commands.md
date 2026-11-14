@@ -3234,8 +3234,10 @@ sent. The person is enrolled in the target with the refusals of `campaigns
 enroll`. The table prints one row per enrollment, in the order given: the
 enrollment, the outcome and a detail. The outcome is `moved` (the detail
 names the new enrollment), `not_found`, `enrollment_ended`, `same_campaign`,
-`campaign_archived`, `opted_out`, `campaign_full`, `already_enrolled` or
-`run_in_progress`. One refused enrollment never blocks the others. With one
+`campaign_archived`, `opted_out`, `campaign_full`, `already_enrolled`,
+`run_in_progress` or `enroll_failed` (the old enrollment ended and the
+enroll failed: add the person again). One refused enrollment never blocks
+the others. With one
 id, a refusal returns exit code 5 and an unknown enrollment, campaign or
 person returns exit code 3. With several ids, an archived target returns
 exit code 5 and an unknown target exit code 3, for the whole request.

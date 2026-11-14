@@ -282,8 +282,9 @@ drafts that wait for review are not sent. The person is enrolled in the
 target with the refusals of an enroll. The table prints one row per
 enrollment, in order: `moved` (with the new enrollment), `not_found`,
 `enrollment_ended`, `same_campaign`, `campaign_archived`, `opted_out`,
-`campaign_full`, `already_enrolled` or `run_in_progress`. One refused
-enrollment never blocks the others.
+`campaign_full`, `already_enrolled`, `run_in_progress` or `enroll_failed`
+(the old enrollment ended and the enroll failed: add the person again). One
+refused enrollment never blocks the others.
 
 `organization stop` stops Envoy for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
