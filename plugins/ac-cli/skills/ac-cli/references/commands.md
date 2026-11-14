@@ -3286,7 +3286,7 @@ offset is `offset` plus the length of `data`.
 #### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply) |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `can_switch_channel` (true when `reject --then switch_channel` can succeed) |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
 the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
@@ -3328,13 +3328,13 @@ session returns exit code 4.
 #### `ac agentic envoy drafts reject <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--then` | `regenerate` or `stop` | yes | Ask for one new draft now, or end the enrollment |
-| `--reason` | str, 1 to 1000 chars | for `regenerate` | What the next draft must change. The next decision reads it. Optional for `stop`. |
-| `--remember` | flag | no | `regenerate` only: the campaign keeps the reason (newest 20), and each later draft of every person in it follows it. Refused with `stop`. |
+| `--then` | `regenerate`, `stop`, `skip` or `switch_channel` | yes | `regenerate`: ask for one new draft now. `stop`: end the enrollment. `skip`: send nothing now; Envoy looks again after the campaign's shortest follow-up wait. `switch_channel`: ask for one new draft on the other channel (email ↔ LinkedIn) |
+| `--reason` | str, 1 to 1000 chars | for `regenerate` | What the next draft must change. The next decision reads it. Optional for `stop`, `skip` and `switch_channel`. |
+| `--remember` | flag | no | `regenerate` only: the campaign keeps the reason (newest 20), and each later draft of every person in it follows it. Refused with any other `--then`. |
 | `--yes` / `-y` | flag | no | Skip the question that `--then stop` asks. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw action JSON, now `rejected` |
 
-Exit code 5 with `code`: `enrollment_ended` or `action_not_pending`. A retry of the same reject returns the same action.
+Exit code 5 with `code`: `enrollment_ended`, `action_not_pending`, or `channel_unavailable` (`switch_channel` only: the campaign does not allow both channels, or the person has no email address or LinkedIn URL for the other one; the action stays pending). A retry of the same reject returns the same action.
 
 ### Agentic Conversations
 

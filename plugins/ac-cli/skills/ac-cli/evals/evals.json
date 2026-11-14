@@ -1825,6 +1825,30 @@
           "text": "`ac agentic envoy enrollments move e-1 e-2 .*--campaign c-7`"
         }
       ]
+    },
+    {
+      "id": 145,
+      "prompt": "Don't send the Envoy draft a-81 now, but keep the person in the campaign so Envoy tries again later.",
+      "expected_output": "Runs `ac agentic envoy drafts reject a-81 --then skip`.",
+      "assertions": [
+        {
+          "name": "reject_skip",
+          "type": "command_matches",
+          "text": "`ac agentic envoy drafts reject a-81 .*--then skip`"
+        }
+      ]
+    },
+    {
+      "id": 146,
+      "prompt": "The Envoy email draft a-82 should go out on LinkedIn instead. Reject it and have Envoy write it for the other channel.",
+      "expected_output": "Runs `ac agentic envoy drafts reject a-82 --then switch_channel`.",
+      "assertions": [
+        {
+          "name": "reject_switch_channel",
+          "type": "command_matches",
+          "text": "`ac agentic envoy drafts reject a-82 .*--then switch_channel`"
+        }
+      ]
     }
   ]
 }
