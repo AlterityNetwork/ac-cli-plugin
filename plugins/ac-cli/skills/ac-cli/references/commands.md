@@ -3224,7 +3224,7 @@ An enrollment that ended for another reason returns exit code 5
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign` | str | yes | The target campaign |
-| `--json` | flag | no | One id: the raw new enrollment JSON. Several ids: raw `{"results": [{enrollment_id, outcome, moved_to_enrollment_id}]}` |
+| `--json` | flag | no | Raw `{"results": [{enrollment_id, outcome, moved_to_enrollment_id}]}` JSON, for one id or several |
 
 Moves 1 to 50 enrollments to another campaign. The CLI refuses a malformed
 id and more than 50 ids with exit code 2 before any call. Each old
@@ -3237,10 +3237,9 @@ names the new enrollment), `not_found`, `enrollment_ended`, `same_campaign`,
 `campaign_archived`, `opted_out`, `campaign_full`, `already_enrolled`,
 `run_in_progress` or `enroll_failed` (the old enrollment ended and the
 enroll failed: add the person again). One refused enrollment never blocks
-the others. With one
-id, a refusal returns exit code 5 and an unknown enrollment, campaign or
-person returns exit code 3. With several ids, an archived target returns
-exit code 5 and an unknown target exit code 3, for the whole request.
+the others, and a refused enrollment exits 0. One id and several ids make
+the same call. An archived target returns exit code 5 and an unknown target
+exit code 3, for the whole request.
 
 #### `ac agentic envoy organization status|stop|resume`
 | Flag | Type | Required | Description |
