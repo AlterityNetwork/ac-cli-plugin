@@ -3047,7 +3047,7 @@ Deletes one remembered reject reason; the feedback id comes from `campaigns get`
 | `--channel` | str | no | `email` or `linkedin`. Drops the decisions with no channel |
 | `--limit` | int | no | Items per page, 1 to 100 (default 50) |
 | `--cursor` | str | no | The next cursor that the previous page printed |
-| `--json` | flag | no | Raw `{items: [{kind, at, id, enrollment_id, person: {kind, id, name, email, job_title, company_name}, channel, type, status, trigger_reason, rationale, objective, followup_days, goal_met, subject}], next_cursor}` JSON |
+| `--json` | flag | no | Raw `{items: [{kind, at, id, enrollment_id, person: {kind, id, name, email, job_title, company_name}, channel, type, trigger_reason, rationale, subject}], next_cursor}` JSON |
 
 The sends, replies and decisions of one campaign, newest first. A bad `--kind`, `--channel` or `--limit` returns exit code 2. A cursor the API cannot read returns 422 (`invalid_cursor`).
 
