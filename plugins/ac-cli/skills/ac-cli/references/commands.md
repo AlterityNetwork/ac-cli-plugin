@@ -3155,6 +3155,9 @@ marks the rest `not_sent`. Running it again is safe.
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
 | `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
+The page lists the people who wait on a review first, then by
+`next_check_at`, soonest first and a null last, then the newest enrollment.
+
 Each row is the enrollment plus `person_name`, `email`, `last_decision`
 (`{id, type, status, created_at}`, or null before the first decision) and
 `awaiting_approval` (true while a proposed action of the enrollment waits in
@@ -3162,13 +3165,14 @@ the Review queue). `type` is `email`, `linkedin_connection`,
 `linkedin_message`, `wait`, `stop`, `opt_out` or null. `status` is `saved`,
 `invalid`, `error` or `discarded`. The Last action column shows the type and
 the status.
-`email` is the email of the person row; a Run can choose another address.
+`email` is the address the Review card shows: for a prospect, a typed email
+wins over the profile email. A Run can choose another address.
 
 Each row also holds:
 
 - `job_title` and `company_name` of the person, or null.
 - `last_touch`: `{channel, kind, at}` of the newest sent action, or null. `channel` is `email` or `linkedin`. `kind` is `intro`, `follow_up`, `reply`, `connection` or `message`. A draft that was never sent does not count.
-- `reply`: `{state, at}`. `state` is `none`, `replied` or `booked`; `booked` means the enrollment ended with its goal met.
+- `reply`: `{state, at}`. `state` is `none`, `replied` or `booked`; `booked` means the enrollment ended with its goal met. `replied` reads the newest reply time of the enrollment, the value the campaign counts read.
 - `needs_email_reason`: for a `needs_contact_data` row, `missing`, `bounced`, `invalid` or `unsubscribed`; null when the email is not the gap, and on every other row.
 
 The table adds a Role column (title · company), a Last touch column and a
