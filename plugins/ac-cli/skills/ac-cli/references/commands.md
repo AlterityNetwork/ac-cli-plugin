@@ -3286,7 +3286,7 @@ offset is `offset` plus the length of `data`.
 #### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `can_switch_channel` (true when `reject --then switch_channel` can succeed) |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `can_switch_channel` (true when the campaign allows both channels and the person has an address on the other one; a switch to LinkedIn can still fail on the sender's LinkedIn connection or the person's LinkedIn status) |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
 the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
