@@ -3334,7 +3334,7 @@ session returns exit code 4.
 | `--yes` / `-y` | flag | no | Skip the question that `--then stop` asks. `AC_YES=1` does the same. |
 | `--json` | flag | no | Raw action JSON, now `rejected` |
 
-Exit code 5 with `code`: `enrollment_ended`, `action_not_pending`, or `channel_unavailable` (`switch_channel` only: the campaign does not allow both channels, the person has no email address or LinkedIn URL for the other one, or a switch to LinkedIn has no LinkedIn action: the sender has no live LinkedIn connection, or the person declined or is suppressed on LinkedIn; the action stays pending). A retry of the same reject returns the same action.
+Exit code 5 with `code`: `enrollment_ended`, `action_not_pending`, or `channel_unavailable` (`switch_channel` only: the campaign does not allow both channels, the person has no email address or LinkedIn URL for the other one, the email address is suppressed, or a switch to LinkedIn has no LinkedIn action: the sender has no live LinkedIn connection, or the person declined or is suppressed on LinkedIn; the action stays pending). A retry of the same reject returns the same action.
 
 ### Agentic Conversations
 
