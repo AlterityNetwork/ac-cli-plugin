@@ -355,7 +355,9 @@ campaign's shortest follow-up wait. The person stays enrolled and the touch is
 not counted. `--then switch_channel` asks for one new draft on the other
 channel (an email becomes a LinkedIn draft, a LinkedIn draft becomes an email).
 It needs a campaign that allows both channels and a person with an address on
-the other one: `get` shows `can_switch_channel`. `--then stop` ends the
+the other one: `get` shows `can_switch_channel`. A switch to LinkedIn also needs
+a sender with a live LinkedIn connection and a person who did not decline and is
+not suppressed on LinkedIn; `can_switch_channel` does not check these. `--then stop` ends the
 person's enrollment and asks first; pass `--yes` to skip the question. With
 stop, skip and switch_channel, `--reason` is optional. A retry of the same
 reject is safe and returns the same action. `reject` returns exit code 5 with a
