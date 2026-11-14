@@ -306,7 +306,8 @@ the legacy `ac sequences outbox` drafts.
 LinkedIn note or a LinkedIn message). `list` reads the `pending_approval`
 actions by default, oldest first, and prints the queue `total`. Filter with
 `--status`, `--campaign-id` and `--type`. The first column is the action ID
-that `get` takes.
+that `get` takes. The queue also ends with how many people come due in the
+next 24 hours (`due_soon` in `--json`; null for any other status set).
 
 The handled drafts of the last 7 days, newest decision first, in one read:
 
