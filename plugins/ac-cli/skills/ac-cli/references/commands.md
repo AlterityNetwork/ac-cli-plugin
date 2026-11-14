@@ -3265,10 +3265,11 @@ member). A repeated `stop` keeps the first stop time.
 | `--offset` | int | 0 | How many actions to skip first |
 | `--since` | ISO 8601 with a time zone | None | Only the actions decided at or after this time |
 | `--sort` | `oldest` or `newest_decided` | None (the API reads `oldest`) | `newest_decided` puts the newest decision first, the id as the tie; it needs a `--since` of the last 31 days, else exit code 2 |
-| `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
+| `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool, "due_soon": N or null}` JSON |
 
 Lists the Review queue: the proposed actions (an email, a LinkedIn note or a
-LinkedIn message), oldest first, with the id as the tie. The first column is
+LinkedIn message), oldest first by default, or with `--sort newest_decided`
+the newest decision first, with the id as the tie. The first column is
 the action ID that `get` takes. Columns: Action ID, Person (`person.name`, or
 the address when the person has no name), Type, To, Campaign (`campaign.name`),
 Touch, Sentiment, Status, Created, Decided, Reason. Decided is `decided_at`:
@@ -3281,21 +3282,30 @@ an unclassified reply. `to` is the current email address, or the current LinkedI
 for a LinkedIn action, read fresh. The title reads "Envoy actions
 <from>-<to> of <total>"; `total` is the queue count. In table output a last line
 prints the next `--offset` while `has_more` is true. With `--json`, the next
-offset is `offset` plus the length of `data`.
+offset is `offset` plus the length of `data`. `due_soon` is the count of the
+active enrollments of an active campaign whose next check is in the next 24
+hours; `--campaign-id` applies to it. The API sends it only for the queue
+(no `--status`, or `--status pending_approval` alone) and sends null for any
+other status set. When it is not null, the table output ends with "N people
+come due in the next 24 hours".
 
 #### `ac agentic envoy drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `can_switch_channel` (true when the campaign allows both channels and the person has an address on the other one; a switch to LinkedIn can still fail on the sender's LinkedIn connection or the person's LinkedIn status) |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `linkedin` {`state` (`none`, `invited`, `connected` or `declined`), `degree` (1 when connected, else null), `invited_at`, `connected_at`} (null for an email), `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `facts_used` (a list of {`source`, `label`, `ref_kind`, `ref_id`}, empty when the decision names no fact), `can_switch_channel` (true when the campaign allows both channels and the person has an address on the other one; a switch to LinkedIn can still fail on the sender's LinkedIn connection or the person's LinkedIn status) |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
 the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
-Decided, Decided by, Then (`reject_then`), Reason, the `rationale` as Why and
+LinkedIn (a LinkedIn action only: the state, `1st` when connected, and the
+accept date when connected or the invite date when invited, e.g.
+`connected · 1st · 2026-11-11`), Decided, Decided by, Then (`reject_then`), Reason, the `rationale` as Why and
 the `objective`. Then it prints the inbound message
 the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
-LinkedIn message. A deleted person keeps the item, with a null name and a null
-`to`. An action of another organization returns exit code 3.
+LinkedIn message. Last it prints What Envoy used: one `source · label` line
+per fact in `facts_used`, and no block when the list is empty. A deleted person
+keeps the item, with a null name and a null `to`. An action of another
+organization returns exit code 3.
 
 #### `ac agentic envoy drafts approve <action-id>`
 | Flag | Type | Required | Description |
