@@ -3047,7 +3047,7 @@ Deletes one remembered reject reason; the feedback id comes from `campaigns get`
 | `--channel` | str | no | `email` or `linkedin`. Drops the decisions with no channel |
 | `--limit` | int | no | Items per page, 1 to 100 (default 50) |
 | `--cursor` | str | no | The next cursor that the previous page printed |
-| `--json` | flag | no | Raw `{items: [{kind, at, id, enrollment_id, person: {kind, id, name, email, job_title, company_name}, channel, type, status, trigger_reason, rationale, objective, followup_days, goal_met, subject}], next_cursor}` JSON |
+| `--json` | flag | no | Raw `{items: [{kind, at, id, enrollment_id, person: {kind, id, name, email, job_title, company_name}, channel, type, trigger_reason, rationale, subject}], next_cursor}` JSON |
 
 The sends, replies and decisions of one campaign, newest first. A bad `--kind`, `--channel` or `--limit` returns exit code 2. A cursor the API cannot read returns 422 (`invalid_cursor`).
 
@@ -3155,6 +3155,9 @@ marks the rest `not_sent`. Running it again is safe.
 | `--offset` | int | no | How many enrollments to skip first; default 0 |
 | `--json` | flag | no | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool}` JSON |
 
+The page lists the people who wait on a review first, then by
+`next_check_at`, soonest first and a null last, then the newest enrollment.
+
 Each row is the enrollment plus `person_name`, `email`, `last_decision`
 (`{id, type, status, created_at}`, or null before the first decision) and
 `awaiting_approval` (true while a proposed action of the enrollment waits in
@@ -3162,13 +3165,14 @@ the Review queue). `type` is `email`, `linkedin_connection`,
 `linkedin_message`, `wait`, `stop`, `opt_out` or null. `status` is `saved`,
 `invalid`, `error` or `discarded`. The Last action column shows the type and
 the status.
-`email` is the email of the person row; a Run can choose another address.
+`email` is the address the Review card shows: for a prospect, a typed email
+wins over the profile email. A Run can choose another address.
 
 Each row also holds:
 
 - `job_title` and `company_name` of the person, or null.
 - `last_touch`: `{channel, kind, at}` of the newest sent action, or null. `channel` is `email` or `linkedin`. `kind` is `intro`, `follow_up`, `reply`, `connection` or `message`. A draft that was never sent does not count.
-- `reply`: `{state, at}`. `state` is `none`, `replied` or `booked`; `booked` means the enrollment ended with its goal met.
+- `reply`: `{state, at}`. `state` is `none`, `replied` or `booked`; `booked` means the enrollment ended with its goal met. `replied` reads the newest reply time of the enrollment, the value the campaign counts read.
 - `needs_email_reason`: for a `needs_contact_data` row, `missing`, `bounced`, `invalid` or `unsubscribed`; null when the email is not the gap, and on every other row.
 
 The table adds a Role column (title · company), a Last touch column and a
@@ -3224,7 +3228,7 @@ An enrollment that ended for another reason returns exit code 5
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--campaign` | str | yes | The target campaign |
-| `--json` | flag | no | One id: the raw new enrollment JSON. Several ids: raw `{"results": [{enrollment_id, outcome, moved_to_enrollment_id}]}` |
+| `--json` | flag | no | Raw `{"results": [{enrollment_id, outcome, moved_to_enrollment_id}]}` JSON, for one id or several |
 
 Moves 1 to 50 enrollments to another campaign. The CLI refuses a malformed
 id and more than 50 ids with exit code 2 before any call. Each old
@@ -3237,10 +3241,9 @@ names the new enrollment), `not_found`, `enrollment_ended`, `same_campaign`,
 `campaign_archived`, `opted_out`, `campaign_full`, `already_enrolled`,
 `run_in_progress` or `enroll_failed` (the old enrollment ended and the
 enroll failed: add the person again). One refused enrollment never blocks
-the others. With one
-id, a refusal returns exit code 5 and an unknown enrollment, campaign or
-person returns exit code 3. With several ids, an archived target returns
-exit code 5 and an unknown target exit code 3, for the whole request.
+the others, and a refused enrollment exits 0. One id and several ids make
+the same call. An archived target returns exit code 5 and an unknown target
+exit code 3, for the whole request.
 
 #### `ac agentic envoy organization status|stop|resume`
 | Flag | Type | Required | Description |

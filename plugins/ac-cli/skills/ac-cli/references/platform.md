@@ -208,10 +208,10 @@ returns exit code 2. The sender is always the creator: the creator's mailbox
 sends, and no option changes it. For each Run, the planner selects
 the next step from the latest context of the person. The goal and the
 description are context for the planner, not instructions. A campaign with
-no goal shows the planner no goal line. The planner does
-not read the channels and the limits yet: its prompt still holds the email
-cadence, with no reply at most 4 emails, with gaps of about 3, then 5, then 7
-days. `activate` and `resume` both set the campaign `active`; `pause`
+no goal shows the planner no goal line. The planner reads the channels and
+the limits: it chooses only an action that the campaign channels and the
+open addresses of the person allow, it sees the touches left, and its wait
+is held between `--min-days` and `--max-days`. `activate` and `resume` both set the campaign `active`; `pause`
 sets it `paused`. While a campaign is paused, no new Run starts and no email is
 sent. A Run that started before the pause still finishes its decision, and its
 send is refused. `archive` is final and asks first. It ends every live
@@ -253,10 +253,15 @@ before it. `campaigns summary` shows the organization totals: live people,
 sends in the last 7 days, and replies and goals met in the last 30 days, with
 their rates.
 
-`enrollments list` shows one page of a campaign, newest first. Each row names
-the person, the email of the person row, the state and the last decision
-(type and status). `--search` keeps the people whose name holds the text,
-in any case. The title shows the rows and the total, for example `2-2 of 3`.
+`enrollments list` shows one page of a campaign: the people who wait on a
+review first, then by the next step (soonest first, a row with no next step
+last), then the newest. Each row names the person, the email, the title and
+company, the state, the last decision (type and status), the last touch
+(channel, kind and time), the reply (`none`, `replied` or `booked`) and,
+for `needs_contact_data`, why the email is missing (`missing`, `bounced`,
+`invalid` or `unsubscribed`). `--status awaiting` keeps the active people
+who wait on a review, and `--status in_progress` the other active people.
+`--search` keeps the people whose name holds the text, in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
 `enrollments timeline` lists the Envoy items of one enrollment, newest
