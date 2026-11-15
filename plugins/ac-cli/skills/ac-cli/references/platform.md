@@ -266,7 +266,8 @@ When more rows wait, the command prints the `--offset` of the next page.
 
 `enrollments timeline` lists the Envoy items of one enrollment, newest
 first: the start, each decision, each proposed action, the thread emails (a
-reply shows as an `inbound` email), the LinkedIn messages, and the end. It
+reply shows as an `inbound` email), the LinkedIn invites (with the note that
+went out, or `no note`), the LinkedIn messages, and the end. It
 holds no CRM activity; read those with `ac crm activities`. To merge it with
 the CRM emails, drop a CRM email whose id is the `id` of an `email` item or
 the `communication_id` of an `action`.
