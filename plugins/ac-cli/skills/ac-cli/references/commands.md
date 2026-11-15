@@ -3182,7 +3182,10 @@ Reply column, and the Status cell names the needs-email reason, for example
 #### `ac agentic envoy enrollments get <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw enrollment JSON: `status`, `ended_reason`, `next_check_at`, `touch_count`, `context_version` |
+| `--json` | flag | no | Raw enrollment JSON: `status`, `ended_reason`, `next_check_at`, `touch_count`, `context_version`, `prospect_id` |
+
+`prospect_id` is the Signals prospect of the person, else of their company,
+else null. Only this read carries it; the table shows it as the Prospect row.
 
 #### `ac agentic envoy enrollments timeline <enrollment-id>`
 | Flag | Type | Required | Description |
@@ -3198,8 +3201,8 @@ carry the enrollment id. Per kind:
   `followup_days`, `goal_met`, `failure_reason`.
 - `action`: `type`, `status`, `decision_id`, `communication_id`,
   `reject_reason`.
-- `email`: `direction`, `subject`, `status`, `text` (500 chars at most).
-- `linkedin_message`: `direction`, `text` (500 chars at most).
+- `email`: `direction`, `subject`, `status`, `text` (the full text).
+- `linkedin_message`: `direction`, `text` (the full text).
 - `ended`: `ended_reason`.
 
 The table shows a short line per item. No CRM activity is in the list. Exit
