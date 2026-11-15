@@ -3191,7 +3191,7 @@ else null. Only this read carries it; the table shows it as the Prospect row.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--limit` | int | no | The most rows of each kind, 1 to 100; default 50. The newest rows of each kind are kept. |
-| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, id, ...}]`. `kind` is `enrolled`, `decision`, `action`, `email`, `linkedin_message` or `ended`. |
+| `--json` | flag | no | Raw JSON: `enrollment_id`, `campaign_id`, `campaign_name`, `items: [{kind, at, id, ...}]`. `kind` is `enrolled`, `decision`, `action`, `email`, `linkedin_connection`, `linkedin_message` or `ended`. |
 
 The list is newest first, with the `id` as the tie; at the same time `ended`
 comes before `enrolled`. An item with no time is last. `enrolled` and `ended`
@@ -3201,11 +3201,17 @@ carry the enrollment id. Per kind:
   `followup_days`, `goal_met`, `failure_reason`.
 - `action`: `type`, `status`, `decision_id`, `communication_id`,
   `reject_reason`.
-- `email`: `direction`, `subject`, `status`, `text` (the full text).
-- `linkedin_message`: `direction`, `text` (the full text).
+- `email`: `direction`, `subject`, `status`, `text` (the full text),
+  `from_name`, `from_email`, `to_emails`.
+- `linkedin_connection`: `status` (`sent`, `accepted` or `declined`),
+  `note_sent`, `text` (the note that went out, when there was one),
+  `action_id` (the action that sent the invite, or null).
+- `linkedin_message`: `direction`, `text` (the full text), `action_id` (the
+  action that sent an outbound message, or null).
 - `ended`: `ended_reason`.
 
-The table shows a short line per item. No CRM activity is in the list. Exit
+The table shows a short line per item: an inbound email adds its sender address, and
+an invite adds its note or `no note`. No CRM activity is in the list. Exit
 code 3 for an enrollment of another organization.
 
 #### `ac agentic envoy enrollments evaluate <enrollment-id>`
