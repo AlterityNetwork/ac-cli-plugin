@@ -177,12 +177,22 @@
     {
       "id": 11,
       "prompt": "Train a new writing style called 'Enterprise Formal' with a sample email I'll provide: 'Dear Mr. Johnson, I am writing to follow up on our recent conversation regarding the enterprise partnership...'",
-      "expected_output": "Create style → train with the sample.",
+      "expected_output": "Runs `ac styles create --name \"Enterprise Formal\" --sample-email \"...\"`, then `ac styles train <style-id>`. The sample goes on `create`; `train` takes no sample text.",
       "assertions": [
         {
           "name": "style_create_then_train",
           "type": "command_sequence",
-          "text": "Sequence: `ac styles create .*--name .*Enterprise Formal`, `ac styles train .*--sample-text`"
+          "text": "Sequence: `ac styles create .*--name .*Enterprise Formal`, `ac styles train`"
+        },
+        {
+          "name": "sample_on_create",
+          "type": "command_matches",
+          "text": "`ac styles create .*--sample-email`"
+        },
+        {
+          "name": "no_sample_text_flag",
+          "type": "command_forbidden",
+          "text": "`ac styles train .*--sample-text`"
         }
       ]
     },
@@ -332,7 +342,7 @@
         {
           "name": "search_then_impersonate",
           "type": "command_sequence",
-          "text": "Sequence: `ac admin users (search|auth-search|list).*--email jane@acme.com`, `ac admin users impersonate`"
+          "text": "Sequence: `ac admin users ((search|auth-search) .*--email|list .*(--query|-q)) .*jane@acme.com`, `ac admin users impersonate`"
         }
       ]
     },
@@ -538,13 +548,18 @@
     },
     {
       "id": 36,
-      "prompt": "Create a new organization called 'Acme Corp' on the platform with the pro plan.",
-      "expected_output": "Uses `ac admin orgs create` with --name and --plan.",
+      "prompt": "Create a new organization called 'Acme Corp' on the platform.",
+      "expected_output": "Runs `ac admin orgs create --name \"Acme Corp\"`. The command has no --plan or --slug flag.",
       "assertions": [
         {
           "name": "org_create",
           "type": "command_matches",
-          "text": "`ac admin orgs create` with `--name .*Acme Corp` and `--plan pro`"
+          "text": "`ac admin orgs create` with `--name .*Acme Corp`"
+        },
+        {
+          "name": "no_removed_flags",
+          "type": "command_forbidden",
+          "text": "`ac admin orgs create .*--(plan|slug)`"
         }
       ]
     },
@@ -574,13 +589,18 @@
     },
     {
       "id": 39,
-      "prompt": "Generate a demo organization in the technology space and prepare a demo account on it called 'TechDemo'.",
-      "expected_output": "generate-org → prepare-account in order.",
+      "prompt": "Generate a demo organization in the technology space and prepare a demo account on it called 'TechDemo'. The demo user is Jane Smith, jane@techdemo.example.",
+      "expected_output": "generate-org → prepare-account in order. prepare-account passes --org-name, --user-email, --user-first-name and --user-last-name.",
       "assertions": [
         {
           "name": "demo_pipeline",
           "type": "command_sequence",
           "text": "Sequence: `ac admin demo generate-org .*--industry .*Technology`, `ac admin demo prepare-account .*--org-name .*TechDemo`"
+        },
+        {
+          "name": "demo_user_flags",
+          "type": "command_matches",
+          "text": "`ac admin demo prepare-account .*--user-email .*jane@techdemo.example` `ac admin demo prepare-account .*--user-first-name .*Jane` `ac admin demo prepare-account .*--user-last-name .*Smith`"
         }
       ]
     },
@@ -1847,6 +1867,18 @@
           "name": "reject_switch_channel",
           "type": "command_matches",
           "text": "`ac agentic envoy drafts reject a-82 .*--then switch_channel`"
+        }
+      ]
+    },
+    {
+      "id": 147,
+      "prompt": "Create a new user Ada Lovelace (ada@example.com) in org o-42 as a member. Do not send the welcome email.",
+      "expected_output": "Runs `ac admin orgs create-user o-42 --email ada@example.com --first-name Ada --last-name Lovelace --no-send-email`. It does not use `ac admin users create` and `add-member`.",
+      "assertions": [
+        {
+          "name": "create_user_in_org",
+          "type": "command_matches",
+          "text": "`ac admin orgs create-user o-42` `ac admin orgs create-user .*--email[ =]ada@example.com` `ac admin orgs create-user .*--first-name[ =].?Ada` `ac admin orgs create-user .*--last-name[ =].?Lovelace` `ac admin orgs create-user .*--no-send-email`"
         }
       ]
     }

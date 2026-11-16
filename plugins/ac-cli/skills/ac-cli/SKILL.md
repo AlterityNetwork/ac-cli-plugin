@@ -188,7 +188,7 @@ Some commands are validated server-side and reject the request if a paired flag 
 | Command | Required-together flags |
 |---------|-------------------------|
 | `ac workflows schedules create` | `--cron` AND `--timezone` (omitting timezone makes the schedule fire in server-default tz, which is rarely what the user wants) |
-| `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output) |
+| `ac workflows schedules preview` | `--cron` AND `--timezone` AND `--count` (count drives example output; the API returns at most 5 times) |
 | `ac admin subscriptions create` | `--org-id` AND `--plan-id` AND `--billing-period` AND `--started-at` |
 | `ac admin subscription-plans create` | `--slug` AND `--name` AND `--monthly-price-cents` AND `--annual-price-cents` (dollars × 100; "$9/mo" → 900) |
 | `ac admin billing top-up` | `--org-id` AND `--credits` (100 to 1,000,000) |
@@ -399,7 +399,7 @@ ac sequences outbox sent --json
 ```bash
 # Always preview the cron interpretation first
 ac workflows schedules preview <workflow-id> \
-  --cron "0 9 * * 1" --timezone "America/New_York" --count 10
+  --cron "0 9 * * 1" --timezone "America/New_York" --count 5
 
 ac workflows schedules create <workflow-id> \
   --cron "0 9 * * 1" --timezone "America/New_York" --json

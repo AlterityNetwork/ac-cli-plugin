@@ -510,10 +510,10 @@ ac styles get <style-id>
 ac styles create --name "Professional" [--prompt "..."] [--sample-email "..."] [--default]
 ac styles update <style-id> [--name "Updated"] [--prompt "..."] [--default|--no-default] [--active|--inactive]
 ac styles delete <style-id> [--yes]
-ac styles train <style-id> --sample-text "Example email text..."
-ac styles feedback <session-id> --rating 4 [--comments "Good but too formal"]
-ac styles iterate <session-id> --feedback "Make it more casual"
-ac styles analyze --text "Analyze this text for style..."
+ac styles train <style-id> [--num-examples 3]        # the API writes 1 to 10 example emails
+ac styles feedback <session-id> --email-id <email-id> --rating 4 [--comments "Good but too formal"]
+ac styles iterate <session-id> --email-id <email-id> --feedback "Make it more casual" [--rating 3]
+ac styles analyze --text "First sample email..." [--text "Second sample email..."]
 ```
 
 ## Nylas (Email Integration)
@@ -523,8 +523,8 @@ ac nylas oauth-start [--provider google] [--return-path "/settings"]
 ac nylas account
 ac nylas org-accounts
 ac nylas disconnect [--yes]
-ac nylas send --to "jane@example.com" --subject "Hello" --body "Hi Jane..." \
-  [--reply-to-message-id <id>]
+ac nylas send --to "jane@example.com" [--to "ada@example.com"] --subject "Hello" --body "Hi Jane..." \
+  [--reply-to-message-id <id>]   # --body is plain text
 ac nylas send-cap            # today's prospect emails against the daily cap
 ac nylas update-signature --signature "<p>Best regards</p>"
 ac nylas validate-signature --signature "<p>Best regards</p>"
@@ -617,7 +617,7 @@ ac profiles me                                    # View your profile
 ac profiles update [--first-name "Jane"] [--last-name "Smith"] [--bio "..."] \
   [--job-title "Developer"] [--avatar-url "..."] [--email "jane@example.com"] \
   [--notification-email "alerts@example.com" | --clear-notification-email]
-ac profiles members [--limit 50] [--offset 0]     # List org members
+ac profiles members                               # List org members
 ac profiles set-organization <org-id>             # Switch active org (per-user)
 ac profiles set-password                          # Mark password as set (post-magic-link)
 ac profiles subscription                          # View current org subscription

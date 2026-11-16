@@ -22,7 +22,7 @@ ac sequences sequences restore <sequence-id>
 ac sequences sequences impact-preview <sequence-id> --step-id <id> [--step-id <id> ...]
 ac sequences sequences bulk-remove-recipients <sequence-id> --recipient-id <id> [--recipient-id <id> ...]
 ac sequences sequences classify-step-subtype "Send a manual follow-up email"
-ac sequences sequences outputs <sequence-id> [--limit 50] [--offset 0]
+ac sequences sequences outputs <sequence-id>              # Emails and tasks the sequence made
 ac sequences sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
 ac sequences sequences for-prospect <prospect-id>          # Sequences containing a given person
 ```
@@ -108,7 +108,7 @@ ac sequences inbox reply <thread-id> --body "..."
 ```bash
 ac sequences battlecards list [--query "competitor"] [--limit 50]
 ac sequences battlecards get <battlecard-id>
-ac sequences battlecards create --name "vs Competitor X" [--competitor-name "X"]
+ac sequences battlecards create --name "vs Competitor X" [--description "..."]
 ac sequences battlecards update <battlecard-id> --description "Updated positioning"
 ac sequences battlecards delete <battlecard-id> [--yes]
 ac sequences battlecards duplicate <battlecard-id>
@@ -119,7 +119,7 @@ ac sequences battlecards duplicate <battlecard-id>
 ```bash
 ac sequences playbooks list [--query "enterprise"] [--limit 50]
 ac sequences playbooks get <playbook-id>
-ac sequences playbooks create --name "Enterprise Outreach" [--description "..."] [--icp-id <profile-id>]
+ac sequences playbooks create --name "Enterprise Outreach" [--icp-id <profile-id>]
 ac sequences playbooks update <playbook-id> --name "Updated Playbook" [--icp-id <profile-id>]
 ac sequences playbooks delete <playbook-id> [--yes]
 ac sequences playbooks duplicate <playbook-id>
