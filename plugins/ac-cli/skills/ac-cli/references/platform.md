@@ -169,34 +169,35 @@ person to `prospect`. It moves a row at the `identified` stage, and a person
 that holds no stage. A qualified lead or a customer keeps the stage it holds.
 A company always holds a stage, so only a person can hold none.
 
-## Envoy Campaigns
+## Outreach Campaigns
 
 ```bash
-ac agentic envoy campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
-ac agentic envoy campaigns get <campaign-id>
-ac agentic envoy campaigns forget <campaign-id> <feedback-id> [--yes]
-ac agentic envoy campaigns activity <campaign-id> [--kind send|reply|decision] [--channel email|linkedin] [--limit 50] [--cursor <next>]
-ac agentic envoy campaigns results <campaign-id> [--days 30]
-ac agentic envoy campaigns summary
-ac agentic envoy campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
-ac agentic envoy campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
-ac agentic envoy campaigns activate|pause|resume <campaign-id>
-ac agentic envoy campaigns archive <campaign-id> [--yes]
-ac agentic envoy campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
-ac agentic envoy campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
-ac agentic envoy enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended|awaiting|in_progress] [--search "jane"] [--limit 100] [--offset 0]
-ac agentic envoy enrollments get <enrollment-id>
-ac agentic envoy enrollments timeline <enrollment-id> [--limit 50]
-ac agentic envoy enrollments evaluate <enrollment-id> [--request-id <id>]
-ac agentic envoy enrollments exit <enrollment-id> [--yes]
-ac agentic envoy enrollments move <enrollment-id>... --campaign <campaign-id>
-ac agentic envoy organization status|resume
-ac agentic envoy organization stop [--yes]
+ac agentic outreach campaigns list [--status active|paused|archived] [--limit 50] [--offset 0]
+ac agentic outreach campaigns get <campaign-id>
+ac agentic outreach campaigns forget <campaign-id> <feedback-id> [--yes]
+ac agentic outreach campaigns activity <campaign-id> [--kind send|reply|decision] [--channel email|linkedin] [--limit 50] [--cursor <next>]
+ac agentic outreach campaigns results <campaign-id> [--days 30]
+ac agentic outreach campaigns summary
+ac agentic outreach campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
+ac agentic outreach campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
+ac agentic outreach campaigns activate|pause|resume <campaign-id>
+ac agentic outreach campaigns archive <campaign-id> [--yes]
+ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
+ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<id>]... [--file people.txt]
+ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended|awaiting|in_progress] [--search "jane"] [--limit 100] [--offset 0]
+ac agentic outreach enrollments get <enrollment-id>
+ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
+ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
+ac agentic outreach enrollments exit <enrollment-id> [--yes]
+ac agentic outreach enrollments move <enrollment-id>... --campaign <campaign-id>
+ac agentic outreach organization status|resume
+ac agentic outreach organization stop [--yes]
 ```
 
-These commands run the campaigns of Envoy, the agent app at `/app/envoy`. The
-CLI group keeps the name `ac agentic envoy`. They are not the legacy
-Sequences app (`ac sequences sequences`).
+These commands run the campaigns of Outreach, the agent app at `/app/outreach`.
+Envoy is the old name of Outreach, and `ac agentic envoy` still runs as a
+hidden old name of the group. They are not the legacy Sequences app
+(`ac sequences sequences`).
 
 A new campaign is `paused`, and the caller owns it. A campaign has a name, an
 optional goal, an optional description, the allowed channels, the touch and
@@ -264,7 +265,7 @@ who wait on a review, and `--status in_progress` the other active people.
 `--search` keeps the people whose name holds the text, in any case. The title shows the rows and the total, for example `2-2 of 3`.
 When more rows wait, the command prints the `--offset` of the next page.
 
-`enrollments timeline` lists the Envoy items of one enrollment, newest
+`enrollments timeline` lists the Outreach items of one enrollment, newest
 first: the start, each decision, each proposed action, the thread emails (a
 reply shows as an `inbound` email), the LinkedIn invites (with the note that
 went out, or `no note`), the LinkedIn messages, and the end. It
@@ -292,20 +293,20 @@ enrollment, in order: `moved` (with the new enrollment), `not_found`,
 (the old enrollment ended and the enroll failed: add the person again). One
 refused enrollment never blocks the others.
 
-`organization stop` stops Envoy for every campaign of the organization,
+`organization stop` stops Outreach for every campaign of the organization,
 and `resume` clears it. Only an organization admin may run them; another
 member gets exit code 4.
 
-## Envoy Drafts
+## Outreach Drafts
 
 ```bash
-ac agentic envoy drafts list [--status pending_approval ...] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--since <iso-time>] [--sort oldest|newest_decided] [--limit 50] [--offset 0]
-ac agentic envoy drafts get <action-id>
-ac agentic envoy drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
-ac agentic envoy drafts reject <action-id> --then regenerate|stop|skip|switch_channel [--reason "Feedback"] [--remember] [--yes]
+ac agentic outreach drafts list [--status pending_approval ...] [--campaign-id <campaign-id>] [--type email|linkedin_connection|linkedin_message] [--since <iso-time>] [--sort oldest|newest_decided] [--limit 50] [--offset 0]
+ac agentic outreach drafts get <action-id>
+ac agentic outreach drafts approve <action-id> [--subject "New subject"] [--body "Text" | --body-file body.txt | --message "Text"] [--note "Text"]
+ac agentic outreach drafts reject <action-id> --then regenerate|stop|skip|switch_channel [--reason "Feedback"] [--remember] [--yes]
 ```
 
-These commands review what an Envoy campaign drafted. They are not
+These commands review what an Outreach campaign drafted. They are not
 the legacy `ac sequences outbox` drafts.
 
 `list` and `get` read the Review queue: the proposed actions (an email, a
@@ -318,7 +319,7 @@ next 24 hours (`due_soon` in `--json`; null for any other status set).
 The handled drafts of the last 7 days, newest decision first, in one read:
 
 ```bash
-ac agentic envoy drafts list --status approved --status sending --status executed \
+ac agentic outreach drafts list --status approved --status sending --status executed \
   --status rejected --status failed --since <now minus 7 days, ISO 8601 UTC> --sort newest_decided
 ```
 
@@ -347,7 +348,7 @@ hash; a retry of the same approve is safe and returns the same action.
 `field` in the output: `draft_empty`, `draft_too_long`, `draft_placeholder`,
 `draft_link_in_note`). It returns exit code 5 with a `code` when the
 enrollment ended (`enrollment_ended`), the campaign is not active
-(`campaign_not_active`), the organization stopped Envoy
+(`campaign_not_active`), the organization stopped Outreach
 (`organization_stopped`), the person has no address now
 (`recipient_missing`), or the action is no longer pending
 (`action_not_pending`). Read the action again with `get` before you retry.
@@ -357,7 +358,7 @@ for one new draft at once, and needs `--reason` (1 to 1000 characters): the
 next draft reads it. Add `--remember` to keep the reason for the whole
 campaign: each later draft of every person in it follows the reason. The
 campaign keeps the newest 20. `--remember` is refused with any other `--then`.
-`--then skip` says "not now": Envoy sends nothing and looks again after the
+`--then skip` says "not now": Outreach sends nothing and looks again after the
 campaign's shortest follow-up wait. The person stays enrolled and the touch is
 not counted. `--then switch_channel` asks for one new draft on the other
 channel (an email becomes a LinkedIn draft, a LinkedIn draft becomes an email).
@@ -374,7 +375,7 @@ pending (`action_not_pending`), or the switch is not possible
 (`channel_unavailable`), and exit code 2 for a bad `--reason`. A paused
 campaign or a stopped organization does not block a reject.
 
-Do not approve an Envoy email with `ac agentic approvals`; that inbox
+Do not approve an Outreach email with `ac agentic approvals`; that inbox
 refuses it with exit code 5.
 
 ## Organization Analytics
