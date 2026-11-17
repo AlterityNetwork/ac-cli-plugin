@@ -30,11 +30,12 @@ ac workflows schedules create <workflow-id> --cron "0 9 * * 1" --timezone "Ameri
 
 # update: pass any combination of --cron / --timezone / --input / --preset-id
 ac workflows schedules update <workflow-id> <schedule-id> \
-  [--cron "0 10 * * 1"] [--timezone UTC] [--preset-id <preset-id>]
+  [--cron "0 10 * * 1"] [--timezone UTC] [--input '{"key":"value"}'] [--preset-id <preset-id>]
 
 ac workflows schedules delete <workflow-id> <schedule-id> [--yes]
 
 # preview — always pass all three to see the next N fire times
+# The API returns at most 5 times; --count only cuts that list.
 ac workflows schedules preview <workflow-id> --cron "0 9 * * 1" --timezone "America/New_York" --count 5
 
 ac workflows schedules toggle <workflow-id> <schedule-id> --enabled/--disabled

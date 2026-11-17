@@ -96,13 +96,13 @@ ac crm comms mark-read <thread-id>
 ac crm comms draft-email --contact-id <id> --subject "Intro" --content "Hi..."
 ac crm comms generate-draft --mode compose --recipient-name "Jane" \
   [--company-name "Acme"] [--recipient-title "VP Sales"] \
-  [--sender-signature "Best, John"] [--user-draft-subject "Intro"] \
+  [--sender-name "John"] [--user-draft-subject "Intro"] \
   [--user-draft-body "Draft to refine..."]
 ac crm comms contact-by-email jane@acme.com
 ac crm comms resolve-contact <email> [--name "Jane"] [--company-id <id>]
 ac crm comms unread-thread-ids
-ac crm comms archive --thread-id <id>
-ac crm comms unarchive --thread-id <id>
+ac crm comms archive --thread-id <id> | --comm-id <id>
+ac crm comms unarchive --thread-id <id> | --comm-id <id>
 ac crm comms delete <communication-id> [--yes]
 
 # Scheduled send (status scheduled -> sending -> sent, or failed)

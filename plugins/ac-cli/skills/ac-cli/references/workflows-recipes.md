@@ -87,7 +87,7 @@ ac workflows run-people crm-count <workflow-id>
 
 ```bash
 ac admin ai-usage summary --start-date 2026-03-01 --json
-ac admin ai-usage users --start-date 2026-03-01 --sort total_tokens --order desc --limit 10 --json
+ac admin ai-usage users --start-date 2026-03-01 --sort total_tokens --order desc --page-size 10 --json
 ac admin ai-usage user <user-id> --start-date 2026-03-01 --json
 ac admin ai-usage by-model --start-date 2026-03-01 --json
 ```
@@ -148,8 +148,8 @@ ac apps configs my-app --json
 ac apps update-config my-app api_key --value "sk-..." --json
 
 # Train a writing style
-ac styles create --name "Sales Outreach" --tone professional --formality medium --json
-ac styles train <style-id> --sample-text "Hi Jane, I noticed your team..."
-ac styles feedback <session-id> --rating 3 --comments "Good but too formal"
-ac styles iterate <session-id> --feedback "Make it more conversational"
+ac styles create --name "Sales Outreach" --sample-email "Hi Jane, I noticed your team..." --json
+ac styles train <style-id> --num-examples 3 --json     # note session.id and generated_emails[].id
+ac styles feedback <session-id> --email-id <email-id> --rating 3 --comments "Good but too formal"
+ac styles iterate <session-id> --email-id <email-id> --feedback "Make it more conversational"
 ```

@@ -5,7 +5,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ## Users
 
 ```bash
-ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
+ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
 ac admin users get <user-id>
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
 ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin] [--copilot/--no-copilot]
@@ -18,7 +18,7 @@ ac admin users impersonate <user-id>
 ac admin users exit-impersonation
 ac admin users impersonation-status --session-id <session-id>     # Check active session
 ac admin users impersonation-end    --session-id <session-id>     # End session by ID
-ac admin users generate-link <user-id> [--send-email]
+ac admin users generate-link <user-id>
 ```
 
 ## CRM Hard-Delete (super admin, destructive)
@@ -35,11 +35,13 @@ ac admin crm hard-delete-person  <person-id>  [--yes]
 ```bash
 ac admin orgs list [--query "acme"] [--sort created_at] [--order desc] [--limit 50] [--offset 0]
 ac admin orgs get <org-id>
-ac admin orgs create --name "Acme Corp" [--slug acme-corp] [--plan pro] [--icps-file icps.json]
-ac admin orgs update <org-id> [--name "New Name"] [--slug new-slug] [--plan enterprise] [--icps-file icps.json] [--comped/--no-comped] [--prospect-emails-per-day N | --clear-prospect-emails-per-day]
+ac admin orgs create --name "Acme Corp" [--icps-file icps.json]
+ac admin orgs update <org-id> [--name "New Name"] [--logo-url "https://..."] [--target-locations GB,IE] [--icps-file icps.json] [--comped/--no-comped] [--prospect-emails-per-day N | --clear-prospect-emails-per-day]
 ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
+ac admin orgs create-user <org-id> --email jane@example.com --first-name Jane --last-name Smith \
+  [--role member] [--job-title "Head of BD"] [--send-email/--no-send-email]   # new user, added to an active org
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
@@ -91,12 +93,14 @@ ac admin queues metrics --json
 
 ```bash
 ac admin demo scrape-website --url "https://example.com"
-ac admin demo generate-org [--industry "Technology"] [--size "medium"]
-ac admin demo generate-profile [--industry "Technology"]
-ac admin demo prepare-account --org-name "Demo Corp" [--template default]
+ac admin demo generate-org --industry "Technology"
+ac admin demo generate-profile --role "Head of Marketing" [--industry "Technology"]
+ac admin demo prepare-account --org-name "Demo Corp" --user-email demo@example.com \
+  --user-first-name Jane --user-last-name Smith [--empty]
 ac admin demo list-accounts [--page 1] [--page-size 50] [--sort created_at] [--order desc]
 ac admin demo get-account <org-id>
-ac admin demo update-account <org-id> [--status active] [--notes "Updated demo"]
+ac admin demo update-account <org-id> [--first-name Jane] [--last-name Smith] [--job-title "CEO"] \
+  [--bio "..."] [--avatar-url "https://..."] [--website "https://..."]   # updates the demo user profile
 ac admin demo delete-account <org-id> [--yes]
 ac admin demo cleanup [--max-age-days 30] [--yes]
 ac admin demo stats
@@ -144,6 +148,7 @@ ac admin ai-usage users [--start-date 2026-01-01] [--end-date 2026-03-23] [--org
 ac admin ai-usage user <user-id> [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage by-model [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage by-workflow [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
+ac admin ai-usage by-app [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>]
 ac admin ai-usage details [--start-date 2026-01-01] [--end-date 2026-03-23] [--org-id <id>] \
   [--limit 50] [--offset 0] [--model-id <id>] [--user-id <id>] [--workflow-run-id <id>]
 ```

@@ -438,7 +438,6 @@ Finds or creates a contact record for the given email.
 | `--sender-name` | str | no | Your name |
 | `--original-subject` | str | no | Subject of email being replied to |
 | `--recipient-title` | str | no | Recipient's job title |
-| `--sender-signature` | str | no | Sender's email signature |
 | `--user-draft-subject` | str | no | Draft subject to refine |
 | `--user-draft-body` | str | no | Draft body to refine |
 | `--json` | flag | no | Output raw JSON |
@@ -457,6 +456,7 @@ Finds or creates a contact record for the given email.
 |------|------|-------------|
 | `--thread-id` | str | Archive entire thread |
 | `--comm-id` | str | Archive single message |
+| `--json` | flag | Output raw JSON |
 
 One of `--thread-id` or `--comm-id` is required.
 
@@ -812,12 +812,10 @@ Soft-delete a batch of recipients.
 Classify a step subtype from instruction text. Returns `{subtype}`.
 
 #### `ac sequences sequences outputs <sequence-id>`
-List sequence outputs (generated drafts/results).
+Lists the emails and tasks a sequence made. The output has two tables: Emails (ID, Step, Recipient, Subject) and Tasks (ID, Step). `--json` returns `{emails, tasks}`.
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac sequences sequences generate-drafts <sequence-id> <step-id>`
@@ -990,6 +988,8 @@ Lists all drafts for a specific step.
 | `--body` | str | New email body |
 | `--json` | flag | Raw JSON output |
 
+Edits a pending draft and does not send it. The draft is a communication, so the edit goes through the communications route. Give at least one of `--subject` and `--body`.
+
 #### `ac sequences outbox approve <draft-id>`
 | Flag | Type | Description |
 |------|------|-------------|
@@ -997,7 +997,7 @@ Lists all drafts for a specific step.
 | `--body` | str | Override body before sending |
 | `--json` | flag | Raw JSON output |
 
-Approves and sends the draft.
+Approves and sends the draft through the communications route, the same approval as `ac crm comms approve`.
 
 #### `ac sequences outbox reject <draft-id>`
 | Flag | Type | Required | Description |
@@ -1095,7 +1095,6 @@ Marks every message of the thread as read by you. Other users keep their own rea
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--body` | str | yes | Reply message body |
-| `--subject` | str | no | Override subject line |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -1119,8 +1118,6 @@ Marks every message of the thread as read by you. Other users keep their own rea
 |------|------|----------|-------------|
 | `--name` | str | yes | Battlecard name |
 | `--description` | str | no | Battlecard description |
-| `--competitor-name` | str | no | Competitor name |
-| `--status` | str | no | Battlecard status |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac sequences battlecards update <battlecard-id>`
@@ -1159,9 +1156,6 @@ Creates a copy of the battlecard.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Playbook name |
-| `--description` | str | no | Playbook description |
-| `--status` | str | no | Playbook status |
-| `--competitor-name` | str | no | Competitor name |
 | `--icp-id` | str | no | Target an ideal customer profile; repeat for several profiles |
 | `--json` | flag | no | Raw JSON output |
 
@@ -1326,10 +1320,10 @@ Gets the schedule details for the workflow.
 |------|------|----------|-------------|
 | `--cron` | str | yes | Cron expression to preview |
 | `--timezone` | str | no | Timezone (default: UTC) |
-| `--count` | int | no | Number of upcoming times to show (default: 5) |
+| `--count` | int | no | Number of upcoming times to show (default: 5). The API returns at most 5, so a higher value shows 5 |
 | `--json` | flag | no | Raw JSON output |
 
-Shows the next N upcoming run times for a cron expression without creating a schedule.
+Shows the next N upcoming run times for a cron expression without creating a schedule. The CLI cuts the API list to `--count`, also in `--json`.
 
 #### `ac workflows schedules toggle <workflow-id> <schedule-id>`
 | Flag | Type | Required | Description |
@@ -1522,11 +1516,11 @@ All admin commands require super admin authentication.
 #### `ac admin users list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--query` | str | None | Filter by name or email |
-| `--sort` | str | "created_at" | Sort field |
-| `--order` | str | "desc" | Sort order (asc/desc) |
-| `--limit` | int | 50 | Results per page |
-| `--offset` | int | 0 | Row offset |
+| `--query`, `-q` | str | None | Filter by name or email |
+| `--sort` | str | None | Sort field |
+| `--order` | str | None | Sort order (asc/desc) |
+| `--page` | int | 1 | Page number (1 or more) |
+| `--page-size` | int | 50 | Results per page (1 or more) |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin users get <user-id>`
@@ -1595,10 +1589,7 @@ Switches to the specified user's session. All subsequent commands run as that us
 Returns to the original super admin session.
 
 #### `ac admin users generate-link <user-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--send-email` | flag | Send the link via email to the user |
-| `--json` | flag | Raw JSON output |
+No flags. Prints the impersonation link.
 
 #### `ac admin users impersonation-status`
 | Flag | Type | Required | Description |
@@ -1740,8 +1731,6 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Organization name |
-| `--slug` | str | no | URL-friendly slug (auto-generated from name if omitted) |
-| `--plan` | str | no | Subscription plan |
 | `--icps-file` | path | no | JSON file with an array of named ICPs (`name`, `description`, `country_codes`, optional UUID `id`) |
 | `--json` | flag | no | Raw JSON output |
 
@@ -1749,8 +1738,6 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | no | Update organization name |
-| `--slug` | str | no | Update slug |
-| `--plan` | str | no | Update subscription plan |
 | `--logo-url` | str | no | Organization logo URL |
 | `--target-customers` | str | no | Legacy single-profile targeting prose. Use `--icps-file` for named ICPs |
 | `--target-locations` | str | no | Comma-separated ISO 3166-1 alpha-2 country codes (`GB,IE`). An empty string clears the list |
@@ -1778,6 +1765,19 @@ Lists the agencies, starts a scan for each one that has a website, then waits fo
 |------|------|----------|-------------|
 | `--user-id` | str | yes | User ID to add |
 | `--role` | str | no | Member role (e.g. admin, member) |
+| `--json` | flag | no | Raw JSON output |
+
+#### `ac admin orgs create-user <org-id>`
+Creates a user and adds them to an active organisation.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--email` | str | yes | Email of the new user |
+| `--first-name` | str | yes | First name |
+| `--last-name` | str | yes | Last name |
+| `--role` | str | no | Member role. The API uses `member` |
+| `--job-title` | str | no | Job title |
+| `--send-email/--no-send-email` | flag | no | Send the welcome email (default: send) |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs update-member <org-id> <user-id>`
@@ -1924,13 +1924,13 @@ Permanently removes all failed jobs from the specified queue.
 #### `ac admin demo generate-org`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--industry` | str | no | Industry for the generated organization |
-| `--size` | str | no | Company size (e.g. small, medium, large) |
+| `--industry` | str | yes | Industry for the generated organization |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin demo generate-profile`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
+| `--role` | str | yes | Job role of the profile |
 | `--industry` | str | no | Industry for the generated profile |
 | `--json` | flag | no | Raw JSON output |
 
@@ -1938,7 +1938,10 @@ Permanently removes all failed jobs from the specified queue.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--org-name` | str | yes | Name for the demo organization |
-| `--template` | str | no | Account template to use |
+| `--user-email` | str | yes | Email of the demo user |
+| `--user-first-name` | str | yes | First name of the demo user |
+| `--user-last-name` | str | yes | Last name of the demo user |
+| `--empty`, `--skip-crm-data` | flag | no | Create an empty account: the organisation and the user only, with no CRM companies, people, deals or activities |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin demo list-accounts`
@@ -1956,10 +1959,16 @@ Permanently removes all failed jobs from the specified queue.
 | `--json` | flag | Raw JSON output |
 
 #### `ac admin demo update-account <org-id>`
+Updates the profile of the demo account user. Give at least one flag.
+
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--status` | str | no | Update account status |
-| `--notes` | str | no | Update account notes |
+| `--first-name` | str | no | First name of the demo user |
+| `--last-name` | str | no | Last name of the demo user |
+| `--job-title` | str | no | Job title of the demo user |
+| `--bio` | str | no | Bio of the demo user |
+| `--avatar-url` | str | no | Avatar URL of the demo user |
+| `--website` | str | no | Website of the demo user |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin demo delete-account <org-id>`
@@ -1971,9 +1980,8 @@ Permanently removes all failed jobs from the specified queue.
 #### `ac admin demo cleanup`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--max-age-days` | int | 30 | Delete demo accounts older than this many days |
+| `--max-age-days` | int | None (API default) | Delete demo accounts older than this many days |
 | `--yes` | flag | off | Skip confirmation prompt |
-| `--json` | flag | off | Raw JSON output |
 
 #### `ac admin demo stats`
 | Flag | Type | Description |
@@ -2162,6 +2170,14 @@ Returns current onboarding settings.
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin ai-usage by-workflow`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--start-date` | str | None | Start date (ISO format) |
+| `--end-date` | str | None | End date (ISO format) |
+| `--org-id` | str | None | Filter by organization |
+| `--json` | flag | off | Raw JSON output |
+
+#### `ac admin ai-usage by-app`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--start-date` | str | None | Start date (ISO format) |
@@ -3732,28 +3748,31 @@ Only provided fields are sent; passing none exits 1.
 #### `ac styles train <style-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--sample-text` | str | yes | Sample text to train the style on |
+| `--num-examples` | int | no | Number of example emails to generate, 1 to 10 (default 3) |
 | `--json` | flag | no | Raw JSON output |
 
-Starts a training session using the provided sample text.
+Starts a training session. The API generates example emails in the style. In `--json`, `session.id` is the session ID and `generated_emails[].id` holds the email IDs. Pass an email ID to `feedback` or `iterate`. `iterate --json` returns the new email as `email`, with its ID in `email.id`.
 
 #### `ac styles feedback <session-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--rating` | int | yes | Rating for the training output |
-| `--comments` | str | no | Additional feedback comments |
+| `--email-id` | str | yes | ID of the generated email to rate. Get it from `styles train --json` or `styles iterate --json` |
+| `--rating` | int | yes | Rating for the email, 1 to 5 |
+| `--comments` | str | no | What to change in the style |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac styles iterate <session-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--feedback` | str | yes | Feedback to refine the style |
+| `--email-id` | str | yes | ID of the generated email to rate. Get it from `styles train --json` or `styles iterate --json` |
+| `--feedback` | str | yes | What to change in the style |
+| `--rating` | int | no | Rating for the email, 1 to 5 (default 3) |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac styles analyze`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--text` | str | yes | Text to analyze for writing style characteristics |
+| `--text` | str (repeatable) | yes | Sample email text to analyse. Repeat for more samples |
 | `--json` | flag | no | Raw JSON output |
 
 ---
@@ -3792,9 +3811,9 @@ Lists all connected accounts in the organization.
 #### `ac nylas send`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--to` | str | yes | Recipient email address |
+| `--to` | str (repeatable) | yes | Recipient email address. Repeat for more recipients |
 | `--subject` | str | yes | Email subject |
-| `--body` | str | yes | Email body |
+| `--body` | str | yes | Email body as plain text |
 | `--reply-to-message-id` | str | no | Message ID to reply to |
 | `--json` | flag | no | Raw JSON output |
 
@@ -3880,8 +3899,6 @@ At least one field is required. `--notification-email` and `--clear-notification
 #### `ac profiles members`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--limit` | int | 50 | Max results |
-| `--offset` | int | 0 | Skip results |
 | `--json` | flag | off | Raw JSON output |
 
 Lists all members of the current organization.
