@@ -1898,6 +1898,18 @@
           "text": "`ac agentic outreach campaigns create` with `--strategy`"
         }
       ]
+    },
+    {
+      "id": 149,
+      "prompt": "What did Outreach research find about the person in enrollment e-77 before it wrote to them? I want the source links.",
+      "expected_output": "Runs `ac agentic outreach enrollments research e-77`, which prints the status, the hook and each finding with its date and source URL.",
+      "assertions": [
+        {
+          "name": "reads_enrollment_research",
+          "type": "command_matches",
+          "text": "`ac agentic outreach enrollments research e-77`"
+        }
+      ]
     }
   ]
 }
