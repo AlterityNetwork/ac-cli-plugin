@@ -68,7 +68,7 @@ Layout and roles:
 |------|------|---------------|
 | `commands.md` | Exhaustive flag tables, all 220+ commands | CLI adds/removes/renames a flag |
 | `crm.md` | Quick reference for CRM commands (companies, people, deals, activities, comms, lists, import, search, dashboards) | CRM CLI surface changes |
-| `sequences.md` | Quick reference for outreach commands | Sequences CLI surface changes |
+| `sequences.md` | Quick reference for Sequences commands | Sequences CLI surface changes |
 | `workflows.md` | Quick reference for workflow commands | Workflows CLI surface changes |
 | `admin.md` | Quick reference for admin commands (requires `superadmin`) | Admin CLI surface changes |
 | `platform.md` | Quick reference for files, apps, styles, Nylas, hooks, messaging, chat, resources, profiles | Platform CLI surface changes |
