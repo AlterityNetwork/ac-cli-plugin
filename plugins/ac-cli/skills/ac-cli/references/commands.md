@@ -3283,6 +3283,18 @@ The table shows a short line per item: an inbound email adds its sender address,
 an invite adds its note or `no note`. No CRM activity is in the list. Exit
 code 3 for an enrollment of another organization.
 
+#### `ac agentic outreach enrollments research <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw JSON: `id`, `enrollment_id`, `strategy_id`, `strategy_version`, `run_id` (null when no Run started), `status` (`ready`, `thin` or `failed`), `hook` (null unless `ready`), `findings: [{key, text, source_url, observed_at, tool}]` (empty unless `ready`), `cost_cents`, `created_at` |
+
+Reads the research the Research agent saved for the enrollment before its
+first touch. The detail shows Status, Hook, Strategy version, Cost (cents)
+and Researched, then a Research findings table: Date (`observed_at`, or
+`undated`), Finding and Source (the URL). A `thin` or `failed` research
+prints `No finding`. An enrollment with no research, or of another
+organization, returns exit code 3.
+
 #### `ac agentic outreach enrollments evaluate <enrollment-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -3373,7 +3385,7 @@ come due in the next 24 hours".
 #### `ac agentic outreach drafts get <action-id>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `linkedin` {`state` (`none`, `invited`, `connected` or `declined`), `degree` (1 when connected, else null), `invited_at`, `connected_at`} (null for an email), `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `facts_used` (a list of {`source`, `label`, `ref_kind`, `ref_id`}, empty when the decision names no fact), `can_switch_channel` (true when the campaign allows both channels and the person has an address on the other one; a switch to LinkedIn can still fail on the sender's LinkedIn connection or the person's LinkedIn status) |
+| `--json` | flag | no | Raw item JSON: `id`, `enrollment_id`, `decision_id`, `type`, `status`, `created_at`, `touch_number`, `person` {`kind`, `id`, `name`}, `company_name`, `campaign` {`id`, `name`, `status`, `max_touches`}, `rationale`, `objective`, `to`, `replying_to` {`communication_id`, `text`, `sentiment`} or null, `draft_payload`, `linkedin` {`state` (`none`, `invited`, `connected` or `declined`), `degree` (1 when connected, else null), `invited_at`, `connected_at`} (null for an email), `decided_at`, `decided_by` (a name), `reject_then`, `reject_reason`, `failure_reason` (each null when it does not apply), `facts_used` (a list of {`source`, `label`, `ref_kind`, `ref_id`, `url`}, empty when the decision names no fact; `url` is the source URL of a `research` fact, else null), `research` {`id`, `status` (`ready`, `thin` or `failed`), `hook` (null unless `ready`), `findings` [{`text`, `source_url`, `observed_at`}] (the findings the decision cited)} or null when the decision read no research, `can_switch_channel` (true when the campaign allows both channels and the person has an address on the other one; a switch to LinkedIn can still fail on the sender's LinkedIn connection or the person's LinkedIn status) |
 
 Reads one action by its action ID: the same item as `list`. The detail shows
 the decision ID, the person, the company, the campaign and its status, Touch, Sentiment, `to`,
@@ -3384,7 +3396,9 @@ the `objective`. Then it prints the inbound message
 the draft answers (Replying to, cut at 500 characters, a reply only) and the
 draft: Subject and Body for an email, Note for a LinkedIn note, Body for a
 LinkedIn message. Last it prints What Outreach used: one `source · label` line
-per fact in `facts_used`, and no block when the list is empty. A deleted person
+per fact in `facts_used` (a research fact adds its URL:
+`research · 2026-10-02: text · https://...`), and no block when the list is
+empty, then `Research: status · hook` when the decision read a research row. A deleted person
 keeps the item, with a null name and a null `to`. An action of another
 organization returns exit code 3.
 

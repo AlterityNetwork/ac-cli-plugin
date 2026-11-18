@@ -192,6 +192,7 @@ ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<i
 ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended|awaiting|in_progress] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
 ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
+ac agentic outreach enrollments research <enrollment-id>
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic outreach enrollments exit <enrollment-id> [--yes]
 ac agentic outreach enrollments move <enrollment-id>... --campaign <campaign-id>
@@ -292,6 +293,12 @@ went out, or `no note`), the LinkedIn messages, and the end. It
 holds no CRM activity; read those with `ac crm activities`. To merge it with
 the CRM emails, drop a CRM email whose id is the `id` of an `email` item or
 the `communication_id` of an `action`.
+
+`enrollments research` reads what the Research agent found for one enrollment
+before its first touch: the status (`ready`, `thin` or `failed`), the hook and
+each finding with its date (`undated` when it has none) and its source URL.
+Only a `ready` research holds a hook and findings. An enrollment with no
+research returns exit code 3.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM
