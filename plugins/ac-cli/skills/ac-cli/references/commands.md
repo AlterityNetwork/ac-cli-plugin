@@ -3088,27 +3088,80 @@ divided by `contacted_30d`.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes | Campaign name |
-| `--goal` | str | no | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. Left out, the campaign has no goal. |
+| `--goal` | str | no | What the campaign wants, such as "Book a 20 min intro call", at most 2000 characters. Not blank. Left out, the campaign has no goal. Not with `--strategy`. |
+| `--strategy` | str | no | The ID of the live strategy the campaign follows. The campaign goal takes the strategy goal. Left out, the API makes a strategy from `--name` and `--goal`. |
 | `--description` | str | no | Who the campaign is for and what you want from it, at most 2000 characters. The planner reads it as context. |
 | `--channel` | `email` or `linkedin`, repeatable | no | The channels the campaign can use. Default `email` |
 | `--max-touches` | int | no | The most outbound touches per person, 1 to 10. Default 5 |
 | `--min-days` | int | no | The fewest days between two touches, 1 to 30. Default 3 |
 | `--max-days` | int | no | The most days between two touches, 1 to 30. Default 7 |
-| `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at}` |
+| `--json` | flag | no | Raw campaign JSON: `{id, name, description, goal, allowed_channels, max_touches, followup_min_days, followup_max_days, sender_user_id, status, created_by, created_at, updated_at, strategy_id, strategy_name}` |
 
 The campaign starts as `paused`. The caller owns it and is its sender, read
 only: `sender_user_id` is always the creator. A description or goal longer
 than 2000 characters, a blank goal, a value out of range or `--min-days`
-above `--max-days` returns exit code 2 with no call.
+above `--max-days` returns exit code 2 with no call. `--goal` with `--strategy`
+returns exit code 2 with no call. A missing strategy returns exit code 2
+(`strategy_not_found`), an archived one exit code 5 (`strategy_archived`).
 
 #### `ac agentic outreach campaigns update <campaign-id>`
-Takes `--name`, `--goal`, `--description`, `--channel`, `--max-touches`,
-`--min-days`, `--max-days` and `--json`, all optional, with the
-checks of `create`. Give at least one. Pass `--description ""` to clear the
+Takes `--name`, `--goal`, `--strategy`, `--description`, `--channel`,
+`--max-touches`, `--min-days`, `--max-days` and `--json`, all optional, with the
+checks of `create`. A new `--strategy` sets the campaign goal to the strategy goal. Give at least one. Pass `--description ""` to clear the
 description. `--channel` replaces the channel list. One of `--min-days` or
 `--max-days` alone past the stored other bound returns exit code 2 (422). An
 archived campaign returns exit code 5 (`campaign_archived`). The sender does
 not change.
+
+#### `ac agentic outreach strategies list`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--include-archived` | flag | no | Also list the archived strategies |
+| `--limit` | int | no | 1 to 100. Default 50 |
+| `--offset` | int | no | Default 0 |
+| `--json` | flag | no | Raw page: `{items, total, limit, offset, has_more}` |
+
+The strategies are in name order. Each item is the strategy JSON below.
+
+#### `ac agentic outreach strategies get <strategy-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw strategy JSON: `{id, name, goal, offer_id, offer_name, angle, research_tools, example_messages, max_research_cents, version, archived_at, created_by, created_at, updated_at, used_by_campaigns}` |
+
+`used_by_campaigns` counts the active and paused campaigns that follow it. A
+missing strategy returns exit code 3.
+
+#### `ac agentic outreach strategies create`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | str | yes | At most 200 characters. Unique among the live strategies, else exit code 5 (`strategy_name_taken`) |
+| `--goal` | str | no | What counts as success, at most 2000 characters |
+| `--offer-id` | str | no | A playbook of the organization (Settings > Offers). Another one returns exit code 2 (`offer_not_found`). Left out: every offer |
+| `--angle` | str | no | What Outreach researches, what it opens with, and what to do on no finding. At most 4000 characters |
+| `--tool` | repeatable | no | `research.fetch_page`, `research.search_web`, `research.detect_technologies` or `research.search_company`. None: no research |
+| `--example` | repeatable | no | Up to 5 example messages that show the tone, each at most 4000 characters |
+| `--max-research-cents` | int | no | The most that the research of one person costs. Left out: the API default |
+| `--json` | flag | no | Raw strategy JSON |
+
+The strategy starts at version 1.
+
+#### `ac agentic outreach strategies update <strategy-id>`
+Takes the options of `create`, all optional, plus `--no-offer`, `--no-tools`,
+`--no-examples` and `--default-cap`, which clear a field. A clear flag with its
+value flag returns exit code 2 with no call. `--tool` and `--example` replace
+the list. Give at least one option. A change of the goal, the offer, the angle,
+the tools or the cap adds 1 to `version`; the name and the examples do not. An
+archived strategy returns exit code 5 (`strategy_archived`), and an edit that
+crossed another edit exit code 5 (`strategy_changed`).
+
+#### `ac agentic outreach strategies archive <strategy-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--yes` / `-y` | flag | no | Skip the question. `AC_YES=1` does the same. |
+| `--json` | flag | no | Raw strategy JSON |
+
+An archived strategy frees its name. A strategy that an active or paused
+campaign follows returns exit code 5 (`strategy_in_use`). A repeat succeeds.
 
 #### `ac agentic outreach campaigns activate|pause|resume <campaign-id>`
 | Flag | Type | Required | Description |
