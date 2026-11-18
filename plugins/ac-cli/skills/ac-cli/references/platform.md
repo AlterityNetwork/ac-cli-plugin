@@ -178,8 +178,13 @@ ac agentic outreach campaigns forget <campaign-id> <feedback-id> [--yes]
 ac agentic outreach campaigns activity <campaign-id> [--kind send|reply|decision] [--channel email|linkedin] [--limit 50] [--cursor <next>]
 ac agentic outreach campaigns results <campaign-id> [--days 30]
 ac agentic outreach campaigns summary
-ac agentic outreach campaigns create --name "Q4 intro" [--goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
-ac agentic outreach campaigns update <campaign-id> [--name "..."] [--goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
+ac agentic outreach campaigns create --name "Q4 intro" [--strategy <strategy-id> | --goal "Book a 20 min intro call"] [--description "Heads of growth at Series A SaaS companies"] [--channel email|linkedin]... [--max-touches 5] [--min-days 3] [--max-days 7]
+ac agentic outreach campaigns update <campaign-id> [--name "..."] [--strategy <strategy-id> | --goal "..."] [--description "..."] [--channel email|linkedin]... [--max-touches N] [--min-days N] [--max-days N]
+ac agentic outreach strategies list [--include-archived] [--limit 50] [--offset 0]
+ac agentic outreach strategies get <strategy-id>
+ac agentic outreach strategies create --name "Website teardown" [--goal "..."] [--offer-id <playbook-id>] [--angle "..."] [--tool research.fetch_page]... [--example "..."]... [--max-research-cents 40]
+ac agentic outreach strategies update <strategy-id> [--name] [--goal] [--offer-id <id> | --no-offer] [--angle] [--tool <id>... | --no-tools] [--example "..."... | --no-examples] [--max-research-cents N | --default-cap]
+ac agentic outreach strategies archive <strategy-id> [--yes]
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
 ac agentic outreach campaigns archive <campaign-id> [--yes]
 ac agentic outreach campaigns enroll <campaign-id> --person-kind crm.person|prospect.person --person-id <id>
@@ -187,6 +192,7 @@ ac agentic outreach campaigns enroll-batch <campaign-id> [--person crm.person:<i
 ac agentic outreach enrollments list --campaign-id <campaign-id> [--status active|needs_contact_data|ended|awaiting|in_progress] [--search "jane"] [--limit 100] [--offset 0]
 ac agentic outreach enrollments get <enrollment-id>
 ac agentic outreach enrollments timeline <enrollment-id> [--limit 50]
+ac agentic outreach enrollments research <enrollment-id>
 ac agentic outreach enrollments evaluate <enrollment-id> [--request-id <id>]
 ac agentic outreach enrollments exit <enrollment-id> [--yes]
 ac agentic outreach enrollments move <enrollment-id>... --campaign <campaign-id>
@@ -198,6 +204,21 @@ These commands run the campaigns of Outreach, the agent app at `/app/outreach`.
 Envoy is the old name of Outreach, and `ac agentic envoy` still runs as a
 hidden old name of the group. They are not the legacy Sequences app
 (`ac sequences sequences`).
+
+A campaign follows one strategy: a reusable goal, one offer (a playbook of
+Settings > Offers), an angle, the research tools and a research cap per
+person. `campaigns create --strategy <id>` picks a live strategy, and the
+campaign goal takes the strategy goal; `--goal` with `--strategy` is refused
+(exit 2). Without `--strategy`, the API makes a strategy from the campaign
+name and `--goal`, with no offer and no tools. `strategies list` prints each
+strategy with its live (active or paused) campaigns. A change of the goal,
+the offer, the angle, the tools or the cap adds 1 to the strategy version;
+the name and the examples do not. `strategies archive` frees the name, and
+returns exit code 5 (`strategy_in_use`) while a live campaign follows it.
+The tools are `research.fetch_page`, `research.search_web`,
+`research.detect_technologies` and `research.search_company`; no tool means
+no research. An offer of another organization returns exit code 2
+(`offer_not_found`), and a taken live name exit code 5 (`strategy_name_taken`).
 
 A new campaign is `paused`, and the caller owns it. A campaign has a name, an
 optional goal, an optional description, the allowed channels, the touch and
@@ -272,6 +293,12 @@ went out, or `no note`), the LinkedIn messages, and the end. It
 holds no CRM activity; read those with `ac crm activities`. To merge it with
 the CRM emails, drop a CRM email whose id is the `id` of an `email` item or
 the `communication_id` of an `action`.
+
+`enrollments research` reads what the Research agent found for one enrollment
+before its first touch: the status (`ready`, `thin` or `failed`), the hook and
+each finding with its date (`undated` when it has none) and its source URL.
+Only a `ready` research holds a hook and findings. An enrollment with no
+research returns exit code 3.
 
 `enrollments evaluate` asks for a Run now. Use it to re-evaluate, to retry an
 enrollment in `needs_contact_data`, and after you add an email to the CRM

@@ -1881,6 +1881,35 @@
           "text": "`ac admin orgs create-user o-42` `ac admin orgs create-user .*--email[ =]ada@example.com` `ac admin orgs create-user .*--first-name[ =].?Ada` `ac admin orgs create-user .*--last-name[ =].?Lovelace` `ac admin orgs create-user .*--no-send-email`"
         }
       ]
+    },
+    {
+      "id": 148,
+      "prompt": "Create an Outreach strategy called Website teardown that reads their website and checks their tech stack, then start a paused campaign Q4 teardown that follows it.",
+      "expected_output": "Runs `ac agentic outreach strategies create --name \"Website teardown\" --tool research.fetch_page --tool research.detect_technologies`, then `ac agentic outreach campaigns create --name \"Q4 teardown\" --strategy <the new strategy id>` with no `--goal`.",
+      "assertions": [
+        {
+          "name": "creates_the_strategy",
+          "type": "command_matches",
+          "text": "`ac agentic outreach strategies create` with `--tool research.fetch_page` and `--tool research.detect_technologies`"
+        },
+        {
+          "name": "campaign_follows_the_strategy",
+          "type": "command_matches",
+          "text": "`ac agentic outreach campaigns create` with `--strategy`"
+        }
+      ]
+    },
+    {
+      "id": 149,
+      "prompt": "What did Outreach research find about the person in enrollment e-77 before it wrote to them? I want the source links.",
+      "expected_output": "Runs `ac agentic outreach enrollments research e-77`, which prints the status, the hook and each finding with its date and source URL.",
+      "assertions": [
+        {
+          "name": "reads_enrollment_research",
+          "type": "command_matches",
+          "text": "`ac agentic outreach enrollments research e-77`"
+        }
+      ]
     }
   ]
 }
