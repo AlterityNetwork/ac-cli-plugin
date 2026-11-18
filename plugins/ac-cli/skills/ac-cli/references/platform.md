@@ -200,6 +200,9 @@ ac agentic outreach organization stop [--yes]
 ```
 
 These commands run the campaigns of Outreach, the agent app at `/app/outreach`.
+Envoy is the old name of Outreach, and `ac agentic envoy` still runs as a
+hidden old name of the group. They are not the legacy Sequences app
+(`ac sequences sequences`).
 
 A campaign follows one strategy: a reusable goal, one offer (a playbook of
 Settings > Offers), an angle, the research tools and a research cap per
@@ -215,9 +218,6 @@ The tools are `research.fetch_page`, `research.search_web`,
 `research.detect_technologies` and `research.search_company`; no tool means
 no research. An offer of another organization returns exit code 2
 (`offer_not_found`), and a taken live name exit code 5 (`strategy_name_taken`).
-Envoy is the old name of Outreach, and `ac agentic envoy` still runs as a
-hidden old name of the group. They are not the legacy Sequences app
-(`ac sequences sequences`).
 
 A new campaign is `paused`, and the caller owns it. A campaign has a name, an
 optional goal, an optional description, the allowed channels, the touch and
