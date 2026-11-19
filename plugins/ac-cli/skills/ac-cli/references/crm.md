@@ -132,8 +132,8 @@ ac crm lists add-members <list-id> --member-type person --ids id1,id2,id3
 ac crm lists remove-member <list-id> --person-id <id> [--yes]
 ac crm lists members <list-id> [--member-type person|company] [--include-person-details] [--include-company-details]
 ac crm lists update <list-id> [--name ...] [--description ... | --clear-description]
-ac crm lists lists-for-member --person-id <id>
-ac crm lists lists-for-member --company-id <id>
+ac crm lists lists-for-member --person-id <id> [--limit N] [--offset N]   # every list without --limit
+ac crm lists lists-for-member --company-id <id> [--limit N] [--offset N]
 ac crm lists bulk-remove-members <list-id> --member-type person --ids id1,id2,id3 [--yes]
 ac crm lists bulk-remove-members <list-id> --member-type company --ids id1,id2,id3 [--yes]
 ac crm lists bulk-move-members <list-id> --target-list-id <id> --member-type person --ids id1,id2,id3 [--yes]

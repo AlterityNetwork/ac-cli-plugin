@@ -24,7 +24,7 @@ ac sequences sequences bulk-remove-recipients <sequence-id> --recipient-id <id> 
 ac sequences sequences classify-step-subtype "Send a manual follow-up email"
 ac sequences sequences outputs <sequence-id>              # Emails and tasks the sequence made
 ac sequences sequences generate-drafts <sequence-id> <step-id> --workflow-id <id>
-ac sequences sequences for-prospect <prospect-id>          # Sequences containing a given person
+ac sequences sequences for-prospect <prospect-id> [--limit N] [--offset N]  # Sequences containing a given person (all of them without --limit)
 ```
 
 ## Steps
@@ -57,7 +57,7 @@ Step types: `message` (email, template or AI prompt) · `delay` (value + unit: d
 ## Recipients
 
 ```bash
-ac sequences recipients list <sequence-id> [--status pending] [--step-id <id>]
+ac sequences recipients list <sequence-id> [--status pending] [--step-id <id>] [--limit N] [--offset N]  # every recipient without --limit
 ac sequences recipients add <sequence-id> --prospect-ids id1,id2,id3
 ac sequences recipients add <sequence-id> --crm-list-id <list-id>
 ac sequences recipients add <sequence-id> --prospect-ids id1 --reenroll   # re-add previously-removed
