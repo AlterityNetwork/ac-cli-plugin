@@ -210,3 +210,51 @@ and `incomplete`. An incomplete stage does not establish completion. An empty
 stage list does not mean the run has stopped; read the run status.
 
 The progress response includes up to six agent and tool activity entries per active stage. Each entry has a name, kind and status. `activity_incomplete` marks a limited view; tool arguments and outputs are omitted.
+
+## People profile and affiliations
+
+`ac agentic people profile` reads what the global people cache holds for one
+person. The read is free and starts no Run.
+
+```bash
+ac agentic people profile --linkedin-url https://www.linkedin.com/in/<handle> --json
+```
+
+The response carries `linkedin_url`, `experience_history`, `affiliations` and
+`affiliations_checked_at`. A key inside an entry is absent when its value is null.
+
+- `experience_history` holds up to 50 entries, current first. Each entry has
+  `title`, `company`, `location`, `start_date`, `end_date` and `kind`.
+- `affiliations` holds up to 20 roles outside the main job: boards, advisory
+  roles, trusteeships, investments, founded projects, fellowships, books,
+  podcasts, columns and talks. Each entry has `kind`, `name`, `role`,
+  `current`, `source_url` and optional `start_date` and `end_date`.
+- `kind` is one of `employment`, `board`, `advisory`, `trustee`, `investor`,
+  `founder`, `fellowship`, `author`, `podcast`, `column`, `speaking`, `other`.
+- `affiliations_checked_at` is the time of the last deep dive. Null means no
+  deep dive ran. An empty `affiliations` list with a time means the deep dive
+  found nothing.
+
+A URL with no cache row returns 404 (exit 3). A URL that is not a LinkedIn
+profile URL returns 422 (exit 2). A plan without the People apps returns 402
+(exit 6). Each user can read 60 profiles a minute and 1,000 a day; a read over
+either budget returns 429 (exit 1). A person reaches the cache through People
+Search or People Enrich.
+
+### Run a deep dive for one person
+
+`affiliations` is a People Enrich field that a caller must name. The `standard`
+preset is required, and a bare preset request never fills it. The deep dive
+costs one `people` entity credit when it finds at least one affiliation, and
+nothing when it finds none. A second start inside 90 days reuses the stored
+answer.
+
+```bash
+ac agentic capabilities start people.enrich \
+  --input '{"subjects":[{"kind":"person_linkedin","value":"https://www.linkedin.com/in/<handle>"}],"preset":"standard","fields":["full_name","current_company_text","affiliations"],"refresh":"stale"}' \
+  --idempotency-key affiliations-<handle>-1 --json
+```
+
+When the Run ends, read the result with `ac agentic people profile`. When the
+deep dive cannot run, for example because the Run knows no usable name, the
+`affiliations` field state is `failed` and nothing is stored.

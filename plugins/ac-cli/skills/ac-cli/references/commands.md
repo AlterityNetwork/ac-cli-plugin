@@ -4223,3 +4223,22 @@ that span in a tree response.
 
 The command reads `/api/v1/agentic/runs/{run_id}/spans/{span_id}`. A span outside
 the named run returns 404.
+
+
+### Agentic People
+
+#### `ac agentic people profile`
+
+Reads the work history and the affiliations of one person from the global
+people cache.
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--linkedin-url` | String | Yes | The LinkedIn profile URL of the person. |
+| `--json` | Boolean | No | Print the raw profile or a structured error. |
+
+The command reads `/api/v1/agentic/people/profile?linkedin_url=<url>`. Human
+output prints the URL, the time of the last deep dive, an Experience table
+(Title, Company, Kind, Start, End) and an Affiliations table (Kind, Name, Role,
+Current, Source). A cache miss returns 404; a URL that is not a LinkedIn profile
+returns 422. See `agentic-runs.md` for the deep dive.
