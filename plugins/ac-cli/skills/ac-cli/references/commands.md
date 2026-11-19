@@ -842,7 +842,9 @@ Lists sequences that include the given prospect (person ID).
 |------|------|----------|-------------|
 | `--type` | str | yes | Step type (message, delay, task) |
 | `--step-order` | int | no | Position in sequence |
+| `--message-mode` | str | no | `template` (send the template as written, fill each `{{ }}`) or `instruction` (write from the prompt). Default: `template` when a template is given, else `instruction` |
 | `--message-template` | str | no | Email template text |
+| `--subject-template` | str | no | Subject of a template step, same `{{ }}` rule. Blank: the AI writes it |
 | `--prompt` | str | no | AI prompt for draft generation |
 | `--delay-value` | int | no | Delay duration (for delay steps) |
 | `--delay-unit` | str | no | Delay unit (days, hours, minutes) |
@@ -851,7 +853,9 @@ Lists sequences that include the given prospect (person ID).
 #### `ac sequences steps update <sequence-id> <step-id>`
 | Flag | Type | Description |
 |------|------|-------------|
+| `--message-mode` | str | Switch between `template` and `instruction` |
 | `--message-template` | str | Update email template |
+| `--subject-template` | str | Update the subject template (`""` clears it) |
 | `--prompt` | str | Update AI prompt |
 | `--delay-value` | int | Update delay duration |
 | `--delay-unit` | str | Update delay unit |
