@@ -2429,6 +2429,7 @@ Standard get/delete. `get` includes the dunning fields (decline/advice codes, at
 | `--ended-at` | ISO date | no | End date |
 | `--trial-ends-at` | ISO date | no | Trial end date |
 | `--custom-price-cents` | int | no | Per-org NET price in cents (off-catalogue); Stripe adds VAT |
+| `--clear-custom-price` | flag | no | Remove the custom price so the plan price applies. Not with `--custom-price-cents` |
 | `--currency` | str | no | Price currency |
 | `--coupon` | str | no | Stripe coupon id |
 | `--json` | flag | no | Raw JSON output |

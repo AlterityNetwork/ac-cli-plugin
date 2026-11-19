@@ -238,7 +238,9 @@ ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period mont
 # neither is settable on update (and the stripe ids are not settable on create).
 ac admin subscriptions update <subscription-id> [--plan-id <id>] [--billing-period annual] \
   [--billing-mode manual] [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
-  [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
+  [--custom-price-cents 25000 | --clear-custom-price] [--currency gbp] [--coupon FOUNDER50]
+# --clear-custom-price removes the custom price, so the plan price applies again.
+# A zero custom price on a Stripe plan is not a comp; use switch-comped for that.
 ac admin subscriptions delete <subscription-id> [--yes]
 
 # Activate: ONE action grants the org account access AND starts billing
