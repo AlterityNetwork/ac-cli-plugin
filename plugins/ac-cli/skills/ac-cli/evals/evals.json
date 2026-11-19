@@ -1910,6 +1910,23 @@
           "text": "`ac agentic outreach enrollments research e-77`"
         }
       ]
+    },
+    {
+      "id": 150,
+      "prompt": "Which boards and advisory roles do we already know about for https://www.linkedin.com/in/rorysutherland?",
+      "expected_output": "Runs `ac agentic people profile --linkedin-url https://www.linkedin.com/in/rorysutherland`. The read is free, so it starts no People Enrich Run first.",
+      "assertions": [
+        {
+          "name": "reads_people_profile",
+          "type": "command_matches",
+          "text": "`ac agentic people profile .*--linkedin-url[ =][\"']?https://www\\.linkedin\\.com/in/rorysutherland`"
+        },
+        {
+          "name": "no_paid_deep_dive",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start people\\.enrich`"
+        }
+      ]
     }
   ]
 }
