@@ -22,10 +22,10 @@ ac crm companies unapprove --ids id1,id2,id3      # clear approval
 ac crm companies mark-actioned --ids id1,id2,id3 [--note "..."]   # ENG-912 Actioned (note → crm_activities)
 ac crm companies delete <company-id> [--delete-people] [--yes]
 ac crm companies bulk-delete --ids id1,id2,id3 [--delete-people] [--yes]
-ac crm companies enrich <url> [--provider hunter]   # provider-agnostic autofill
+ac crm companies enrich <url> [--provider hunter|fullenrich]   # provider-agnostic autofill
 ```
 
-> **Company autofill**: `ac crm companies enrich <url>` runs the configured structured provider (Hunter by default, and `--provider hunter` names it explicitly) and falls through to a homepage scrape on miss. Response carries the enriched fields plus `source` (`hunter` or `scrape`) telling you who produced the data. Pair with `--json | jq` to script.
+> **Company autofill**: `ac crm companies enrich <url>` runs the configured structured provider (Hunter by default, override with `--provider fullenrich`) and falls through to a homepage scrape on miss. Response carries the enriched fields plus `source` (`hunter` / `fullenrich` / `scrape`) telling you who produced the data. Pair with `--json | jq` to script.
 
 ## People (Contacts)
 
