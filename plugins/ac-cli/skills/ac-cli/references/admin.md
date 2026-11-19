@@ -7,6 +7,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ```bash
 ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
 ac admin users get <user-id>
+ac admin users organizations <user-id> [--json]           # every organisation the user belongs to, current first
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
 ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin] [--copilot/--no-copilot]
 ac admin users delete <user-id> [--yes]
@@ -41,7 +42,7 @@ ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
 ac admin orgs create-user <org-id> --email jane@example.com --first-name Jane --last-name Smith \
-  [--role member] [--job-title "Head of BD"] [--send-email/--no-send-email]   # new user, added to an active org
+  [--role member] [--job-title "Head of BD"] [--send-email/--no-send-email | --return-link]   # new user, added to an active org
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]

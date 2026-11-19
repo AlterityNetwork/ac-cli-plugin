@@ -1532,6 +1532,13 @@ All admin commands require super admin authentication.
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
+#### `ac admin users organizations <user-id>`
+Lists every organisation the user belongs to: role, current marker, subscription status and plan. The current organisation comes first.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--json` | flag | Raw JSON output (adds onboarding status and suspension time) |
+
 #### `ac admin users create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -1782,6 +1789,7 @@ Creates a user and adds them to an active organisation.
 | `--role` | str | no | Member role. The API uses `member` |
 | `--job-title` | str | no | Job title |
 | `--send-email/--no-send-email` | flag | no | Send the welcome email (default: send) |
+| `--return-link` | flag | no | Print a set-password link (valid for one hour). No welcome email is sent with this flag |
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac admin orgs update-member <org-id> <user-id>`
