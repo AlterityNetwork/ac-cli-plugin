@@ -196,6 +196,7 @@ Some commands are validated server-side and reject the request if a paired flag 
 | `ac admin credit-prices create` | `--action-key` AND `--unit` AND `--credits` (`--effective-from` at least 60 seconds from now when given) |
 | `ac admin onboarding create` | `--email` AND `--first-name` AND `--last-name` AND `--org-name` |
 | `ac sequences steps create` (type=delay) | `--type delay` AND `--delay-value` AND `--delay-unit` |
+| `ac sequences steps create` (template email) | `--type message` AND `--message-mode template` AND `--message-template` |
 | `ac sequences outbox reject` | `--action` (`regenerate`, `remove_recipient`, `skip_send`, or `manual_edit`) |
 | `ac files images upload` | path AND `--category` |
 | `ac resources upload` | path AND `--name` |

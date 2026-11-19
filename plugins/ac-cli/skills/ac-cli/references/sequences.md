@@ -31,8 +31,22 @@ ac sequences sequences for-prospect <prospect-id>          # Sequences containin
 
 ```bash
 ac sequences steps create <sequence-id> --type message [--step-order 1] \
-  [--message-template "Hi {{name}}..."] [--prompt "Write a cold intro"]
-ac sequences steps update <sequence-id> <step-id> [--message-template "..."]
+  [--message-mode template|instruction] \
+  [--message-template "Hi {{ firstName }}, {{ a detail about their new role }}..."] \
+  [--subject-template "Hello {{ company }}"] [--prompt "Write a cold intro"]
+ac sequences steps update <sequence-id> <step-id> [--message-mode ...] \
+  [--message-template "..."] [--subject-template "..."] [--prompt "..."]
+```
+
+An email step has one mode. `template` sends the template text exactly as
+written. Each `{{ ... }}` is a short instruction, and the AI replaces it with
+words that fit the sentence. `{{ firstName }}`, `{{ lastName }}` and
+`{{ company }}` insert the exact value. A blank subject template lets the AI
+write the subject. `instruction` writes the whole email from `--prompt`. The
+step keeps the text of the other mode and ignores it. A create with a template
+and no mode makes a template step.
+
+```bash
 ac sequences steps delete <sequence-id> <step-id> [--yes]
 ac sequences steps reorder <sequence-id> --step-ids id1,id2,id3
 ac sequences steps stats <sequence-id>
