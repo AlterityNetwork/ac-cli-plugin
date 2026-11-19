@@ -561,9 +561,11 @@ List the CRM lists that contain a given person or company.
 |------|------|-------------|
 | `--person-id` | str | Person ID (one of person/company required) |
 | `--company-id` | str | Company ID (one of person/company required) |
+| `--limit` | int (1-1000) | Page size. Omit it to get every row |
+| `--offset` | int | Rows to skip, newest first. Works with or without `--limit` |
 | `--json` | flag | Output raw JSON |
 
-API: `GET /api/v1/crm/members/{member_type}/{member_id}/lists`. Response is a bare list (not paginated envelope).
+API: `GET /api/v1/crm/members/{member_type}/{member_id}/lists?limit=&offset=`. Response is a bare list (not paginated envelope). Without `--limit` it holds every list, so no paging is needed. To page, repeat with `--offset` until a page comes back shorter than `--limit`.
 
 #### `ac crm lists add-member <list-id>`
 | Flag | Type | Description |
@@ -827,10 +829,12 @@ Trigger draft generation for a step.
 | `--json` | flag | no | Raw JSON output |
 
 #### `ac sequences sequences for-prospect <prospect-id>`
-Lists sequences that include the given prospect (person ID).
+Lists sequences that include the given prospect (person ID), newest first. Without `--limit` it returns every sequence.
 
 | Flag | Type | Description |
 |------|------|-------------|
+| `--limit` | int (1-1000) | Page size. Omit it to get every row |
+| `--offset` | int | Rows to skip, newest first. Works with or without `--limit` |
 | `--json` | flag | Raw JSON output |
 
 ---
@@ -889,7 +893,11 @@ Shows execution statistics for each step in the sequence.
 |------|------|---------|-------------|
 | `--status` | str | None | Filter by recipient status |
 | `--step-id` | str | None | Filter by current step |
+| `--limit` | int (1-1000) | None | Page size. Omit it to get every recipient, however many |
+| `--offset` | int | 0 | Recipients to skip, newest first. Works with or without `--limit` |
 | `--json` | flag | off | Raw JSON output |
+
+Without `--limit` the response holds every recipient of the sequence. A large sequence gives a large response; use `--limit 200 --offset 0`, then `--offset 200`, and so on, until a page comes back shorter than the limit.
 
 #### `ac sequences recipients add <sequence-id>`
 | Flag | Type | Required | Description |
