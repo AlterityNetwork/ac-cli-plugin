@@ -5,7 +5,7 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ## Users
 
 ```bash
-ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
+ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50] [--copilots]
 ac admin users get <user-id>
 ac admin users organizations <user-id> [--json]           # every organisation the user belongs to, current first
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
@@ -88,23 +88,6 @@ ac admin queues job-performance <job-id>
 ac admin queues health --json && \
 ac admin queues stats --json && \
 ac admin queues metrics --json
-```
-
-## Demo
-
-```bash
-ac admin demo scrape-website --url "https://example.com"
-ac admin demo generate-org --industry "Technology"
-ac admin demo generate-profile --role "Head of Marketing" [--industry "Technology"]
-ac admin demo prepare-account --org-name "Demo Corp" --user-email demo@example.com \
-  --user-first-name Jane --user-last-name Smith [--empty]
-ac admin demo list-accounts [--page 1] [--page-size 50] [--sort created_at] [--order desc]
-ac admin demo get-account <org-id>
-ac admin demo update-account <org-id> [--first-name Jane] [--last-name Smith] [--job-title "CEO"] \
-  [--bio "..."] [--avatar-url "https://..."] [--website "https://..."]   # updates the demo user profile
-ac admin demo delete-account <org-id> [--yes]
-ac admin demo cleanup [--max-age-days 30] [--yes]
-ac admin demo stats
 ```
 
 ## Onboarding

@@ -39,7 +39,6 @@ For domain-scoped quick references (just the common commands per domain), see:
    - [Organizations](#organizations)
    - [Copilots](#copilots)
    - [Queues](#queues)
-   - [Demo](#demo)
    - [Onboarding](#onboarding)
    - [App Usage](#app-usage)
    - [AI Usage](#ai-usage)
@@ -1533,6 +1532,7 @@ All admin commands require super admin authentication.
 | `--order` | str | None | Sort order (asc/desc) |
 | `--page` | int | 1 | Page number (1 or more) |
 | `--page-size` | int | 50 | Results per page (1 or more) |
+| `--copilots` | flag | off | List only copilots, superadmins included |
 | `--json` | flag | off | Raw JSON output |
 
 #### `ac admin users get <user-id>`
@@ -1930,85 +1930,6 @@ Retries a single failed job by its ID.
 | `--json` | flag | Raw JSON output |
 
 Permanently removes all failed jobs from the specified queue.
-
----
-
-### Demo
-
-#### `ac admin demo scrape-website`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--url` | str | yes | Website URL to scrape for demo data |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac admin demo generate-org`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--industry` | str | yes | Industry for the generated organization |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac admin demo generate-profile`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--role` | str | yes | Job role of the profile |
-| `--industry` | str | no | Industry for the generated profile |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac admin demo prepare-account`
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--org-name` | str | yes | Name for the demo organization |
-| `--user-email` | str | yes | Email of the demo user |
-| `--user-first-name` | str | yes | First name of the demo user |
-| `--user-last-name` | str | yes | Last name of the demo user |
-| `--empty`, `--skip-crm-data` | flag | no | Create an empty account: the organisation and the user only, with no CRM companies, people, deals or activities |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac admin demo list-accounts`
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--page` | int | 1 | Page number |
-| `--page-size` | int | 50 | Results per page |
-| `--sort` | str | "created_at" | Sort field |
-| `--order` | str | "desc" | Sort order (asc/desc) |
-| `--json` | flag | off | Raw JSON output |
-
-#### `ac admin demo get-account <org-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-#### `ac admin demo update-account <org-id>`
-Updates the profile of the demo account user. Give at least one flag.
-
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--first-name` | str | no | First name of the demo user |
-| `--last-name` | str | no | Last name of the demo user |
-| `--job-title` | str | no | Job title of the demo user |
-| `--bio` | str | no | Bio of the demo user |
-| `--avatar-url` | str | no | Avatar URL of the demo user |
-| `--website` | str | no | Website of the demo user |
-| `--json` | flag | no | Raw JSON output |
-
-#### `ac admin demo delete-account <org-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--yes` | flag | Skip confirmation prompt |
-| `--json` | flag | Raw JSON output |
-
-#### `ac admin demo cleanup`
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--max-age-days` | int | None (API default) | Delete demo accounts older than this many days |
-| `--yes` | flag | off | Skip confirmation prompt |
-
-#### `ac admin demo stats`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Returns aggregate statistics about demo accounts.
 
 ---
 
