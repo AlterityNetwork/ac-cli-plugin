@@ -160,10 +160,10 @@ Bulk-capable. Stamps `approved_by` / `approved_at` and (with `--note`) writes a 
 #### `ac crm companies enrich <url>`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--provider` | enum | no | `hunter` or `explorium`. Omit to use the configured default. |
+| `--provider` | enum | no | `hunter`. Omit to use the configured default. |
 | `--json` | flag | no | Output raw JSON |
 
-Provider-agnostic autofill (ENG-1060). Returns `{ data, source }` — `source` is the provider that actually produced the data (`hunter` / `explorium` / `scrape` when the picked provider missed and the terminal homepage-scrape ran).
+Provider-agnostic autofill. Returns `{ data, source }`. `source` is the provider that produced the data (`hunter`), or `scrape` when the provider missed and the homepage-scrape fallback ran.
 
 ---
 
