@@ -187,13 +187,15 @@ attaches the people it found to the prospect and clears the link. Read the Run
 with `ac agentic runs get <run-id>`, and the people with
 `ac agentic prospects people <prospect-id>`.
 
-`list` JSON and the human `Prospects` column carry `prospect_count`: how many
-prospects the Run last wrote. It is null on every list but a
-`--capability signals.search` or `--capability people.signals` one, because only
-those lists pay for the count.
-Zero is a Run that wrote no prospect, so do not read null as zero. A later Run
-that returns a company again claims the row, so the count of an older Run falls.
-Run detail always carries null.
+`list` JSON and the human `Results` column carry `result_count`: the number of
+results the run page lists. The API counts it on any list, for a succeeded
+`signals.search`, `people.signals`, `company.search` or `people.search` Run. A
+Company Search or People Search Run counts the items of its result. A Signals
+or People Signals Run counts the prospects its result names that still exist
+and are not dismissed, so the count falls when a person dismisses or deletes
+one. Every other Run carries null.
+Zero is a search that found nothing, so do not read null as zero. Run detail
+always carries null. `prospect_count` is always null and will go away.
 
 
 ### Product progress
