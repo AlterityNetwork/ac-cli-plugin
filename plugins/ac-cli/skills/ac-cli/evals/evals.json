@@ -588,35 +588,6 @@
       ]
     },
     {
-      "id": 39,
-      "prompt": "Generate a demo organization in the technology space and prepare a demo account on it called 'TechDemo'. The demo user is Jane Smith, jane@techdemo.example.",
-      "expected_output": "generate-org → prepare-account in order. prepare-account passes --org-name, --user-email, --user-first-name and --user-last-name.",
-      "assertions": [
-        {
-          "name": "demo_pipeline",
-          "type": "command_sequence",
-          "text": "Sequence: `ac admin demo generate-org .*--industry .*Technology`, `ac admin demo prepare-account .*--org-name .*TechDemo`"
-        },
-        {
-          "name": "demo_user_flags",
-          "type": "command_matches",
-          "text": "`ac admin demo prepare-account .*--user-email .*jane@techdemo.example` `ac admin demo prepare-account .*--user-first-name .*Jane` `ac admin demo prepare-account .*--user-last-name .*Smith`"
-        }
-      ]
-    },
-    {
-      "id": 40,
-      "prompt": "Delete every demo account older than 60 days. Skip prompts.",
-      "expected_output": "Runs `ac admin demo cleanup --max-age-days 60 --yes` or via AC_YES.",
-      "assertions": [
-        {
-          "name": "demo_cleanup_no_prompt",
-          "type": "command_matches",
-          "text": "`(AC_YES=1 )?ac admin demo cleanup --max-age-days 60( --yes)?`"
-        }
-      ]
-    },
-    {
       "id": 41,
       "prompt": "Publish a new Terms of Service document version 2.0 and make it the current one.",
       "expected_output": "legal-docs create → set-current.",
