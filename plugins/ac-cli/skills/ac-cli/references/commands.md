@@ -2555,6 +2555,17 @@ Calls `POST /api/v1/admin/credit-prices`. Prints `Created {action_key} version {
 A start in the past or inside 60 seconds is a 422 (exit 2). Two writes for the same key at the
 same time give a 409 (exit 5); list the key again and retry.
 
+#### `ac admin credit-prices costs`
+Calls `GET /api/v1/admin/credit-prices/costs`. Prints Action, Cost, Units, Credits, Per unit and
+Per credit, across every organization, for the window that ends now. The cost is the sum of the
+metered model and provider calls of the action, in USD. Per unit and per credit are that cost
+divided by the units and the credits charged. A hyphen means no recorded cost in the window.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--days` | int 1 to 365 | no | Days in the window. Default: 30 |
+| `--json` | flag | no | Raw JSON output, which adds `usage_rows` and `charges` |
+
 ---
 
 ## Platform
