@@ -10,7 +10,7 @@ for the current organization. Its published schema defines the input fields.
 
 ```bash
 ac agentic capabilities start company.search \
-  --input '{"sources":["supplied"],"companies":[{"kind":"domain","value":"example.com"}]}' \
+  --input '{"natural_language_query":"UK fintech companies"}' \
   --idempotency-key company-search-request-42 --json
 ```
 

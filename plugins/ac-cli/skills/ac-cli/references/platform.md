@@ -7,7 +7,7 @@ For full flag tables see `commands.md` (Platform section).
 ```bash
 ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
 ac agentic saved-searches create --capability people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
-ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"sources":["provider_discovery"],"filters":{"country_codes":["GB"]}}'
+ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"filters":{"country_codes":["GB"]}}'
 ac agentic saved-searches create --capability signals.search --name "Watched accounts" --brief '{"icp":"Any recent sales signal at the company"}' --watch-list-id <crm-list-id>
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches list --capability signals.search --capability people.signals
