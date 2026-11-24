@@ -2633,6 +2633,9 @@ so a Signals brief and a People brief have different shapes.
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
 | `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
 | `--watch-list-id` | str | no | CRM list of companies to watch. Sent only when given. |
+| `--source-list` | str, repeatable | no | CRM list kept in sync: each Run reads its current members |
+| `--source-list-fixed` | str, repeatable | no | CRM list kept as a fixed set: the server keeps the members it has now |
+| `--sources` | JSON array | no | The whole source set, for CSV and manual rows. Each item has a `kind`: `crm_list`, `csv` or `manual` |
 | `--json` | flag | no | Raw saved-search detail |
 
 Only a `signals.search` saved search can watch a list. A saved search with a
@@ -2641,6 +2644,13 @@ checks every company on the list and does not discover companies outside the lis
 `icp` and no `company_criteria`. The API refuses a bad list with exit code 2 and
 one of the codes `watch_list_not_supported`, `watch_list_not_found`,
 `watch_list_empty` or `watch_list_too_large`. `get` shows the list as `Watch list`.
+
+A saved search also keeps its `sources`: one source for each CRM list, CSV file
+or set of rows added by hand. One synced CRM list is the same as
+`--watch-list-id`, so the CLI refuses the two together, and `--sources` with a
+list flag. Today the API saves no source or one CRM list kept in sync; any other
+set returns exit code 2 with `sources_not_supported`. `get` shows each source on
+the `Sources` line, for example `CRM list Q4 targets, kept in sync`.
 
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
@@ -2667,12 +2677,16 @@ ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 | `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
 | `--watch-list-id` | str | no | Replacement CRM list of companies to watch |
 | `--clear-watch-list-id` | flag | no | Stop watching the list. Sends `watch_list_id: null`. |
+| `--source-list` | str, repeatable | no | Replacement set: CRM list kept in sync |
+| `--source-list-fixed` | str, repeatable | no | Replacement set: CRM list kept as a fixed set |
+| `--sources` | JSON array | no | Replacement set, whole |
+| `--clear-sources` | flag | no | Remove every source. Sends `sources: []`. |
 | `--json` | flag | no | Raw saved-search detail |
 
-Provide at least one of `--name`, `--brief`, `--watch-list-id` and
-`--clear-watch-list-id`. Do not use `--watch-list-id` with
-`--clear-watch-list-id`; the CLI refuses the pair before any request. A stale
-write token returns exit code 5.
+Provide at least one of `--name`, `--brief`, a watch list flag or a source
+flag. Do not use `--watch-list-id` with `--clear-watch-list-id`, or a watch
+list flag with a source flag; the CLI refuses the pair before any request. The
+source flags replace the whole set. A stale write token returns exit code 5.
 
 #### `ac agentic saved-searches delete <saved-search-id>`
 | Flag | Type | Required | Description |
