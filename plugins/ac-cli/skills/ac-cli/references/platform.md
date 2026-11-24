@@ -12,7 +12,7 @@ ac agentic saved-searches create --capability signals.search --name "Watched acc
 ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
 ac agentic saved-searches list --capability signals.search --capability people.signals
 ac agentic saved-searches get <saved-search-id>
-ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}'] [--watch-list-id <crm-list-id> | --clear-watch-list-id] [--source-list <crm-list-id> | --clear-sources]
+ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}'] [--watch-list-id <crm-list-id> | --clear-watch-list-id | --source-list <crm-list-id>... --source-list-fixed <crm-list-id>... | --sources '[...]' | --clear-sources]
 ac agentic saved-searches delete <saved-search-id> [--yes]
 ac agentic saved-searches start <saved-search-id> --idempotency-key <key>
 ac agentic saved-searches diff <saved-search-id> [--cursor <cursor>] [--limit 50]
