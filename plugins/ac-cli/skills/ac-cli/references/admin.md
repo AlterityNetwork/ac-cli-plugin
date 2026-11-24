@@ -411,8 +411,8 @@ ac admin credit-prices create --action-key people.search --unit company --credit
 # Run `list --action-key <key>` again and retry.
 ```
 
-The seeded action keys are `company.search` (run), `company.search.supplied` (row),
-`signals.search` (run), `people.search` (company, minimum per run), `company.enrich` and
+The seeded action keys are `company.search` (run), `company.search.supplied` (row,
+no longer charged), `signals.search` (run), `people.search` (company, minimum per run), `company.enrich` and
 `people.enrich` (entity), `front_door.turn` (thousand_tokens, minimum per message),
 `definition.run` (thousand_tokens), `email.draft` (draft) and `email.send` (message).
 A charge uses the version in effect when its run started, so a new version does not
