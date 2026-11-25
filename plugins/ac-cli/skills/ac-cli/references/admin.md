@@ -5,8 +5,9 @@ Admin commands require super admin privileges. Verify with `ac whoami` (look for
 ## Users
 
 ```bash
-ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50]
+ac admin users list [--query "jane"] [--sort created_at] [--order desc] [--page 1] [--page-size 50] [--copilots]
 ac admin users get <user-id>
+ac admin users organizations <user-id> [--json]           # every organisation the user belongs to, current first
 ac admin users create --email jane@example.com --password "secret123" [--full-name "Jane Smith"]
 ac admin users update <user-id> [--full-name "Jane Doe"] [--is-superadmin] [--copilot/--no-copilot]
 ac admin users delete <user-id> [--yes]
@@ -41,7 +42,7 @@ ac admin orgs delete <org-id> [--yes]
 ac admin orgs members <org-id> [--page 1] [--page-size 50]
 ac admin orgs add-member <org-id> --user-id <user-id> [--role member]
 ac admin orgs create-user <org-id> --email jane@example.com --first-name Jane --last-name Smith \
-  [--role member] [--job-title "Head of BD"] [--send-email/--no-send-email]   # new user, added to an active org
+  [--role member] [--job-title "Head of BD"] [--send-email/--no-send-email | --return-link]   # new user, added to an active org
 ac admin orgs update-member <org-id> <user-id> --role admin
 ac admin orgs remove-member <org-id> <user-id> [--yes]
 ac admin orgs transfer-ownership <org-id> --new-owner-id <user-id> [--yes]
@@ -87,23 +88,6 @@ ac admin queues job-performance <job-id>
 ac admin queues health --json && \
 ac admin queues stats --json && \
 ac admin queues metrics --json
-```
-
-## Demo
-
-```bash
-ac admin demo scrape-website --url "https://example.com"
-ac admin demo generate-org --industry "Technology"
-ac admin demo generate-profile --role "Head of Marketing" [--industry "Technology"]
-ac admin demo prepare-account --org-name "Demo Corp" --user-email demo@example.com \
-  --user-first-name Jane --user-last-name Smith [--empty]
-ac admin demo list-accounts [--page 1] [--page-size 50] [--sort created_at] [--order desc]
-ac admin demo get-account <org-id>
-ac admin demo update-account <org-id> [--first-name Jane] [--last-name Smith] [--job-title "CEO"] \
-  [--bio "..."] [--avatar-url "https://..."] [--website "https://..."]   # updates the demo user profile
-ac admin demo delete-account <org-id> [--yes]
-ac admin demo cleanup [--max-age-days 30] [--yes]
-ac admin demo stats
 ```
 
 ## Onboarding
@@ -237,7 +221,9 @@ ac admin subscriptions create --org-id <id> --plan-id <id> --billing-period mont
 # neither is settable on update (and the stripe ids are not settable on create).
 ac admin subscriptions update <subscription-id> [--plan-id <id>] [--billing-period annual] \
   [--billing-mode manual] [--started-at 2026-04-01] [--ended-at 2026-12-31] [--trial-ends-at 2026-04-15] \
-  [--custom-price-cents 25000] [--currency gbp] [--coupon FOUNDER50]
+  [--custom-price-cents 25000 | --clear-custom-price] [--currency gbp] [--coupon FOUNDER50]
+# --clear-custom-price removes the custom price, so the plan price applies again.
+# A zero custom price on a Stripe plan is not a comp; use switch-comped for that.
 ac admin subscriptions delete <subscription-id> [--yes]
 
 # Activate: ONE action grants the org account access AND starts billing
@@ -352,9 +338,19 @@ ac admin subscription-plans create --slug starter --name "Starter" \
 
 ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"keys":["crm"],"credits_monthly":500,"limits":{"seats":25}}']
 ac admin subscription-plans delete <plan-id> [--yes]
+
+# Move the subscriptions that still pay an old price to the current plan price.
+# Run it after `update` changes a price. Only live Stripe subscriptions on that
+# billing period, at exactly --from-price-cents, with no custom price and not
+# cancelling, move. Each pays the new price from its next renewal, with no
+# proration. Reports moved and failed counts. A second run moves nothing.
+ac admin subscription-plans reprice-subscriptions <plan-id> --period monthly|annual \
+  --from-price-cents 25000 [--yes] [--json]
 ```
 
-> **`--features` is a typed template.** The top-level fields are `keys`, `credits_monthly` and `limits`. `limits` holds `seats` and `email_sends_per_day`. `keys` holds commercial keys: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library`. The API refuses any other field or key. A given template replaces the stored one whole.
+> **A price change does not move existing customers.** `subscription-plans update --monthly-price-cents …` changes the price for new subscriptions only. Each live subscription keeps its price until `reprice-subscriptions` moves it.
+
+> **`--features` is a typed template.** The top-level fields are `keys`, `credits_monthly` and `limits`. `limits` holds `seats` and `email_sends_per_day`. `keys` holds commercial keys: `crm`, `companies`, `people`, `signals`, `sequences`, `outreach`, `chat`, `mcp`, `inbox`, `agent_builder`, `network`, `analytics`. The API refuses any other field or key. A given template replaces the stored one whole.
 
 ## Entitlement Grants
 
@@ -409,6 +405,15 @@ ac admin credit-prices create --action-key people.search --unit company --credit
 
 # Two writes for the same key at the same time: the second is a 409 (exit 5).
 # Run `list --action-key <key>` again and retry.
+
+# What each action cost us in USD and charged in credits, across every
+# organization, over the last --days days (1 to 365, default 30). The cost is
+# the sum of the metered model and provider calls of the action. Per unit and
+# per credit are that cost divided by the units and the credits charged. A run
+# minimum adds credits and no units. A hyphen means no recorded cost: the
+# action had no usage row, or no units, in the window. --json adds usage_rows
+# and charges.
+ac admin credit-prices costs [--days 90] [--json]
 ```
 
 The seeded action keys are `company.search` (run), `company.search.supplied` (row,
