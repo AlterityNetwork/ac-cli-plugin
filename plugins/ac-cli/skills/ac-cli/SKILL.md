@@ -272,7 +272,7 @@ Before any irreversible mutation, prefer the preview/list command first.
 
 | Mutation | Preview first |
 |----------|---------------|
-| `ac crm import commit --preview-file <preview.json>` | `ac crm import preview --file <path>` |
+| `ac crm import commit --preview-file <preview.json>` | `ac crm import preview --file <path> --json > preview.json` |
 | `ac workflows schedules create ... --cron "..."` | `ac workflows schedules preview ... --cron "..." --count 5` |
 | `ac sequences sequences launch <id>` | `ac sequences sequences impact-preview <id> --step-id <id>` |
 | `ac workflows run-people add-to-crm` | `ac workflows run-people company-match-preview` |
