@@ -643,15 +643,14 @@ before committing.
 #### `ac crm import commit`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--preview-id` | str | yes | ID from the preview step |
-| `--auto-accept` | flag | no | Skip confirmation |
+| `--preview-file` | path | yes | JSON file saved from `ac crm import preview --json` |
 | `--json` | flag | no | Output raw JSON |
 
 ---
 
 ### Signals (buying signals)
 
-CRUD on standalone buying-signal records attached to companies/people. Distinct from `ac sequences signals <recipient-id>` which returns recipient-scoped sales signals from an active sequence.
+CRUD on standalone buying-signal records attached to companies/people. Distinct from `ac sequences signals for <recipient-id>` which returns recipient-scoped sales signals from an active sequence.
 
 #### `ac crm signals list`
 | Flag | Type | Default | Description |
@@ -1197,12 +1196,21 @@ Creates a copy of the playbook.
 
 Shows Sequences dashboard statistics (sequences active, emails sent, replies, etc.).
 
-#### `ac sequences signals <recipient-id>`
+#### `ac sequences signals for <recipient-id>`
 | Flag | Type | Description |
 |------|------|-------------|
 | `--json` | flag | Raw JSON output |
 
 Returns sales signals for a specific recipient.
+
+#### `ac sequences signals recent`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--since-days` | int | 7 | Window in days (clamped server-side to 1-365) |
+| `--limit` | int | 20 | Max signals to return (clamped server-side to 1-200) |
+| `--json` | flag | | Raw JSON output |
+
+Returns recent sales signals across the organization.
 
 #### `ac sequences inbox-count`
 | Flag | Type | Description |
@@ -1901,35 +1909,6 @@ Sends current queue errors to Sentry for monitoring.
 | `--json` | flag | Raw JSON output |
 
 Returns performance metrics for a specific job.
-
-#### `ac admin queues failed <queue-name>`
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--limit` | int | 50 | Max failed jobs to return |
-| `--json` | flag | off | Raw JSON output |
-
-#### `ac admin queues retry-all <queue-name>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--yes` | flag | Skip confirmation prompt |
-| `--json` | flag | Raw JSON output |
-
-Retries all failed jobs in the specified queue.
-
-#### `ac admin queues retry-job <job-id>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--json` | flag | Raw JSON output |
-
-Retries a single failed job by its ID.
-
-#### `ac admin queues clear-failed <queue-name>`
-| Flag | Type | Description |
-|------|------|-------------|
-| `--yes` | flag | Skip confirmation prompt |
-| `--json` | flag | Raw JSON output |
-
-Permanently removes all failed jobs from the specified queue.
 
 ---
 

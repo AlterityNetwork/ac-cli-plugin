@@ -145,10 +145,11 @@ Repeat `--icp-id` to target several ideal customer profiles on an offer. Omittin
 
 ```bash
 ac sequences dashboard                          # Sequences stats overview
-ac sequences signals <recipient-id>             # Sales signals for a recipient (positional, NOT --recipient-id)
+ac sequences signals for <recipient-id>         # Sales signals for a recipient (positional)
+ac sequences signals recent                     # Recent signals across the organization
 ac sequences inbox-count                        # Total inbox thread count
 ```
 
-> "Signals for recipient X" → `ac sequences signals X` (positional). Do not use `ac sequences signals list --recipient-id` or `ac sequences signals for X` — those subcommands do not exist.
+> "Signals for recipient X" → `ac sequences signals for X` (positional). Do not use `ac sequences signals list --recipient-id` or `ac sequences signals X` — those forms do not exist.
 
 > "How many threads in my inbox" → `ac sequences inbox-count` (single dedicated command). Do not pipe `inbox list --json | jq length` when a count command exists.

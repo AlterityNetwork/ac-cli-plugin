@@ -29,6 +29,7 @@ plugins/ac-cli/
         evals.json       → Skill evaluation test cases
         run.py           → Eval runner (claude -p, grades assertions)
         README.md        → Eval vocab + runner usage
+        test_run.py      → Offline unit tests for run.py
 scripts/
   bump-version.sh        → Auto-bumps patch version on commit (pre-commit hook)
 ```
