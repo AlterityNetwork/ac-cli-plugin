@@ -49,6 +49,9 @@ position in input order, then `outcome` (`complete`, `partial` or `empty`),
   `revenue_band`, `revenue_currency`, `funding_round`, `funding_amount` and
   `funding_currency`. A missing key means the source did not state it.
 
+`outcome` is `partial` when any row is `failed`, else `empty` when nothing is enriched,
+else `complete`.
+
 A name that matches more than one company returns the best match with
 `match.how` set to `agent`. The result lists no candidates.
 
