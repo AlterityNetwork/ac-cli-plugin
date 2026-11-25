@@ -128,6 +128,29 @@ Text mode prints `Error {status}: {message} {remedy} ({code})`. `--json` keeps t
 `detail` object. A Run that is already in flight is not refused at the start: it
 ends `partial` at its next checkpoint, with `partial_reason` `budget_exhausted`.
 
+## Estimate the credits of a run
+
+A `signals.search` run pays 90 credits for each company or person it checks,
+and 510 credits for a discovery run. Tokens and enrichment inside the run are
+free. Estimate a run before you start it:
+
+```bash
+ac agentic capabilities estimate signals.search --units 48 --json
+ac agentic capabilities estimate signals.search --input '{"source":"discovery","brief":{"icp":"Raised a seed round"}}'
+ac agentic capabilities estimate signals.search --saved-search-id <saved-search-id> \
+  --cron "0 9 * * 1" --timezone Europe/London
+```
+
+Name one of `--units`, `--input` or `--saved-search-id`. A saved search is
+priced with the members its list holds now. `--cron` adds the runs and the
+credits of 30 days on that schedule.
+
+`credits_per_run` is the most the run charges. The start uses the same number,
+so a start that the credits left do not cover returns `credits_exhausted`
+(402). `units_covered` is how many companies the credits left pay for, when
+the organisation has a credit limit. A capability without a price per unit
+answers `"priced": false`.
+
 ## Start a run
 
 The command starts one Run of one definition. The definition is an agent or a
