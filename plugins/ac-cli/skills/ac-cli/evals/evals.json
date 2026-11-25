@@ -1898,6 +1898,23 @@
           "text": "`ac agentic capabilities start people\\.enrich`"
         }
       ]
+    },
+    {
+      "id": 151,
+      "prompt": "I raised the monthly price of plan plan-42 from 250 to 300 pounds. Move the customers still paying the old monthly price to the new one.",
+      "expected_output": "Runs `ac admin subscription-plans reprice-subscriptions plan-42 --period monthly --from-price-cents 25000`. It does not edit each subscription by hand.",
+      "assertions": [
+        {
+          "name": "reprices_plan_subscriptions",
+          "type": "command_matches",
+          "text": "`ac admin subscription-plans reprice-subscriptions plan-42` with `--period monthly` and `--from-price-cents 25000`"
+        },
+        {
+          "name": "no_per_subscription_update",
+          "type": "command_forbidden",
+          "text": "`ac admin subscriptions update`"
+        }
+      ]
     }
   ]
 }

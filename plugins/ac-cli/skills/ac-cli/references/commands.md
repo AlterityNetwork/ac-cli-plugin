@@ -2462,6 +2462,16 @@ Standard get/delete.
 #### `ac admin subscription-plans update <plan-id>`
 Same flags as `create` (all optional). A given `--features` replaces the stored template whole.
 
+#### `ac admin subscription-plans reprice-subscriptions <plan-id>`
+Moves each live Stripe subscription of the plan that pays `--from-price-cents` on `--period`, has no custom price and is not cancelling, to the current plan price. The new price bills from each subscription's next renewal, with no proration. Returns `moved` and `failed`.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--period` | `monthly` \| `annual` | yes | The billing period whose subscriptions move |
+| `--from-price-cents` | int ≥ 0 | yes | The old price, net of tax. Only subscriptions at this price move |
+| `--yes`, `-y` | flag | no | Skip the confirmation prompt |
+| `--json` | flag | no | Raw JSON output |
+
 ### Entitlement Grants
 
 #### `ac admin entitlement-grants list`
@@ -2474,7 +2484,7 @@ Same flags as `create` (all optional). A given `--features` replaces the stored 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--org-id` | str | yes | Organization ID |
-| `--key` | str | yes | Commercial key: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library` |
+| `--key` | str | yes | Commercial key: `crm`, `companies`, `people`, `signals`, `sequences`, `outreach`, `chat`, `mcp`, `inbox`, `agent_builder`, `network`, `analytics` |
 | `--source` | str | yes | `plan_addon`, `trial` or `comp` |
 | `--mode` | str | no | `grant` (default) or `revoke` |
 | `--expires-at` | ISO 8601 | conditional | Instant with a timezone, later than now. Required when `--source trial` |
@@ -2544,6 +2554,17 @@ Calls `POST /api/v1/admin/credit-prices`. Prints `Created {action_key} version {
 
 A start in the past or inside 60 seconds is a 422 (exit 2). Two writes for the same key at the
 same time give a 409 (exit 5); list the key again and retry.
+
+#### `ac admin credit-prices costs`
+Calls `GET /api/v1/admin/credit-prices/costs`. Prints Action, Cost, Units, Credits, Per unit and
+Per credit, across every organization, for the window that ends now. The cost is the sum of the
+metered model and provider calls of the action, in USD. Per unit and per credit are that cost
+divided by the units and the credits charged. A hyphen means no recorded cost in the window.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--days` | int 1 to 365 | no | Days in the window. Default: 30 |
+| `--json` | flag | no | Raw JSON output, which adds `usage_rows` and `charges` |
 
 ---
 

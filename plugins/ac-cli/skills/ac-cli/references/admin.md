@@ -338,9 +338,19 @@ ac admin subscription-plans create --slug starter --name "Starter" \
 
 ac admin subscription-plans update <plan-id> [--name "Pro Plus"] [--features '{"keys":["crm"],"credits_monthly":500,"limits":{"seats":25}}']
 ac admin subscription-plans delete <plan-id> [--yes]
+
+# Move the subscriptions that still pay an old price to the current plan price.
+# Run it after `update` changes a price. Only live Stripe subscriptions on that
+# billing period, at exactly --from-price-cents, with no custom price and not
+# cancelling, move. Each pays the new price from its next renewal, with no
+# proration. Reports moved and failed counts. A second run moves nothing.
+ac admin subscription-plans reprice-subscriptions <plan-id> --period monthly|annual \
+  --from-price-cents 25000 [--yes] [--json]
 ```
 
-> **`--features` is a typed template.** The top-level fields are `keys`, `credits_monthly` and `limits`. `limits` holds `seats` and `email_sends_per_day`. `keys` holds commercial keys: `crm`, `companies`, `people`, `signals`, `email_sequences`, `chat`, `agent_builder`, `network`, `analytics`, `asset_library`. The API refuses any other field or key. A given template replaces the stored one whole.
+> **A price change does not move existing customers.** `subscription-plans update --monthly-price-cents …` changes the price for new subscriptions only. Each live subscription keeps its price until `reprice-subscriptions` moves it.
+
+> **`--features` is a typed template.** The top-level fields are `keys`, `credits_monthly` and `limits`. `limits` holds `seats` and `email_sends_per_day`. `keys` holds commercial keys: `crm`, `companies`, `people`, `signals`, `sequences`, `outreach`, `chat`, `mcp`, `inbox`, `agent_builder`, `network`, `analytics`. The API refuses any other field or key. A given template replaces the stored one whole.
 
 ## Entitlement Grants
 
@@ -395,6 +405,15 @@ ac admin credit-prices create --action-key people.search --unit company --credit
 
 # Two writes for the same key at the same time: the second is a 409 (exit 5).
 # Run `list --action-key <key>` again and retry.
+
+# What each action cost us in USD and charged in credits, across every
+# organization, over the last --days days (1 to 365, default 30). The cost is
+# the sum of the metered model and provider calls of the action. Per unit and
+# per credit are that cost divided by the units and the credits charged. A run
+# minimum adds credits and no units. A hyphen means no recorded cost: the
+# action had no usage row, or no units, in the window. --json adds usage_rows
+# and charges.
+ac admin credit-prices costs [--days 90] [--json]
 ```
 
 The seeded action keys are `company.search` (run), `company.search.supplied` (row),
