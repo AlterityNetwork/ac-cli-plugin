@@ -17,6 +17,41 @@ ac agentic capabilities start company.search \
 Both flags are required. Use a JSON input object and a nonblank delivery key
 with 1–255 header-safe ASCII characters.
 
+### Company Enrich (contract version 2)
+
+`company.enrich` takes one field, `subjects`, a list of 1 to 100 company
+references. The input is closed: `preset`, `fields` and `refresh` are refused.
+
+```bash
+ac agentic capabilities start company.enrich \
+  --input '{"subjects":[{"kind":"domain","value":"acme.com"},{"kind":"name","value":"Globex"}]}' \
+  --idempotency-key company-enrich-request-42 --json
+```
+
+A reference is one of `{"kind":"domain","value":"acme.com"}`,
+`{"kind":"company_linkedin","value":"<company URL>"}`, `{"kind":"name","value":"Acme GmbH"}`,
+`{"kind":"intel_company","id":"<uuid>"}` or
+`{"kind":"search_result","run_id":"<uuid>","result_id":"<uuid>"}`. Only Company
+Enrich accepts a `name` reference.
+
+The result is under `result.company_enrich`. It holds `items`, one per input
+position in input order, then `outcome` (`complete`, `partial` or `empty`),
+`diagnostics` and `usage` (`cost_cents`, `cost_kind`, `provider_calls`). Each item has:
+
+- `input_index` and `ref`: the position and the reference as sent.
+- `status`: `enriched`, `not_found` (the Run tried the row and saved nothing) or
+  `failed` (the Run stopped before it tried the row).
+- `match`: `name`, `domain`, `linkedin_url` and `how` (`domain`, `linkedin`, `name`
+  or `agent`). All four are null unless the status is `enriched`.
+- `values`: only the fields the source stated, from `name`, `website`, `linkedin_url`,
+  `industry`, `sub_industry`, `country_code`, `location`, `description`, `founding_year`,
+  `employee_count_exact`, `employee_count_band`, `logo_url`, `annual_revenue`,
+  `revenue_band`, `revenue_currency`, `funding_round`, `funding_amount` and
+  `funding_currency`. A missing key means the source did not state it.
+
+A name that matches more than one company returns the best match with
+`match.how` set to `agent`. The result lists no candidates.
+
 A `signals.search` bounded set (`"source":"company_set"`) names companies, people
 or both. A company reference carries one of `intel_company_id`, `prospect_id`,
 `domain` or `linkedin_url`, with an optional `name`, or a `name` alone that the
