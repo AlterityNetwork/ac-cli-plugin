@@ -3087,10 +3087,19 @@ The strategies are in name order. Each item is the strategy JSON below.
 `used_by_campaigns` counts the active and paused campaigns that follow it. A
 missing strategy returns exit code 3.
 
+#### `ac agentic outreach strategies templates`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--json` | flag | no | Raw list: `{items: [{key, name, goal, angle, research_tools}], total}` |
+
+The ready-made strategies from Corbel, in the order of Browse strategies. The
+`key` names one for `create --from-template`.
+
 #### `ac agentic outreach strategies create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--name` | str | yes | At most 200 characters. Unique among the live strategies, else exit code 5 (`strategy_name_taken`) |
+| `--name` | str | yes, without `--from-template` | At most 200 characters. Unique among the live strategies, else exit code 5 (`strategy_name_taken`) |
+| `--from-template` | str | no | Copy a ready-made strategy, such as `new-funding`. Takes only `--name` and `--offer-id`; any other strategy option returns exit code 2 with no call. An unknown key returns exit code 3 |
 | `--goal` | str | no | What counts as success, at most 2000 characters |
 | `--offer-id` | str | no | A playbook of the organization (Settings > Offers). Another one returns exit code 2 (`offer_not_found`). Left out: every offer |
 | `--angle` | str | no | What Outreach researches, what it opens with, and what to do on no finding. At most 4000 characters |
@@ -3099,7 +3108,22 @@ missing strategy returns exit code 3.
 | `--max-research-cents` | int | no | The most that the research of one person costs. Left out: the API default |
 | `--json` | flag | no | Raw strategy JSON |
 
-The strategy starts at version 1.
+The strategy starts at version 1. A copy of a template takes its name, goal,
+angle and tools. With no `--name`, a taken template name gets `(2)` to `(9)`.
+
+#### `ac agentic outreach strategies write "<description>"`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--wait` | flag | no | Poll until the strategy is ready (at most 2 minutes) and print it |
+| `--regenerate` | flag | no | Write a new strategy for the same text |
+| `--json` | flag | no | Raw JSON: `{draft_id}`, or with `--wait` `{draft_id, status, strategy, reason}` |
+
+Outreach writes a strategy from one or two sentences (at most 1000
+characters): `{name, goal, offer_id, offer_name, angle, research_tools}`. The
+offer is one of the organization, or null. Nothing is saved: save it with
+`strategies create`. A failed draft prints its reason (`writer_failed`,
+`writer_unreadable`, `writer_empty`) and returns exit code 1. A refused start
+returns exit code 4 (`strategy_draft_refused`).
 
 #### `ac agentic outreach strategies update <strategy-id>`
 Takes the options of `create`, all optional, plus `--no-offer`, `--no-tools`,
