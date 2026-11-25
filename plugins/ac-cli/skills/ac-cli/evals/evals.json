@@ -655,12 +655,12 @@
     {
       "id": 48,
       "prompt": "Show me sales signals for recipient r-123.",
-      "expected_output": "Runs `ac sequences signals r-123`.",
+      "expected_output": "Runs `ac sequences signals for r-123`.",
       "assertions": [
         {
           "name": "signals_for_recipient",
           "type": "command_any",
-          "text": "Either `ac sequences signals r-123` (positional, preferred) OR `ac sequences signals.*--recipient-id r-123`"
+          "text": "`ac sequences signals for r-123`"
         }
       ]
     },

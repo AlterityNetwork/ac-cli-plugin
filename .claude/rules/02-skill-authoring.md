@@ -40,7 +40,7 @@ The body is Claude's runtime guide. Target structure:
 4. **Domain Map** — pointer table to `references/<domain>.md`
 5. **Important Patterns** — tags, dates, pagination, cron, JSON input, upload constraints (cross-cutting only)
 6. **Dry-Run / Preview Patterns** — every irreversible mutation paired with its preview command
-7. **Exit Codes** — semantic table (0 success, 1 generic, 2 validation, 3 not found, 4 auth, 5 conflict)
+7. **Exit Codes** — semantic table (0 success, 1 generic, 2 validation, 3 not found, 4 auth, 5 conflict, 6 plan refusal)
 8. **JSON-First Scripting** — canonical `ac … --json | jq …` recipes
 9. **Common Workflows** — 6 highest-signal multi-step recipes (others go in `references/workflows-recipes.md`)
 10. **Agent-Friendly Features** — JSON errors, `AC_YES=1`, exit codes
@@ -66,20 +66,22 @@ Layout and roles:
 
 | File | Role | Update trigger |
 |------|------|---------------|
-| `commands.md` | Exhaustive flag tables, all 220+ commands | CLI adds/removes/renames a flag |
+| `commands.md` | Exhaustive flag tables for every command | CLI adds/removes/renames a flag |
 | `crm.md` | Quick reference for CRM commands (companies, people, deals, activities, comms, lists, import, search, dashboards) | CRM CLI surface changes |
 | `sequences.md` | Quick reference for Sequences commands | Sequences CLI surface changes |
 | `workflows.md` | Quick reference for workflow commands | Workflows CLI surface changes |
 | `admin.md` | Quick reference for admin commands (requires `superadmin`) | Admin CLI surface changes |
 | `platform.md` | Quick reference for files, apps, styles, Nylas, hooks, messaging, chat, resources, profiles | Platform CLI surface changes |
 | `auth-env.md` | Auth + environment commands and recovery patterns | Auth/env behavior changes |
+| `agentic-runs.md` | Quick reference for agentic runs | Agentic runs CLI surface changes |
+| `inbox.md` | Quick reference for the unified inbox (`ac inbox`) | Inbox CLI surface changes |
 | `workflows-recipes.md` | Multi-step recipes that don't make the SKILL.md core 6 | New common multi-step pattern emerges |
 
 The source of truth for flags is `ac-cli`'s Typer command definitions in `ac-cli/src/ac_cli/commands/`.
 
 ## Evals
 
-`evals/evals.json` is the regression suite. `evals/run.py` is the runner — spawns `claude -p --plugin-dir <local>` per scenario, captures Bash/Read/Skill tool calls, grades against assertions. `evals/README.md` documents the assertion vocabulary (`command_matches`, `command_sequence`, `reads_file`, `auth_check_first`).
+`evals/evals.json` is the regression suite. `evals/run.py` is the runner — spawns `claude -p --plugin-dir <local>` per scenario, captures Bash/Read/Skill tool calls, grades against assertions. `evals/test_run.py` holds the offline unit tests for the runner. `evals/README.md` documents the assertion vocabulary (`command_matches`, `command_sequence`, `reads_file`, `auth_check_first`).
 
 ```bash
 python evals/run.py --runs 2 --workers 8 --model haiku

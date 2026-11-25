@@ -166,7 +166,7 @@ These misroutes happen often. **Read this table FIRST** before composing any `ac
 | "credit balance" / "credits left" / "how many credits did we spend" | `ac profiles usage` (the Credits line; `--json` gives the `credits` block) | `ac admin ai-usage …` (token cost, not credits) · `ac admin credit-prices` (prices, not the balance) |
 | "reply to Ada" / "what needs a reply" / "inbox" (email and LinkedIn) | `ac inbox list --needs-reply` · `ac inbox show <thread-id>` · `ac inbox reply <thread-id> --channel email\|linkedin --body …` | `ac sequences inbox …` (sequence replies only) · `ac crm comms …` (raw email rows) |
 | "how many threads in the Sequences inbox" | `ac sequences inbox-count` | `ac inbox counts` is the badge of the whole inbox, not the Sequences tab |
-| "signals for recipient X" | `ac sequences signals X` (positional) | `ac sequences signals list --recipient-id` · `ac sequences signals for X` — neither exists |
+| "signals for recipient X" | `ac sequences signals for X` (positional) | `ac sequences signals list --recipient-id` · `ac sequences signals X` — neither exists |
 | "list / create / attach buying signals on company X" (CRM-side) | `ac crm signals list --company-id X` · `ac crm signals create --signal-type funding --description "..." --company-id X` | `ac sequences signals` — that path is recipient-scoped sales signals, not CRM signal CRUD |
 | "delete 3 companies c1,c2,c3" | `ac crm companies bulk-delete --ids c1,c2,c3` | looping `ac crm companies delete` per-id — non-atomic and slower |
 | "remove 5 people from list L" | `ac crm lists bulk-remove-members L --member-type person --ids p1,p2,p3,p4,p5` | looping `ac crm lists remove-member` per-id |
@@ -272,7 +272,7 @@ Before any irreversible mutation, prefer the preview/list command first.
 
 | Mutation | Preview first |
 |----------|---------------|
-| `ac crm import commit --preview-id <id>` | `ac crm import preview --file <path>` |
+| `ac crm import commit --preview-file <preview.json>` | `ac crm import preview --file <path>` |
 | `ac workflows schedules create ... --cron "..."` | `ac workflows schedules preview ... --cron "..." --count 5` |
 | `ac sequences sequences launch <id>` | `ac sequences sequences impact-preview <id> --step-id <id>` |
 | `ac workflows run-people add-to-crm` | `ac workflows run-people company-match-preview` |
@@ -360,9 +360,9 @@ ac crm deals create --name "Acme Enterprise" --stage discovery \
 ### CRM: Bulk import (preview → commit)
 
 ```bash
-ac crm import preview --file contacts.json
+ac crm import preview --file contacts.json --json > preview.json
 # If preview looks right:
-ac crm import commit --preview-id <id-from-preview>
+ac crm import commit --preview-file preview.json
 ```
 
 ### Sequences: Launch a sequence

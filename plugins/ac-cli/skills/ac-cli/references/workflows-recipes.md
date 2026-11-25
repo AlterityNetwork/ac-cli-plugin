@@ -132,8 +132,7 @@ ac admin subscriptions activate-billing <subscription-id>
 ```bash
 ac admin queues health --json
 ac admin queues stats --json
-ac admin queues failed <queue-name> --limit 20 --json
-AC_YES=1 ac admin queues retry-all <queue-name>
+ac admin queues queue-stats <queue-name> --json
 ```
 
 ## Platform: Upload image, install app, train writing style
