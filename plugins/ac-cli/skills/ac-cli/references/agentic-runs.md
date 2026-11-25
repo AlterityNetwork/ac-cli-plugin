@@ -130,9 +130,10 @@ ends `partial` at its next checkpoint, with `partial_reason` `budget_exhausted`.
 
 ## Estimate the credits of a run
 
-A `signals.search` run pays 90 credits for each company or person it checks,
-and 510 credits for a discovery run. Tokens and enrichment inside the run are
-free. Estimate a run before you start it:
+A `signals.search` run pays one price for each company or person it checks,
+and one price for a discovery run. Tokens and enrichment inside the run are
+free. The prices can change, so read them from the estimate
+(`credits_per_unit`, `credits_per_run`), not from this page:
 
 ```bash
 ac agentic capabilities estimate signals.search --units 48 --json
