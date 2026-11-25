@@ -41,7 +41,10 @@ need the full brief or the current `updated_at` write token.
 IANA zone you give (default `UTC`). Only a `signals.search` saved search takes a
 schedule. Any member who can start Signals may set one, and becomes its author.
 A search keeps one schedule, so `set` replaces the one it has. `list` shows each
-schedule. Deleting a saved search also stops its schedule.
+schedule. Deleting a saved search also stops its schedule. `schedule get` also
+shows the last scheduled run and when it fired. A run that reads "did not start:
+not enough credits" starts again on its next schedule once an owner or admin
+adds credits.
 
 `patch` requires that token and at least one replacement field. A stale token
 returns exit code 5. `start` freezes the stored brief and current baseline in a
