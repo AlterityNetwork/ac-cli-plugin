@@ -6,7 +6,7 @@ description: >
   automation (Sequences app sequences, recipients, outbox drafts, inbox
   replies, signals, battlecards, playbooks, cold emails); workflows (runs,
   schedules, cron, presets, CSV, discovered companies/people); admin (users,
-  organizations, queues, failed jobs, demo, customer onboarding, AI/app/platform
+  organizations, queues, failed jobs, customer onboarding, AI/app/platform
   usage, cross-org Sonar (legacy)/Headhunter (legacy) searches, legal docs, subscriptions);
   platform (file/image upload, knowledge base PDF resources, apps,
   agentic saved searches, prospect review, Outreach agent campaigns, web chat conversations, writing styles, Nylas email, profiles,
@@ -124,7 +124,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Inbox (`ac inbox`) | one row per person for email and LinkedIn, timeline, done, read state, intent, reply, new message, AI draft, Sent/Drafts/Scheduled, badge counts | [`references/inbox.md`](references/inbox.md) |
 | Sequences (`ac sequences`; it is not the Outreach agent app) | sequences, steps, recipients, outbox (drafts), inbox (replies), battlecards, playbooks, recipient sales signals | [`references/sequences.md`](references/sequences.md) |
 | Workflows | runs, schedules, presets, CSV, discovered companies/people | [`references/workflows.md`](references/workflows.md) |
-| Admin | users, orgs, copilots, queues, demo, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
+| Admin | users, orgs, copilots, queues, onboarding, app/AI/platform usage, cross-org searches, legal docs, subscriptions, plans, entitlement grants, credit prices, intelligence (global intel_companies/intel_people viewer + CRUD), CRM hard-delete, impersonation sessions (requires `superadmin`) | [`references/admin.md`](references/admin.md) |
 | Platform | agentic saved searches, prospect review, Outreach agent app strategies, campaigns, enrollments and their research, the organization stop and email drafts (`ac agentic outreach strategies|campaigns|enrollments|organization|drafts`), web chat conversations, organization analytics, Launchpad preferences, files/images, apps, writing styles, Nylas email, resources, profiles, notifications | [`references/platform.md`](references/platform.md) |
 | Agentic Capabilities and Runs | Start stable product IDs; start one definition; read Run identity, detail and children on agentic-platform; read one person's cached work history and affiliations (`ac agentic people profile`) | [`references/agentic-runs.md`](references/agentic-runs.md) |
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
@@ -454,5 +454,4 @@ ac login --email "..." --password "..."   # Re-auth on the new env
 | Run stuck in pending | Check workflow service health and queue status |
 | Schedule not triggering | Verify timezone + cron with `ac workflows schedules preview` |
 | Invalid cron expression | Use 5-field format (`minute hour dom month dow`) |
-| Demo cleanup fails | Need superadmin; accounts must not be in use |
 | Wrong env results | `ac env show` to confirm; `ac env use <env>` then re-login |
