@@ -144,8 +144,8 @@ ac crm lists delete <list-id> [--yes]
 ## Import
 
 ```bash
-ac crm import preview --file contacts.json    # Preview what will be imported
-ac crm import commit --preview-file preview.json  # Apply the import (preview saved with --json)
+ac crm import preview --file contacts.json --json > preview.json  # Preview and save it
+ac crm import commit --preview-file preview.json                   # Apply the saved preview
 ```
 
 Always `preview` first; `commit` is irreversible.
