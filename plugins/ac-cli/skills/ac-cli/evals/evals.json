@@ -1918,6 +1918,23 @@
     },
     {
       "id": 152,
+      "prompt": "How many credits will a Signals search of 48 companies use, and do we have enough credits left for it?",
+      "expected_output": "Runs `ac agentic capabilities estimate signals.search --units 48` and reports credits_per_run, remaining_credits and units_covered. It does not start a run to find out.",
+      "assertions": [
+        {
+          "name": "estimates_the_run",
+          "type": "command_matches",
+          "text": "`ac agentic capabilities estimate signals.search` with `--units 48`"
+        },
+        {
+          "name": "no_start",
+          "type": "command_forbidden",
+          "text": "`ac agentic capabilities start`"
+        }
+      ]
+    },
+    {
+      "id": 153,
       "prompt": "Which replies to my Outreach campaigns still need an answer from me?",
       "expected_output": "Lists the open replies with `ac agentic outreach replies list --state needs_reply`. It does not read `ac agentic approvals` or `ac sequences outbox`.",
       "assertions": [

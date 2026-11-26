@@ -4162,6 +4162,24 @@ The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
 Read both `outcome` and `status`. A duplicate returns the original Run; a changed
 request with the same key returns 409. See `agentic-runs.md` for retry rules.
 
+#### `ac agentic capabilities estimate <capability-id>`
+
+| Flag | Type | Required | Purpose |
+|---|---|---|---|
+| `--units` | Integer | One of three | Price this many companies or people. 0 prices a discovery run. |
+| `--input` | JSON object | One of three | Price this capability input. |
+| `--saved-search-id` | String | One of three | Price a run of this saved search, with the members its list holds now. |
+| `--cron` | String | No | Add the runs and credits of 30 days on this schedule. |
+| `--timezone` | String | No | The IANA zone of `--cron`. Needs `--cron`. The API reads UTC when it is not set. |
+| `--json` | Boolean | No | Print the raw estimate or structured error. |
+
+The command posts to `/api/v1/agentic/capabilities/{capability_id}/estimate`.
+It names one of `--units`, `--input` or `--saved-search-id`, and refuses any
+other set with exit 2 before a request. `credits_per_run` is the most one run
+charges; a start checks the same number. `units_covered` is null when the
+organisation has no credit limit. A capability without a price per unit answers
+`"priced": false`.
+
 
 ### Agentic Runs
 
