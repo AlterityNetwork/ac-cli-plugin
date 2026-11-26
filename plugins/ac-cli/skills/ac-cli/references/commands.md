@@ -1238,7 +1238,7 @@ Returns total inbox thread count.
 | `ac inbox send` | `--contact-id` · `--channel email\|linkedin` · `--body` · `--subject` (email) · `--cc` · `--bcc` · `--send-at` (email) · `--json` |
 | `ac inbox ai-draft <thread-id>` | `--channel email\|linkedin` · `--regenerate` · `--wait` · `--json` |
 | `ac inbox ask-to-reply <thread-id>` | `--json` |
-| `ac inbox counts` | `--sequence`, `--json` |
+| `ac inbox counts` | `--sequence any\|none\|<id>` · `--json` |
 
 ## Workflows
 
