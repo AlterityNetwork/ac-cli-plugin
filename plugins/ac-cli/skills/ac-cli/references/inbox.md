@@ -18,6 +18,7 @@ ac inbox list --view done --limit 20 --offset 20
 ac inbox show <thread-id>                       # timeline + who can reply on each channel
 ac inbox messages --view sent|drafts|scheduled [--channel email|linkedin] [--owner all]
 ac inbox counts                                 # badge: unread messages + waiting connection requests
+ac inbox counts --sequence any                  # the badge of the Inbox tab of Sequences
 ac inbox resolve --message-id thread_<id> | --comm-id <id> | --contact-id <person-id>
 ```
 
