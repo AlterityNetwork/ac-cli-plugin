@@ -418,6 +418,28 @@ campaign or a stopped organization does not block a reject.
 Do not approve an Outreach email with `ac agentic approvals`; that inbox
 refuses it with exit code 5.
 
+## Outreach Replies
+
+```bash
+ac agentic outreach replies list [--state reply_ready|needs_reply|replied|done ...] [--campaign-id <campaign-id>] [--since <iso-time>] [--limit 50] [--offset 0]
+ac agentic outreach replies done <enrollment-id> [--reply-message-id <message-id>]
+```
+
+`replies list` reads one row per person who replied, newest reply first. The
+id is the enrollment ID. `reply_ready` means Outreach wrote a draft that
+answers the reply: review it with `drafts get <pending_action_id>`.
+`needs_reply` means Outreach wrote no answer: reply by hand with
+`ac inbox reply <inbox_thread_id> --channel <channel> --body "..."`, or close
+it with `replies done`. The
+default is the two open states. `--state replied` and `--state done` read the
+replies a person dealt with, and `--since` keeps those handled at or after
+the time. The table output ends with the counts of the Review tab (replies
+ready, replies that need a reply, and drafts to approve that answer no reply)
+and the people of each campaign who come due in the next 24 hours.
+
+A reply sent by hand from the Inbox holds Outreach for that person: it writes
+no draft and no follow-up until the person replies again.
+
 ## Organization Analytics
 
 ```bash

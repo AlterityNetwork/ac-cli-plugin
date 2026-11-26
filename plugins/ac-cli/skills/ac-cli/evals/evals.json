@@ -1932,6 +1932,23 @@
           "text": "`ac agentic capabilities start`"
         }
       ]
+    },
+    {
+      "id": 153,
+      "prompt": "Which replies to my Outreach campaigns still need an answer from me?",
+      "expected_output": "Lists the open replies with `ac agentic outreach replies list --state needs_reply`. It does not read `ac agentic approvals` or `ac sequences outbox`.",
+      "assertions": [
+        {
+          "name": "lists_the_replies",
+          "type": "command_matches",
+          "text": "`ac agentic outreach replies list .*--state needs_reply`"
+        },
+        {
+          "name": "not_the_platform_inbox",
+          "type": "command_forbidden",
+          "text": "`ac agentic approvals` or `ac sequences outbox`"
+        }
+      ]
     }
   ]
 }
