@@ -3423,6 +3423,40 @@ session returns exit code 4.
 
 Exit code 5 with `code`: `enrollment_ended`, `action_not_pending`, or `channel_unavailable` (`switch_channel` only: the campaign does not allow both channels, the person has no email address or LinkedIn URL for the other one, the email address is suppressed, or a switch to LinkedIn has no LinkedIn action: the sender has no live LinkedIn connection, or the person declined or is suppressed on LinkedIn; the action stays pending). A retry of the same reject returns the same action.
 
+### Outreach Replies
+
+`list` reads the replies to Outreach messages. `done` takes the enrollment ID
+of one reply.
+
+#### `ac agentic outreach replies list`
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--state` | `reply_ready`, `needs_reply`, `replied` or `done`; repeatable | None (the API reads `reply_ready` and `needs_reply`) | Only the replies in these states |
+| `--campaign-id` | str | None | Only the replies of this campaign; the counts follow it |
+| `--since` | ISO 8601 with a time zone | None | `replied` and `done` only: the replies handled at or after this time |
+| `--limit` | int | 50 | How many replies, 1 to 100 |
+| `--offset` | int | 0 | How many replies to skip first |
+| `--json` | flag | off | Raw `{"data": [...], "total": N, "limit": N, "offset": N, "has_more": bool, "counts": {"reply_ready": N, "needs_reply": N, "drafts": N}, "coming_up": [...]}` JSON |
+
+Lists one row per enrollment whose newest real reply is open, newest reply
+first. Columns: Enrollment ID, Person, Campaign, Channel, State, Received,
+Reply. `reply_ready`: a draft answers the reply (`pending_action_id`).
+`needs_reply`: Outreach chose a wait or a stop (`rationale`, `next_step`
+`follow_up` or `stopped`, `next_check_at`), or wrote no answer within ten
+minutes. Away messages and opt-outs are not listed. `inbox_thread_id` is the
+thread that `ac inbox reply` takes. `counts.drafts` counts the drafts to
+approve that answer no listed reply. `coming_up` holds, per campaign, the
+people whose next check is in the next 24 hours and the first time.
+
+#### `ac agentic outreach replies done <enrollment-id>`
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--reply-message-id` | str | No | The message id you saw; a newer reply then answers exit code 5 (`reply_superseded`) |
+| `--json` | flag | No | Raw JSON output |
+
+Marks one `needs_reply` reply done. A reply with a draft answers exit code 5
+(`reply_not_open`). A repeat on a done reply succeeds.
+
 ### Agentic Conversations
 
 #### `ac agentic conversations list`
