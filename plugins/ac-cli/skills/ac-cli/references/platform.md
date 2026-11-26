@@ -186,6 +186,9 @@ ac agentic outreach campaigns update <campaign-id> [--name "..."] [--strategy <s
 ac agentic outreach strategies list [--include-archived] [--limit 50] [--offset 0]
 ac agentic outreach strategies get <strategy-id>
 ac agentic outreach strategies create --name "Website teardown" [--goal "..."] [--offer-id <playbook-id>] [--angle "..."] [--tool research.fetch_page]... [--example "..."]... [--max-research-cents 40]
+ac agentic outreach strategies templates
+ac agentic outreach strategies create --from-template new-funding [--name "..."] [--offer-id <playbook-id>]
+ac agentic outreach strategies write "Book intro calls with Shopify founders. Offer a free checkout audit." [--wait] [--regenerate]
 ac agentic outreach strategies update <strategy-id> [--name] [--goal] [--offer-id <id> | --no-offer] [--angle] [--tool <id>... | --no-tools] [--example "..."... | --no-examples] [--max-research-cents N | --default-cap]
 ac agentic outreach strategies archive <strategy-id> [--yes]
 ac agentic outreach campaigns activate|pause|resume <campaign-id>
@@ -218,6 +221,13 @@ strategy with its live (active or paused) campaigns. A change of the goal,
 the offer, the angle, the tools or the cap adds 1 to the strategy version;
 the name and the examples do not. `strategies archive` frees the name, and
 returns exit code 5 (`strategy_in_use`) while a live campaign follows it.
+`strategies templates` prints the ready-made strategies from Corbel (New
+funding, Hiring signal, Event follow-up). `strategies create --from-template
+<key>` copies one into the organization as a normal strategy at version 1; it
+takes only `--name` and `--offer-id`. With no `--name`, a taken template name
+gets `(2)` to `(9)`. `strategies write "<description>"` asks Outreach to write
+a strategy from one or two sentences and saves nothing; `--wait` prints the
+strategy, and you save it with `strategies create`.
 The tools are `research.fetch_page`, `research.search_web`,
 `research.detect_technologies` and `research.search_company`; no tool means
 no research. An offer of another organization returns exit code 2
