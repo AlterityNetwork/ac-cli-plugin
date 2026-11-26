@@ -3099,7 +3099,7 @@ The ready-made strategies from Corbel, in the order of Browse strategies. The
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | str | yes, without `--from-template` | At most 200 characters. Unique among the live strategies, else exit code 5 (`strategy_name_taken`) |
-| `--from-template` | str | no | Copy a ready-made strategy, such as `new-funding`. Takes only `--name` and `--offer-id`; any other strategy option returns exit code 2 with no call. An unknown key returns exit code 3 |
+| `--from-template` | str | no | Copy a ready-made strategy, such as `new-funding`. Takes only `--name` and `--offer-id`; any other strategy option returns exit code 2 with no call. A key that is not lower-case words joined by hyphens returns exit code 2, and an unknown key exit code 3 |
 | `--goal` | str | no | What counts as success, at most 2000 characters |
 | `--offer-id` | str | no | A playbook of the organization (Settings > Offers). Another one returns exit code 2 (`offer_not_found`). Left out: every offer |
 | `--angle` | str | no | What Outreach researches, what it opens with, and what to do on no finding. At most 4000 characters |
@@ -3122,7 +3122,9 @@ Outreach writes a strategy from one or two sentences (at most 1000
 characters): `{name, goal, offer_id, offer_name, angle, research_tools}`. The
 offer is one of the organization, or null. Nothing is saved: save it with
 `strategies create`. A failed draft prints its reason (`writer_failed`,
-`writer_unreadable`, `writer_empty`) and returns exit code 1. A refused start
+`writer_unreadable`, `writer_empty`) and returns exit code 1; a draft still
+`pending` after 2 minutes also returns exit code 1. `--regenerate` starts a new
+draft for the same text. A refused start
 returns exit code 4 (`strategy_draft_refused`).
 
 #### `ac agentic outreach strategies update <strategy-id>`
