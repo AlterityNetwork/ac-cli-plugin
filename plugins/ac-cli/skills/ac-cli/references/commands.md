@@ -3544,6 +3544,17 @@ for raw JSON.
 
 Only supplied fields change; the command preserves the other current values.
 
+#### `ac launchpad setup get`
+
+Shows the setup checklist of the signed-in user: the five steps (mailbox,
+LinkedIn, ideal customer, Signals search, writing style), which are done, and
+whether the Launchpad shows the checklist. Pass `--json` for raw JSON.
+
+#### `ac launchpad setup dismiss`
+
+Hides the setup checklist from the user's Launchpad, on every device. Pass
+`--json` for raw JSON.
+
 ---
 
 ### Settings
