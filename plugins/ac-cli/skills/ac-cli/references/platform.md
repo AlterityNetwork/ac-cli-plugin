@@ -540,6 +540,16 @@ The threshold reads the 0-10 prospect score the launchpad rows show.
 `set` preserves unspecified preferences; use `--clear-threshold` to remove
 the score filter.
 
+```bash
+ac launchpad setup get
+ac launchpad setup dismiss
+```
+
+`setup get` lists the five setup steps of the signed-in user (mailbox,
+LinkedIn, ideal customer, Signals search, writing style) and which are done.
+The Launchpad shows the checklist until every step is done or the user
+dismisses it. `setup dismiss` hides it for good, on every device.
+
 ## Files (Images)
 
 ```bash
