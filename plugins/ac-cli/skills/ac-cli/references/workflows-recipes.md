@@ -56,7 +56,7 @@ ac workflows csv-parse-people contacts.csv --json
 
 # 2. Start a Signals search that names those people. A person needs a LinkedIn
 #    profile URL, or a full name with an email, a domain or a company name.
-ac agentic capabilities start signals.search \
+ac agentic runs start --key signals.search \
   --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"},{"linkedin_url":"https://www.linkedin.com/in/ada"}]}' \
   --idempotency-key signals-contacts-42 --json
 

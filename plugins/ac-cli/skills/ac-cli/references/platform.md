@@ -5,12 +5,12 @@ For full flag tables see `commands.md` (Platform section).
 ## Agentic Saved Searches
 
 ```bash
-ac agentic saved-searches create --capability signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
-ac agentic saved-searches create --capability people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
-ac agentic saved-searches create --capability company.search --name "UK mid-market" --brief '{"filters":{"country_codes":["GB"]}}'
-ac agentic saved-searches create --capability signals.search --name "Watched accounts" --brief '{"icp":"Any recent sales signal at the company"}' --watch-list-id <crm-list-id>
-ac agentic saved-searches list --capability signals.search [--cursor <cursor>] [--limit 50]
-ac agentic saved-searches list --capability signals.search --capability people.signals
+ac agentic saved-searches create --key signals.search --name "UK fintech" --brief '{"icp":"UK fintech firms","persona":{"titles":["CTO"],"country_codes":["GB"]}}'
+ac agentic saved-searches create --key people.signals --name "New marketing leaders" --brief '{"signal_recency":"1m","brief":{"icp":"New marketing leaders"}}'
+ac agentic saved-searches create --key company.search --name "UK mid-market" --brief '{"filters":{"country_codes":["GB"]}}'
+ac agentic saved-searches create --key signals.search --name "Watched accounts" --brief '{"icp":"Any recent sales signal at the company"}' --watch-list-id <crm-list-id>
+ac agentic saved-searches list --key signals.search [--cursor <cursor>] [--limit 50]
+ac agentic saved-searches list --key signals.search --key people.signals
 ac agentic saved-searches get <saved-search-id>
 ac agentic saved-searches patch <saved-search-id> --expected-updated-at <token> [--name "New name"] [--brief '{...}'] [--watch-list-id <crm-list-id> | --clear-watch-list-id | --source-list <crm-list-id>... --source-list-fixed <crm-list-id>... | --sources '[...]' | --clear-sources]
 ac agentic saved-searches delete <saved-search-id> [--yes]
@@ -21,7 +21,7 @@ ac agentic saved-searches schedule set <saved-search-id> --cron "0 9 * * 1" [--t
 ac agentic saved-searches schedule clear <saved-search-id> [--yes]
 ```
 
-The brief must be a JSON object in the selected capability's input shape.
+The brief must be a JSON object in the selected definition key's input shape.
 For `people.signals`, save the complete input with a nested `brief.icp` and
 optional `signal_recency` (`"1w"`, `"1m"`, `"3m"`, `"6m"`, `"12m"`, or `"24m"`),
 `brief.persona`, `brief.persona_description`, and `brief.employer_criteria`.
@@ -607,9 +607,9 @@ ac nylas validate-signature --signature "<p>Best regards</p>"
 
 ```bash
 ac agentic conversations list [--cursor <cursor>] [--limit 50] \
-  [--draft-capability <capability-id>]
+  [--draft-key <definition-key>]
 ac agentic conversations create [--title "Project Discussion"] \
-  [--draft-capability <capability-id>]...
+  [--draft-key <definition-key>]...
 ac agentic conversations messages <conversation-id> [--cursor <cursor>] [--limit 50]
 ac agentic conversations send <conversation-id> "What's on my plate today?" \
   [--entity-ref <kind>:<id>] [--idempotency-key <key>] [--draft '<json>']
@@ -622,7 +622,7 @@ flag and no single-conversation `get` command.
 
 `--entity-ref` names a row the message is about, as `kind:id`. Repeat it for
 each row. Each one enters the conversation entity scope before the turn runs,
-so the turn resolves "this company" and a capability input can carry the id.
+so the turn resolves "this company" and a definition input can carry the id.
 The scope survives the turn, so a later message needs no ref for the same row.
 
 ```bash
@@ -637,20 +637,20 @@ ambiguous, and the platform asks which one instead of guessing.
 
 A draft conversation writes a search for a form and starts no run. The Signals
 search page opens one for `signals.search` and `people.signals`, the only two
-capabilities a draft takes. `list` without `--draft-capability` reads ordinary
+keys a draft takes. `list` without `--draft-key` reads ordinary
 chats only, so a draft conversation never appears in the chat list.
 
 ```bash
 ac agentic conversations create --title Signals \
-  --draft-capability signals.search --draft-capability people.signals
+  --draft-key signals.search --draft-key people.signals
 ac agentic conversations send <conversation-id> "UK fintechs that raised a Series B" \
-  --draft '{"capability_id": "signals.search", "input": {"source": "discovery"}}'
+  --draft '{"definition_key": "signals.search", "input": {"source": "discovery"}}'
 ac agentic conversations messages <conversation-id> --json
 ```
 
 `--draft` is the form state at send time, and it may be incomplete. The reply
-carries the drafted search in `draft`: a `capability_id` and the product
-`input`. Start it with `ac agentic capabilities start`. The draft keeps the
+carries the drafted search in `draft`: a `definition_key` and the product
+`input`. Start it with `ac agentic runs start --key`. The draft keeps the
 companies and people the form already lists, and the chat never adds a row.
 
 ## Resources (Knowledge Base)

@@ -1065,24 +1065,24 @@
     {
       "id": 82,
       "prompt": "Create an agentic saved search for Signals Search named UK fintech with the brief {\"icp\":\"UK fintech firms\"}.",
-      "expected_output": "Creates the saved search with the exact agentic command, naming the capability, the name, and the brief.",
+      "expected_output": "Creates the saved search with the exact agentic command, naming the key, the name, and the brief.",
       "assertions": [
         {
           "name": "creates_saved_search",
           "type": "command_matches",
-          "text": "`ac agentic saved-searches create .*--capability [\"']?signals\\.search[\"']?.*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
+          "text": "`ac agentic saved-searches create .*--key [\"']?signals\\.search[\"']?.*--name [\"']UK fintech[\"'].*--brief [\"']\\{[\"']icp[\"']:[\"']UK fintech firms[\"']\\}[\"']`"
         }
       ]
     },
     {
       "id": 83,
-      "prompt": "Start AgencyCore company.search for UK fintech companies. Use the exact input {\"natural_language_query\":\"UK fintech companies\"}, delivery key company-search-request-42, and JSON output. Use the stable capability command, not an executor UUID.",
+      "prompt": "Start AgencyCore company.search for UK fintech companies. Use the exact input {\"natural_language_query\":\"UK fintech companies\"}, delivery key company-search-request-42, and JSON output. Use the stable definition key command, not an executor UUID.",
       "expected_output": "Starts company.search with the exact description input, delivery key and JSON output.",
       "assertions": [
         {
-          "name": "starts_stable_capability",
+          "name": "starts_by_definition_key",
           "type": "command_matches",
-          "text": "`ac agentic capabilities start company.search`"
+          "text": "`ac agentic runs start --key company.search`"
         },
         {
           "name": "input",
@@ -1484,9 +1484,9 @@
           "text": "`ac agentic prospects find-people p-123`"
         },
         {
-          "name": "does_not_start_the_capability_by_hand",
+          "name": "does_not_start_the_definition_by_hand",
           "type": "command_forbidden",
-          "text": "`ac agentic capabilities start people\\.search`"
+          "text": "`ac agentic runs start --key people\\.search`"
         }
       ]
     },
@@ -1516,9 +1516,9 @@
           "text": "`ac agentic prospects find-people p-123 .*--country [\"']?GB`"
         },
         {
-          "name": "does_not_start_the_capability_by_hand",
+          "name": "does_not_start_the_definition_by_hand",
           "type": "command_forbidden",
-          "text": "`ac agentic capabilities start people\\.search`"
+          "text": "`ac agentic runs start --key people\\.search`"
         }
       ]
     },
@@ -1543,9 +1543,9 @@
           "text": "`ac agentic prospects find-people p-123 .*--describe [\"'].*(retention|loyalty)`"
         },
         {
-          "name": "does_not_start_the_capability_by_hand",
+          "name": "does_not_start_the_definition_by_hand",
           "type": "command_forbidden",
-          "text": "`ac agentic capabilities start people\\.search`"
+          "text": "`ac agentic runs start --key people\\.search`"
         }
       ]
     },
@@ -1895,7 +1895,7 @@
         {
           "name": "no_paid_deep_dive",
           "type": "command_forbidden",
-          "text": "`ac agentic capabilities start people\\.enrich`"
+          "text": "`ac agentic runs start --key people\\.enrich`"
         }
       ]
     },
@@ -1919,17 +1919,17 @@
     {
       "id": 152,
       "prompt": "How many credits will a Signals search of 48 companies use, and do we have enough credits left for it?",
-      "expected_output": "Runs `ac agentic capabilities estimate signals.search --units 48` and reports credits_per_run, remaining_credits and units_covered. It does not start a run to find out.",
+      "expected_output": "Runs `ac agentic definitions startable-estimate signals.search --units 48` and reports credits_per_run, remaining_credits and units_covered. It does not start a run to find out.",
       "assertions": [
         {
           "name": "estimates_the_run",
           "type": "command_matches",
-          "text": "`ac agentic capabilities estimate signals.search` with `--units 48`"
+          "text": "`ac agentic definitions startable-estimate signals.search` with `--units 48`"
         },
         {
           "name": "no_start",
           "type": "command_forbidden",
-          "text": "`ac agentic capabilities start`"
+          "text": "`ac agentic runs start --key`"
         }
       ]
     },

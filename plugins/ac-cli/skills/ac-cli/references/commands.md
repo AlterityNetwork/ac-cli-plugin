@@ -2551,17 +2551,17 @@ divided by the units and the credits charged. A hyphen means no recorded cost in
 
 ### Agentic Saved Searches
 
-Four capabilities hold a saved search: `signals.search`, `people.signals`,
-`people.search` and `company.search`. An enrich capability holds none, because it takes the rows it
-works on. Each brief is read through the input contract of its own capability,
+Four definition keys hold a saved search: `signals.search`, `people.signals`,
+`people.search` and `company.search`. An enrich key holds none, because it takes the rows it
+works on. Each brief is read through the input contract of its own key,
 so a Signals brief and a People brief have different shapes.
 
 #### `ac agentic saved-searches create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--capability` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
+| `--key` | str | yes | `signals.search`, `people.signals`, `people.search` or `company.search` |
 | `--name` | str | yes | Saved-search name, 1 to 200 characters after trim |
-| `--brief` | JSON object | yes | Full brief, in the input shape the capability publishes |
+| `--brief` | JSON object | yes | Full brief, in the input shape the definition publishes |
 | `--watch-list-id` | str | no | CRM list of companies to watch. Sent only when given. |
 | `--source-list` | str, repeatable | no | CRM list kept in sync: each Run reads its current members |
 | `--source-list-fixed` | str, repeatable | no | CRM list kept as a fixed set: the server keeps the members it has now |
@@ -2585,13 +2585,13 @@ the `Sources` line, for example `CRM list Q4 targets, kept in sync`.
 #### `ac agentic saved-searches list`
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--capability` | str, repeatable | required | Products whose saved searches to list together (up to four) |
+| `--key` | str, repeatable | required | Definition keys whose saved searches to list together (up to four) |
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
 | `--json` | flag | off | Raw page JSON |
 
-A list read returns the selected capabilities' rows in one ordered page. With
-multiple capabilities, the table shows a Type column in place of the last run
+A list read returns the selected keys' rows in one ordered page. With
+multiple keys, the table shows a Type column in place of the last run
 ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 
 #### `ac agentic saved-searches get <saved-search-id>`
@@ -2604,7 +2604,7 @@ ID; `get` shows the full record. List rows omit `brief`; use `get` to read it.
 |------|------|----------|-------------|
 | `--expected-updated-at` | str | yes | Opaque `updated_at` token from the last read |
 | `--name` | str | no | Replacement name |
-| `--brief` | JSON object | no | Full replacement brief, in the capability's input shape; preserve unrelated fields |
+| `--brief` | JSON object | no | Full replacement brief, in the key's input shape; preserve unrelated fields |
 | `--watch-list-id` | str | no | Replacement CRM list of companies to watch |
 | `--clear-watch-list-id` | flag | no | Stop watching the list. Sends `watch_list_id: null`. |
 | `--source-list` | str, repeatable | no | Replacement set: CRM list kept in sync |
@@ -2632,7 +2632,7 @@ Deleting a saved search does not cancel a Run that already started.
 | `--idempotency-key` | str | yes | Delivery identity. Use 1–255 header-safe ASCII characters. Reuse it only for the same saved search. |
 | `--json` | flag | no | Raw Run start result |
 
-Start freezes the saved brief in a normal Run of the capability the row names.
+Start freezes the saved brief in a normal Run of the key the row names.
 It does not create a Trigger or schedule.
 
 A start validates the stored brief against the active server contract. If a
@@ -2646,7 +2646,7 @@ schema update made it incompatible, correct the fields reported by the API.
 | `--json` | flag | off | Raw diff page JSON |
 
 Diff reads the Smart Feed, which only `signals.search` publishes. A saved search
-of another capability returns exit code 5. Otherwise it reads the latest
+of another key returns exit code 5. Otherwise it reads the latest
 published successful Run; if that Run changes during a page walk it also returns
 exit code 5, and you start a new page walk.
 
@@ -2860,7 +2860,7 @@ one AI step, then searches. A description that names no title, department,
 seniority or country fails the Run. `--describe` with a list option returns
 exit code 2. A repeated value or an
 unknown country code returns exit code 2. The answer is the Run detail, the
-same shape as `ac agentic capabilities start`: `id`, `status`, `outcome` and
+same shape as `ac agentic runs start --key`: `id`, `status`, `outcome` and
 more. The command sends no `Idempotency-Key` header. The server owns the key:
 one key for each prospect, minute and persona.
 
@@ -3464,14 +3464,14 @@ Marks one `needs_reply` reply done. A reply with a draft answers exit code 5
 |------|------|---------|-------------|
 | `--cursor` | str | None | Opaque next-page cursor |
 | `--limit` | int | 50 | Page size, 1 to 100 |
-| `--draft-capability` | str | None | List the draft conversations of one capability (`signals.search`, `people.signals`). Without it the list holds ordinary chats only. |
+| `--draft-key` | str | None | List the draft conversations of one definition key (`signals.search`, `people.signals`). Without it the list holds ordinary chats only. |
 | `--json` | flag | off | Raw page JSON |
 
 #### `ac agentic conversations create`
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--title` | str | no | Optional title |
-| `--draft-capability` | str | no | Open a draft conversation for this capability. Repeatable. Its turns write a search for a form and start no run. The API takes `signals.search` and `people.signals`. |
+| `--draft-key` | str | no | Open a draft conversation for this definition key. Repeatable. Its turns write a search for a form and start no run. The API takes `signals.search` and `people.signals`. |
 | `--json` | flag | no | Raw conversation detail |
 
 #### `ac agentic conversations messages <conversation-id>`
@@ -3486,7 +3486,7 @@ Marks one `needs_reply` reply done. A reply with a draft answers exit code 5
 |------|------|----------|-------------|
 | `--entity-ref` | str | no | A row the message is about, as `kind:id` (`crm.company:<uuid>`). Repeatable, 10 rows at most. Each one enters the conversation entity scope, so the turn resolves "this company" and a later message needs no ref for the same row. |
 | `--idempotency-key` | str | no | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
-| `--draft` | str | no | The form state of a draft conversation, as JSON with `capability_id` and an object `input`. The reply carries the drafted search in `draft`. The API refuses a draft over 65,536 bytes with 413. |
+| `--draft` | str | no | The form state of a draft conversation, as JSON with `definition_key` and an object `input`. The reply carries the drafted search in `draft`. The API refuses a draft over 65,536 bytes with 413. |
 | `--json` | flag | no | Raw message detail |
 
 The CLI does not read the live conversation stream. After `send`, run
@@ -4155,41 +4155,35 @@ Switches the active environment. Valid names: `local`, `staging`, `production`.
 Checks if the API is reachable and returns health status.
 
 
-### Agentic Capability Starts
+### Agentic Startable Definitions
 
-#### `ac agentic capabilities start <capability-id>`
+#### `ac agentic definitions startable`
 
-Requires the `agentic-platform` API and CLI until cutover.
+Lists the definitions you can start by key. The list is not paginated. `--all` also shows the reason
+a key is not startable; `--json` prints the raw list.
 
-| Flag | Type | Required | Purpose |
-|---|---|---|---|
-| `--input` | JSON object | Yes | Supply the capability input, at most 32 KiB. |
-| `--idempotency-key` | String | Yes | Use 1–255 header-safe ASCII characters. Reuse only for the same request. |
-| `--title` | String | No | Name of the search, up to 200 characters. Not part of the request identity. |
-| `--saved-search-id` | String | No | The saved search this start came from. The Run lists under it. The saved search keeps its last Run and its diff. |
-| `--json` | Boolean | No | Print the raw Run detail or structured error. |
+#### `ac agentic definitions startable-show <key>`
 
-The command posts to `/api/v1/agentic/capabilities/{capability_id}/runs`.
-Read both `outcome` and `status`. A duplicate returns the original Run; a changed
-request with the same key returns 409. See `agentic-runs.md` for retry rules.
+Reads one startable definition. A key outside the vocabulary returns 404; one you may not start
+returns 403. Use `--json` to read the input and output schemas.
 
-#### `ac agentic capabilities estimate <capability-id>`
+#### `ac agentic definitions startable-estimate <key>`
 
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
 | `--units` | Integer | One of three | Price this many companies or people. 0 prices a discovery run. |
-| `--input` | JSON object | One of three | Price this capability input. |
+| `--input` | JSON object | One of three | Price this run input. |
 | `--saved-search-id` | String | One of three | Price a run of this saved search, with the members its list holds now. |
 | `--cron` | String | No | Add the runs and credits of 30 days on this schedule. |
 | `--timezone` | String | No | The IANA zone of `--cron`. Needs `--cron`. The API reads UTC when it is not set. |
 | `--json` | Boolean | No | Print the raw estimate or structured error. |
 
-The command posts to `/api/v1/agentic/capabilities/{capability_id}/estimate`.
+The command posts to `/api/v1/agentic/definitions/startable/{key}/estimate`.
 It names one of `--units`, `--input` or `--saved-search-id`, and refuses any
 other set with exit 2 before a request. `credits_per_run` is the most one run
 charges; a start checks the same number. `units_covered` is null when the
-organisation has no credit limit. A capability without a price per unit answers
-`"priced": false`.
+organisation has no credit limit. A definition without a price per unit answers
+`"priced": false`. Start a key with `ac agentic runs start --key <key>`.
 
 
 ### Agentic Runs
@@ -4200,13 +4194,15 @@ Requires the `agentic-platform` API and CLI until cutover.
 
 | Flag | Type | Required | Purpose |
 |---|---|---|---|
-| `--definition` | String | Yes | The definition ID to run. The definition is an agent or a workflow. |
+| `--definition` | String | One of two | The definition ID to run. The definition is an agent or a workflow. Name exactly one of `--definition` and `--key`. |
+| `--key` | String | One of two | The key of a startable definition, such as `company.search`. `ac agentic definitions startable` lists them. |
+| `--saved-search-id` | String | No | With `--key`: the saved search this start came from. The Run lists under it. |
 | `--input` | JSON object | No | Supply the run input, at most 32 KiB. An absent or empty flag sends an empty object. The command refuses a value that is not a JSON object, and sends no request. |
 | `--idempotency-key` | String | No | Delivery identity. Use 1–255 header-safe ASCII characters. The CLI creates one when the flag is absent, and refuses an empty flag. |
 | `--title` | String | No | Name of the Run, up to 200 characters. |
 | `--json` | Boolean | No | Print the raw Run detail or structured error. |
 
-The command posts to `/api/v1/agentic/runs`. Read the definition IDs with
+The command posts to `/api/v1/agentic/runs`, with `definition_id` or `key`. Read the definition IDs with
 `ac agentic definitions list`. The definition must be published; a draft returns
 409. A start names the Run, the definition and the status. A duplicate key names
 the Run that key already started and its status, and starts no second execution.
