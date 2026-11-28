@@ -130,7 +130,7 @@ For the command list of a domain, **read the matching reference file** before co
 | Auth & Env | login, logout, whoami, health, env list/show/use | [`references/auth-env.md`](references/auth-env.md) |
 
 For definition input and retry rules, read `references/agentic-runs.md`. Use
-`ac agentic runs start --key <key> --input '<JSON>' --idempotency-key <key> --json`.
+`ac agentic runs start --key <definition-key> --input '<JSON>' --idempotency-key <delivery-key> --json`.
 `--idempotency-key` is optional (the CLI mints one). Preserve the user's delivery key on a retry.
 Start a published definition with
 `ac agentic runs start --definition <definition-id> --input '<JSON>' --json`.
