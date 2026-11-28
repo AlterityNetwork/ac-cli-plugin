@@ -1,21 +1,22 @@
-# Agentic Capabilities and Runs
+# Agentic Definitions and Runs
 
 These commands require the CLI and API from `agentic-platform` until cutover.
 
-## Start a capability
+## Start a definition by key
 
-Use a stable product ID: `company.search`, `company.enrich`, `people.search`,
-`people.enrich`, `people.signals` or `signals.search`. The capability must be installed and active
-for the current organization. Its published schema defines the input fields.
+Use a definition key: `company.search`, `company.enrich`, `people.search`,
+`people.enrich`, `people.signals` or `signals.search`. The definition must be installed and active
+for the current organization. `ac agentic definitions startable` lists the keys you can start;
+`ac agentic definitions startable-show <key> --json` reads one input schema.
 
 ```bash
-ac agentic capabilities start company.search \
+ac agentic runs start --key company.search \
   --input '{"natural_language_query":"UK fintech companies"}' \
   --idempotency-key company-search-request-42 --json
 ```
 
-Both flags are required. Use a JSON input object and a nonblank delivery key
-with 1–255 header-safe ASCII characters.
+`--input` is a JSON object. `--idempotency-key` is optional: the CLI mints a fresh one when it is
+absent. Pass one only when a retry must not start a second Run (1–255 header-safe ASCII characters).
 
 ### Company Enrich (contract version 2)
 
@@ -23,7 +24,7 @@ with 1–255 header-safe ASCII characters.
 references. The input is closed: `preset`, `fields` and `refresh` are refused.
 
 ```bash
-ac agentic capabilities start company.enrich \
+ac agentic runs start --key company.enrich \
   --input '{"subjects":[{"kind":"domain","value":"acme.com"},{"kind":"name","value":"Globex"}]}' \
   --idempotency-key company-enrich-request-42 --json
 ```
@@ -66,7 +67,7 @@ the result carries `skipped_companies`, `skipped_people` and one
 `no_profile` or `employer_mismatch`).
 
 ```bash
-ac agentic capabilities start signals.search \
+ac agentic runs start --key signals.search \
   --input '{"source":"company_set","brief":{"icp":"Leadership changes"},"people":[{"full_name":"Ada Lovelace","email":"ada@acme.com","title":"CTO"}]}' \
   --idempotency-key signals-people-42 --json
 ```
@@ -81,7 +82,7 @@ Optional `signal_recency` accepts `"1w"`, `"1m"`,
 signal is the resulting contact.
 
 ```bash
-ac agentic capabilities start people.signals \
+ac agentic runs start --key people.signals \
   --input '{"source":"people_set","people":[{"full_name":"Ada Lovelace","email":"ada@example.com"}],"brief":{"icp":"Started a marketing leadership role","employer_criteria":"B2B SaaS companies"},"signal_recency":"1m"}' \
   --idempotency-key people-signals-42 --json
 ```
@@ -93,18 +94,18 @@ omitted fields; it does not insert schema defaults.
 saved search the request came from: the Run then lists under that saved search,
 and a list or a detail names it. The link is for display only. The saved search
 keeps its last Run and its diff. A link to a saved search that no longer exists
-is dropped, and a link to a saved search of another capability returns 422.
+is dropped, and a link to a saved search of another key returns 422.
 Neither flag is part of the request identity.
 
 ```bash
-ac agentic capabilities start signals.search \
+ac agentic runs start --key signals.search \
   --input '{"source":"discovery","brief":{"icp":"Raised a seed round"}}' \
   --title "Joyvie lookalikes" --saved-search-id <saved-search-id> \
   --idempotency-key signals-named-42 --json
 ```
 
 Reuse the same key and request after a timeout. A matching replay returns the
-original Run, even after a binding change. A changed capability or input
+original Run, even after a binding change. A changed key or input
 with that key returns `idempotency_conflict` (409). Use a new key for a new request.
 Keys are isolated by organization, caller and start source.
 
@@ -117,7 +118,7 @@ Errors preserve the API code in JSON output: unknown ID (404), unavailable bindi
 (413), and invalid key (400). The CLI uses its existing semantic exit codes.
 
 A spent limit refuses the start with a `detail` object `{code, message, remedy}`.
-`ac agentic capabilities start` and `ac agentic runs start` answer the same two:
+`ac agentic runs start --key` and `ac agentic runs start --definition` answer the same two:
 
 | Code | Status | Exit | What to do |
 |------|--------|------|------------|
@@ -136,9 +137,9 @@ free. The prices can change, so read them from the estimate
 (`credits_per_unit`, `credits_per_run`), not from this page:
 
 ```bash
-ac agentic capabilities estimate signals.search --units 48 --json
-ac agentic capabilities estimate signals.search --input '{"source":"discovery","brief":{"icp":"Raised a seed round"}}'
-ac agentic capabilities estimate signals.search --saved-search-id <saved-search-id> \
+ac agentic definitions startable-estimate signals.search --units 48 --json
+ac agentic definitions startable-estimate signals.search --input '{"source":"discovery","brief":{"icp":"Raised a seed round"}}'
+ac agentic definitions startable-estimate signals.search --saved-search-id <saved-search-id> \
   --cron "0 9 * * 1" --timezone Europe/London
 ```
 
@@ -149,20 +150,20 @@ credits of 30 days on that schedule.
 `credits_per_run` is the most the run charges. The start uses the same number,
 so a start that the credits left do not cover returns `credits_exhausted`
 (402). `units_covered` is how many companies the credits left pay for, when
-the organisation has a credit limit. A capability without a price per unit
+the organisation has a credit limit. A definition without a price per unit
 answers `"priced": false`.
 
 ## Start a run
 
 The command starts one Run of one definition. The definition is an agent or a
-workflow. Read the IDs with `ac agentic definitions list`.
+workflow. Read the IDs with `ac agentic definitions list`, or start by key as above.
 
 ```bash
 ac agentic runs start --definition <definition-id> \
   --input '{"query":"series B fintech"}' --json
 ```
 
-Only `--definition` is required. An absent or empty `--input` sends an empty
+Name exactly one of `--definition` and `--key`. An absent or empty `--input` sends an empty
 object. Any other value must be a JSON object of at most 32 KiB.
 
 The CLI mints a fresh key for each start when `--idempotency-key` is absent, so
@@ -176,8 +177,8 @@ The definition must be published, and it must be an agent or a workflow.
 skills. Each of those returns 409. An archived definition is hidden from the
 list unless you pass `--include-archived`; `ac agentic definitions archive <id>`
 hides one and disables it, and `ac agentic definitions unarchive <id>` brings it
-back, still disabled. `ac agentic capabilities start` above starts
-a published product capability and selects the active contract automatically.
+back, still disabled. `ac agentic runs start --key` above starts
+a startable definition by its key and selects the active contract automatically.
 
 ## Read Runs
 
@@ -186,10 +187,10 @@ ac agentic runs list --json
 ac agentic runs get <run-id>
 ac agentic runs get <run-id> --json
 ac agentic runs list --parent <run-id> --json
-ac agentic runs list --capability signals.search --source trigger --json
+ac agentic runs list --key signals.search --source trigger --json
 ac agentic runs list --saved-search-id <saved-search-id> --json
-ac agentic runs list --capability signals.search --capability people.signals --json
-ac agentic runs list --capability company.search --status succeeded --include-result --json
+ac agentic runs list --key signals.search --key people.signals --json
+ac agentic runs list --key company.search --status succeeded --include-result --json
 ac agentic runs spans <run-id> --scope tree --json
 ac agentic runs span-detail <owning-run-id> <span-id> --json
 ```
@@ -197,7 +198,7 @@ ac agentic runs span-detail <owning-run-id> <span-id> --json
 `--include-result` puts the frozen `result` of each Run on its row, so one
 list request answers the results of many Runs. Without it, `result` is null.
 
-`--capability` repeats. The Signals history lists the `signals.search` and
+`--key` repeats. The Signals history lists the `signals.search` and
 the `people.signals` Runs in one page, and the title of each.
 
 `--source` lists the Runs one entry point started: `front_door`, `trigger`,
@@ -215,17 +216,17 @@ Rename a Run with `ac agentic runs rename <run-id> --title "New name"`, or
 remove the name with `--clear`. A rename does not rename the saved search.
 
 `--saved-search-id` lists the Runs one saved search started, from Run now, from
-its schedule, or from the form after Load search, for every capability. Runs a saved search started before the
+its schedule, or from the form after Load search, for every key. Runs a saved search started before the
 filter existed list only for Signals, because only a Signals Run input named
 its saved search.
 
-Run start, list and detail JSON include `capability_id` and `contract_version`.
+Run start, list and detail JSON include `definition_key` and `contract_version`.
 The values come from the published executor binding at admission. A later
 rename or binding change does not change a Run. Both fields are null on old
 Runs and custom executors. Null does not mean contract version zero.
 
 `get` shows both fields in human output. Tree usage is the whole Run tree;
-do not add parent and child usage totals. Capability cost metrics use separate
+do not add parent and child usage totals. Key cost metrics use separate
 usage deltas and can be incomplete. Use durable usage records for billing.
 
 `list` returns one page. Use `next_cursor` with `--cursor` to read the next
@@ -236,9 +237,9 @@ The spans list omits tool arguments and results. `span-detail` reads the bounded
 redacted input and output for one span. Use the span's `run_id` from the tree
 response as `<owning-run-id>`; a span from another run returns 404.
 
-When `list` is filtered with `--capability company.search`, `people.search` or
+When `list` is filtered with `--key company.search`, `people.search` or
 `signals.search`, its rows include `search_query`, normalized from the
-capability's input contract. The human table shows it in the
+definition's input contract. The human table shows it in the
 `Definition / Search` column. It is null for unfiltered lists, non-search Runs
 and older Runs whose input did not retain the submitted query.
 
@@ -312,7 +313,7 @@ nothing when it finds none. A second start inside 90 days reuses the stored
 answer.
 
 ```bash
-ac agentic capabilities start people.enrich \
+ac agentic runs start --key people.enrich \
   --input '{"subjects":[{"kind":"person_linkedin","value":"https://www.linkedin.com/in/<handle>"}],"preset":"standard","fields":["full_name","current_company_text","affiliations"],"refresh":"stale"}' \
   --idempotency-key affiliations-<handle>-1 --json
 ```
